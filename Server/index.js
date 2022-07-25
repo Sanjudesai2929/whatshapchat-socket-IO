@@ -5,6 +5,7 @@ const cors = require('cors');
 const env = require("dotenv");
 const user = require("../Model/user.model")
 const router =require("../routes/register.routes")
+const loginRouter=require("../routes/login.routes")
 env.config()
 const port = process.env.PORT
 var server = http.createServer(app)
@@ -14,7 +15,10 @@ var io = require('socket.io')(server)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
-app.use(router)
+//register router
+app.use("/",router)
+//login rounter
+app.use("/",loginRouter)
 io.on("connection",(client) => {
     console.log("connected");
     console.log(client.id)
