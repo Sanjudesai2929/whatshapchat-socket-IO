@@ -25,4 +25,9 @@ server.listen(port, () => {
     console.log("server started");
     // io.emit("connection",{id:"aaa4556asg"})
 })
+app.get("/",(req,res)=>{
+    res.json({
+        data:"hello"
+    })
+})
 
