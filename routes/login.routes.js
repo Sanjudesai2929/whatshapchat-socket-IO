@@ -7,7 +7,8 @@ const loginRouter = new express.Router()
 router.post("/login",async(req,res)=>{
     const {username,password}=req.body
   
-        const userData =await register.find({username})
+        const userData =await register.findOne({username})
+        console.log(userData);
         if(userData){
                const cofirm = await bcrypt.compare(password,userData.password)
                if(cofirm){
@@ -26,7 +27,7 @@ router.post("/login",async(req,res)=>{
         else{
             res.json({
                 status:false,
-                message:"User is not Exist"
+                message:"Username is not Exist"
             })
         }
 
