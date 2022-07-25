@@ -27,7 +27,7 @@ server.listen(port, () => {
 })
 app.get("/",(req,res)=>{
     res.json({
-        data:"hello"
+        data:"hello1"
     })
 })
 
