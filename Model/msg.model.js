@@ -7,6 +7,11 @@ const MsgSchema=new mongoose.Schema({
         type:"string",
         require:true
 
+    },
+    targetId:{
+        type:"string",
+        require:true
+
     }
 })
 
