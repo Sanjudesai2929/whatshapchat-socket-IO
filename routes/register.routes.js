@@ -5,8 +5,7 @@ router.post("/register", async (req, res) => {
     const { username, password, country_code, email, phone, cpassword } = req.body
     if (username && password && country_code && email && phone && cpassword) {
         if (password == cpassword) {
-
-            const data = new  register({
+            const data = new register({
                 username, password,country_code ,email  ,phone, cpassword  })
              const res_data =await data.save()
             if (res_data) {
@@ -29,6 +28,5 @@ router.post("/register", async (req, res) => {
             message: "Something went wrong"
         })
     }
-
 })
 module.exports = router
