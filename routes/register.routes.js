@@ -29,10 +29,10 @@ router.post("/register", async (req, res) => {
         })
     }
 })
-router.get("/",({req,res})=>{
-    res.json({
-   status:true,
-   message:"connected..."
-    })
-})
+// router.get("/",({req,res})=>{
+//     res.json({
+//    status:true,
+//    message:"connected..."
+//     })
+// })
 module.exports = router
