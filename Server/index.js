@@ -24,13 +24,10 @@ var connectUser = {
 }
 io.on("connection", async (client) => {
     console.log("connected")
-   
+    io.emit('connected-user',connectUser.size);
     const data = await user.insertMany({ user_id: client.id })
         connectUser[client.id] = client
-            
-    // client.on("signin", (id) => {
-    //     connectUser[id] = client
-    // })
+ 
     client.on("message", async (data) => {
         console.log(data);
         let id =data.targetId
