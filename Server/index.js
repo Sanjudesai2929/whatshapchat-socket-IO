@@ -20,15 +20,18 @@ app.use(cors())
 app.use("/", router)
 //login router
 app.use("/", loginRouter)
-var connectUser = {
-}
+const connectedUser = new Set();
+
 io.on("connection", async (client) => {
     // console.log(client);
     console.log("connected");
     io.emit('connected-user', "hello");
-    const data = await user.insertMany({ user_id: client.id })
-    connectUser[client.id] = client
+    io.on('connected-user', (data) => {
+        console.log(data);
+    });
 
+    const data = await user.insertMany({ user_id: client.id })
+    connectedUser.add(client.id);
     client.on("message", async (data) => {
         console.log(data);
 
@@ -36,8 +39,25 @@ io.on("connection", async (client) => {
         const viewMsg = await Message.find({ sentBy: data.sentBy })
 
         // console.log("viewMsg", viewMsg);
-        client.emit("message-receive", data)
+        client.broadcast.emit("message-receive", data)
     });
+    client.on('keyboard', function name(data) {
+        console.log(data);
+        client.broadcast.emit('keyboard', data);
+    })
+
+    //listens when a user is disconnected from the server
+    client.on('disconnect', function () {
+        console.log('Disconnected...', client.id);
+        connectedUser.delete(client.id);
+        io.emit('connected-user', connectUser.size);
+    })
+
+    //listens when there's an error detected and logs the error on the console
+    client.on('error', function (err) {
+        console.log('Error detected', client.id);
+        console.log(err);
+    })
 })
 
 server.listen(port, () => {
