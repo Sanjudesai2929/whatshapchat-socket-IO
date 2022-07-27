@@ -6,12 +6,16 @@ const MsgSchema=new mongoose.Schema({
     sentBy:{
         type:"string",
         require:true
-
     },
     targetId:{
         type:"string",
         require:true
-
+    },
+    date:{
+        type:"string",
+    },
+    time:{
+        type:"string",
     }
 })
 

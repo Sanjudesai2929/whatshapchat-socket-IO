@@ -25,18 +25,18 @@ const connectedUser = new Set();
 io.on("connection", async (client) => {
     // console.log(client);
     console.log("connected");
-    
-    client.on('connected-user', async(data) => {
+
+    client.on('connected-user', async (data) => {
         const viewMsg = await Message.find({ targetId: data })
-        io.emit('connected-user', viewMsg);   
+        io.emit('connected-user', viewMsg);
     });
     const data = await user.insertMany({ user_id: client.id })
     connectedUser.add(client.id);
     client.on("message", async (data) => {
         console.log(data);
-        const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy, targetId: data.targetId })
+        const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy, targetId: data.targetId, date: data.date, time: data.time })
         const viewMsg = await Message.find({ sentBy: data.sentBy })
-        // console.log("viewMsg", viewMsg);
+        // console.log("viewMsg", viewMsg); 
         client.broadcast.emit("message-receive", data)
     });
     client.on('keyboard', function name(data) {
