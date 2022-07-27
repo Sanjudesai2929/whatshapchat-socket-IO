@@ -25,7 +25,7 @@ const connectedUser = new Set();
 io.on("connection", async (client) => {
     // console.log(client);
     console.log("connected");
-    io.emit('connected-user', "hello");
+    // io.emit('connected-user', "hello");
     io.on('connected-user', (data) => {
         console.log(data);
     });
