@@ -26,9 +26,9 @@ io.on("connection", async (client) => {
     // console.log(client);
     console.log("connected");
     io.emit('connected-user', "hello");
-    // io.on('connected-user', (data) => {
-    //     console.log(data);
-    // });
+    io.on('connected-user', (data) => {
+        console.log(data);
+    });
     const data = await user.insertMany({ user_id: client.id })
     connectedUser.add(client.id);
     client.on("message", async (data) => {
@@ -37,6 +37,7 @@ io.on("connection", async (client) => {
         const viewMsg = await Message.find({ sentBy: data.sentBy })
         // console.log("viewMsg", viewMsg);
         client.broadcast.emit("message-receive", data)
+  
     });
     client.on('keyboard', function name(data) {
         console.log(data);
