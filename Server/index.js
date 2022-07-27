@@ -24,7 +24,7 @@ var connectUser = {
 }
 io.on("connection", async (client) => {
 
-    io.emit('connection', connectUser.size);
+    // io.emit('connection', connectUser.size);
     const data = await user.insertMany({ user_id: client.id })
     connectUser[client.id] = client
 
