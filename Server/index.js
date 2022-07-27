@@ -23,7 +23,7 @@ app.use("/", loginRouter)
 var connectUser = {
 }
 io.on("connection", async (client) => {
-
+  console.log(client);
     // io.emit('connection', connectUser.size);
     const data = await user.insertMany({ user_id: client.id })
     connectUser[client.id] = client
