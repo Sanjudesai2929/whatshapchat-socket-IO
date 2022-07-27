@@ -35,7 +35,7 @@ io.on("connection", async (client) => {
         const viewMsg = await Message.findOne({sentBy:data.sentBy})
 
       
-        client.emit("message", viewMsg)
+        client.emit("message-receive", viewMsg)
     });
 })
 
