@@ -30,7 +30,7 @@ io.on("connection", async (client) => {
  
     client.on("message", async (data) => {
         console.log(data);
-        let id =data.targetId
+       
         const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy,targetId:data.targetId })
         connectUser[targetId].emit("message",{socketId:client.id})
     });
