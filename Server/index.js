@@ -32,12 +32,13 @@ io.on("connection", async (client) => {
     });
     const data = await user.insertMany({ user_id: client.id })
     connectedUser.add(client.id);
+    //listen when user is send the message
     client.on("message", async (data) => {
         console.log(data);
         const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy, targetId: data.targetId, date: data.date, time: data.time })
         const viewMsg = await Message.find({ sentBy: data.sentBy })
         // console.log("viewMsg", viewMsg); 
-        client.broadcast.emit("message-receive", data)
+        client.emit("message-receive", data)
     });
     client.on('keyboard', function name(data) {
         console.log(data);
