@@ -23,7 +23,7 @@ app.use("/", loginRouter)
 var connectUser = {
 }
 io.on("connection", async (client) => {
-    console.log(client);
+    // console.log(client);
     io.on('connected-user', (data) => {
         console.log("connect-user", data);
     });
