@@ -29,15 +29,12 @@ io.on("connection", async (client) => {
     io.on('connected-user', (data) => {
         console.log(data);
     });
-
     const data = await user.insertMany({ user_id: client.id })
     connectedUser.add(client.id);
     client.on("message", async (data) => {
         console.log(data);
-
         const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy, targetId: data.targetId })
         const viewMsg = await Message.find({ sentBy: data.sentBy })
-
         // console.log("viewMsg", viewMsg);
         client.broadcast.emit("message-receive", data)
     });
@@ -45,14 +42,12 @@ io.on("connection", async (client) => {
         console.log(data);
         client.broadcast.emit('keyboard', data);
     })
-
     //listens when a user is disconnected from the server
     client.on('disconnect', function () {
         console.log('Disconnected...', client.id);
         connectedUser.delete(client.id);
-        io.emit('connected-user', connectUser.size);
+        io.emit('connected-user', connectedUser.size);
     })
-
     //listens when there's an error detected and logs the error on the console
     client.on('error', function (err) {
         console.log('Error detected', client.id);
