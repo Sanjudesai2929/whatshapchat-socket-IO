@@ -25,10 +25,10 @@ const connectedUser = new Set();
 io.on("connection", async (client) => {
     // console.log(client);
     console.log("connected");
-    // io.emit('connected-user', "hello");
-    io.on('connected-user', (data) => {
-        console.log(data);
-    });
+    io.emit('connected-user', "hello");
+    // io.on('connected-user', (data) => {
+    //     console.log(data);
+    // });
     const data = await user.insertMany({ user_id: client.id })
     connectedUser.add(client.id);
     client.on("message", async (data) => {
@@ -46,7 +46,7 @@ io.on("connection", async (client) => {
     client.on('disconnect', function () {
         console.log('Disconnected...', client.id);
         connectedUser.delete(client.id);
-        io.emit('connected-user', connectedUser.size);
+        // io.emit('connected-user', connectedUser.size);
     })
     //listens when there's an error detected and logs the error on the console
     client.on('error', function (err) {
