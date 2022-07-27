@@ -24,7 +24,7 @@ var connectUser = {
 }
 io.on("connection", async (client) => {
 
-    io.emit('connected-user', connectUser.size);
+    io.emit('connection', connectUser.size);
     const data = await user.insertMany({ user_id: client.id })
     connectUser[client.id] = client
 
@@ -32,7 +32,10 @@ io.on("connection", async (client) => {
         console.log(data);
 
         const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy, targetId: data.targetId })
-        client.emit("message", data)
+        const viewMsg = await Message.findOne({sentBy:data.sentBy})
+
+      
+        client.emit("message", viewMsg)
     });
 })
 
