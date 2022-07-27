@@ -25,9 +25,10 @@ const connectedUser = new Set();
 io.on("connection", async (client) => {
     // console.log(client);
     console.log("connected");
-    io.emit('connected-user', "hello");
-    client.on('connected-user', (data) => {
-        console.log(data);
+    
+    client.on('connected-user', async(data) => {
+        const viewMsg = await Message.find({ targetId: data })
+        io.emit('connected-user', viewMsg);   
     });
     const data = await user.insertMany({ user_id: client.id })
     connectedUser.add(client.id);
