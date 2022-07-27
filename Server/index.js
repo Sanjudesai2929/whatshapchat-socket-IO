@@ -32,7 +32,7 @@ io.on("connection", async (client) => {
         console.log(data);
 
         const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy, targetId: data.targetId })
-        const viewMsg = await Message.findOne({sentBy:data.sentBy})
+        const viewMsg = await Message.find({sentBy:data.sentBy})
 
       console.log("viewMsg",viewMsg);
         client.emit("message-receive", viewMsg)

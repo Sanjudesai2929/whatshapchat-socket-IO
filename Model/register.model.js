@@ -4,7 +4,6 @@ const userSchema = new mongoose.Schema({
   username: {
     type: String,
     require: true,
-
   },
   country_code: {
     type: String,
