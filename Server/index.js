@@ -38,7 +38,7 @@ io.on("connection", async (client) => {
         const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy, targetId: data.targetId, date: data.date, time: data.time })
         const viewMsg = await Message.find({ sentBy: data.sentBy })
         // console.log("viewMsg", viewMsg); 
-        client.emit("message-receive", msg)
+        client.broadcast.emit("message-receive", msg)
     });
     client.on('keyboard', function name(data) {
         console.log(data);
