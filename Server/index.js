@@ -27,19 +27,19 @@ io.on("connection", async (client) => {
    
     const data = await user.insertMany({ user_id: client.id })
         connectUser[client.id] = client
-        
+            
     // client.on("signin", (id) => {
     //     connectUser[id] = client
     // })
-    client.on("message", async (data) => {
-        console.log(data);
-        let id =data.targetId
-        const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy,targetId:data.targetId })
-        connectUser[targetId].emit("message",{socketId:client.id})
-    });
 })
+io.on("message", async (data) => {
+    console.log(data);
+    let id =data.targetId
+    const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy,targetId:data.targetId })
+    connectUser[targetId].emit("message",{socketId:client.id})
+});
 
-server.listen(port, () => {
+server.listen(port, () => { 
     console.log("server started");
 })
 
