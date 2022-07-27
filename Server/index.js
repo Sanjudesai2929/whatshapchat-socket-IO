@@ -26,9 +26,9 @@ io.on("connection", async (client) => {
     // console.log(client);
     console.log("connected");
     io.emit('connected-user', "hello");
-    // io.on('connected-user', (data) => {
-    //     console.log(data);
-    // });
+    client.on('connected-user', (data) => {
+        console.log(data);
+    });
     const data = await user.insertMany({ user_id: client.id })
     connectedUser.add(client.id);
     client.on("message", async (data) => {
