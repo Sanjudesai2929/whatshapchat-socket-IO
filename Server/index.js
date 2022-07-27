@@ -23,9 +23,9 @@ app.use("/", loginRouter)
 var connectUser = {
 }
 io.on("connection", async (client) => {
-  console.log(client);
-    io.on('connected-user', (data)=>{
-  console.log("connect-user",data);
+    console.log(client);
+    io.on('connected-user', (data) => {
+        console.log("connect-user", data);
     });
     const data = await user.insertMany({ user_id: client.id })
     connectUser[client.id] = client
@@ -34,13 +34,13 @@ io.on("connection", async (client) => {
         console.log(data);
 
         const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy, targetId: data.targetId })
-        const viewMsg = await Message.find({sentBy:data.sentBy})
+        const viewMsg = await Message.find({ sentBy: data.sentBy })
 
-      console.log("viewMsg",viewMsg);
-        client.emit("message-receive", viewMsg)
+        // console.log("viewMsg", viewMsg);
+        client.emit("message-receive", data)
     });
 })
- 
+
 server.listen(port, () => {
     console.log("server started");
 })
