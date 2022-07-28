@@ -31,8 +31,8 @@ io.on("connection", async (client) => {
         console.log("connected user is ",data.current_user);
         const connectMsg = await Message.find({$and:[{targetId: data.connected_user,sentBy:data.current_user}]  })
         const currentMsg = await Message.find({$and:[{targetId: data.current_user,sentBy:data.connected_user}]  })
-
-        io.emit('connected-user', [connectMsg,currentMsg]);
+        const viewMsg=connectMsg.push(currentMsg)
+        io.emit('connected-user',viewMsg );
     });
 
 
