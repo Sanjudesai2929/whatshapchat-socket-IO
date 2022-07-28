@@ -21,22 +21,25 @@ app.use("/", router)
 //login router
 app.use("/", loginRouter)
 const connectedUser = new Set();
-
+const groupUser={}
 io.on("connection", async (client) => {
     // console.log(client);
     console.log("connected");
 
     client.on('connected-user', async (data) => {
+        console.log("connected user is ",data);
         const viewMsg = await Message.find({ targetId: data })
         io.emit('connected-user', viewMsg);
     });
+    client.on("current-user",(data)=>{
+        console.log("current user is",data);
+    })
     const data = await user.insertMany({ user_id: client.id })
-    connectedUser.add(client.id);
+    connectedUser.add(client.id);   
     //listen when user is send the message
     client.on("message", async (data) => {
         console.log(data);
         const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy, targetId: data.targetId, date: data.date, time: data.time })
-        const viewMsg = await Message.find({ sentBy: data.sentBy })
         // console.log("viewMsg", viewMsg); 
         client.emit("message-receive", msg)
     });
@@ -55,6 +58,19 @@ io.on("connection", async (client) => {
         console.log('Error detected', client.id);
         console.log(err);
     })
+    // client.on('username', function(username) {
+    //     groupUser.username=username
+    //     io.emit('is_online', '🔵 <i>' + username + ' join the chat..</i>');
+    // });
+
+    // client.on('disconnect-user', function(username) {
+    //     delete groupUser[username]
+    //     io.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
+    // })
+
+    // client.on('chat_message', function(user) {
+    //     io.emit('chat_message', '<strong>' + user.username + '</strong>: ' + user.message);
+    // });
 })
 
 server.listen(port, () => {
