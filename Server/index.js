@@ -59,7 +59,7 @@ io.on("connection", async (client) => {
         console.log(err);
     })
     client.on("create-room",(data)=>{
-        console.log(data.id ,"room is created");
+        console.log(data ,"room is created");
     })
     client.on('username', function(username) {
         groupUser.username=username
