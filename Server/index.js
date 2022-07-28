@@ -30,10 +30,10 @@ io.on("connection", async (client) => {
         console.log("connected user is ",data);
         const viewMsg = await Message.find({ targetId: data })
         io.emit('connected-user', viewMsg);
+        client.on("current-user",(data)=>{
+            console.log("current user is",data);
+        })
     });
-    client.on("current-user",(data)=>{
-        console.log("current user is",data);
-    })
     const data = await user.insertMany({ user_id: client.id })
     connectedUser.add(client.id);   
     //listen when user is send the message
