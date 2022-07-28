@@ -58,19 +58,29 @@ io.on("connection", async (client) => {
         console.log('Error detected', client.id);
         console.log(err);
     })
-    // client.on('username', function(username) {
-    //     groupUser.username=username
-    //     io.emit('is_online', '🔵 <i>' + username + ' join the chat..</i>');
-    // });
+    client.on("create-room",(data)=>{
+        console.log(data.id ,"room is created");
+    })
+    client.on('username', function(username) {
+        groupUser.username=username
+        io.emit('is_online', '🔵 <i>' + username + ' join the chat..</i>');
+    });
 
-    // client.on('disconnect-user', function(username) {
-    //     delete groupUser[username]
-    //     io.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
-    // })
+    client.on('disconnect-user', function(username) {
+        delete groupUser[username]
+        io.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
+    })
 
-    // client.on('chat_message', function(user) {
-    //     io.emit('chat_message', '<strong>' + user.username + '</strong>: ' + user.message);
-    // });
+    client.on('chat_message', function(user) {
+        io.emit('chat_message', '<strong>' + user.username + '</strong>: ' + user.message);
+    });
+    // io.of("/").adapter.on("create-room", (room) => {
+    //     console.log(`room ${room} was created`);
+    //   });
+      
+    //   io.of("/").adapter.on("join-room", (room, id) => {
+    //     console.log(`socket ${id} has joined room ${room}`);
+    //   });
 })
 
 server.listen(port, () => {
