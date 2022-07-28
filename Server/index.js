@@ -22,16 +22,18 @@ app.use("/", router)
 app.use("/", loginRouter)
 const connectedUser = new Set();
 const groupUser={}
+const current=""
 io.on("connection", async (client) => {
     // console.log(client);
     console.log("connected");
 
-    client.on('connected-user', async (data) => {
-        console.log("connected user is ",data);
-        const viewMsg = await Message.find({ targetId: data })
-        client.on("current-user",(data)=>{
-            console.log("current user is",data);
+    client.on('connected-user', async (connect) => {
+        console.log("connected user is ",connect);
+        client.on("current-user",(data )=>{
+            current = data
+            console.log("current user is",current);
         })
+        const viewMsg = await Message.find({ targetId: data ,sentBy:current})
         io.emit('connected-user', viewMsg);
     });
     const data = await user.insertMany({ user_id: client.id })
