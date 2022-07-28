@@ -27,13 +27,13 @@ io.on("connection", async (client) => {
     console.log("connected");
 
     client.on('connected-user', async (data) => {
-        console.log("connected user is ",data.connected-user);
-        console.log("connected user is ",data.current-user);
-        const viewMsg = await Message.find({$and:[{targetId: data.connected-user,sentBy:data.current-user}]  })
+        console.log("connected user is ",data.connected_user);
+        console.log("connected user is ",data.current_user);
+        const viewMsg = await Message.find({$and:[{targetId: data.connected_user,sentBy:data.current_user}]  })
         io.emit('connected-user', viewMsg);
     });
 
- 
+
     const data = await user.insertMany({ user_id: client.id })
     connectedUser.add(client.id);   
     //listen when user is send the message
