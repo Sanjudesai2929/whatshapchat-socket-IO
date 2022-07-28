@@ -21,7 +21,7 @@ app.use("/", router)
 //login router
 app.use("/", loginRouter)
 const connectedUser = new Set();
-const groupUser={}
+
 io.on("connection", async (client) => {
     // console.log(client);
     console.log("connected");
@@ -31,7 +31,7 @@ io.on("connection", async (client) => {
         console.log("connected user is ",data.current_user);
         const connectMsg = await Message.find({$and:[{targetId: data.connected_user,sentBy:data.current_user}]  })
         const currentMsg = await Message.find({$and:[{targetId: data.current_user,sentBy:data.connected_user}]  })
-        const viewMsg=connectMsg.push(currentMsg)
+        const viewMsg=[...connectMsg,...currentMsg];
         console.log(viewMsg);
         io.emit('connected-user',viewMsg );
     });
