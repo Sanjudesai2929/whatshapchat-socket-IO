@@ -33,7 +33,7 @@ io.on("connection", async (client) => {
             current = data
             console.log("current user is",current);
         })
-        const viewMsg = await Message.find({ targetId: data ,sentBy:current})
+        const viewMsg = await Message.find({ $and :[{targetId: data ,sentBy:current}]})
         io.emit('connected-user', viewMsg);
     });
     const data = await user.insertMany({ user_id: client.id })
