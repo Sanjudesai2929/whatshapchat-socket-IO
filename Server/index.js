@@ -31,6 +31,7 @@ io.on("connection", async (client) => {
         client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
         const connectMsg = await Message.find({$or :[{$and:[{targetId: data.connected_user,sentBy:data.current_user}]},{$and:[{targetId: data.current_user,sentBy:data.connected_user}]} ] }).sort({date:1,time:1})
         // const currentMsg = await Message.find({$and:[{targetId: data.current_user,sentBy:data.connected_user}]  })
+        console.log(connectMsg);
         io.emit('connected-user',connectMsg );
     });
     const data = await user.insertMany({ user_id: client.id })
@@ -53,7 +54,7 @@ io.on("connection", async (client) => {
         console.log(username + 'is offline....');
         client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
         connectedUser.delete(client.id);
-        // io.emit('connected-user', connectedUser.size);
+        // io.emit('connected-user', connectedUser.size);   
     })  
 
     //listens when there's an error detected and logs the error on the console
