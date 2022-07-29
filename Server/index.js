@@ -45,7 +45,7 @@ io.on("connection", async (client) => {
     });
     client.on('keyboard', function name(data) {
         console.log(data);
-        client.broadcast.emit('keyboard', data);
+        client.broadcast.emit('keyboard_status', data);
     })
     //listens when a user is disconnected from the server
     client.on('disconnect', function (username) {
@@ -63,7 +63,7 @@ io.on("connection", async (client) => {
     })
     client.on("create-room",(data)=>{
         console.log(data ,"room is created");
-    })
+    })  
     // client.on('username', function(username) {
     //     groupUser.username=username
     // });
