@@ -51,9 +51,9 @@ io.on("connection", async (client) => {
         client.broadcast.emit('keyboard', data);
     })
     //listens when a user is disconnected from the server
-    client.on('disconnect', function () {
-        console.log('Disconnected...', client.id);
-        // client.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
+    client.on('disconnect', function (username) {
+        console.log('Disconnected...', username);
+        client.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
         connectedUser.delete(client.id);
         // io.emit('connected-user', connectedUser.size);
     })
