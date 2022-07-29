@@ -29,7 +29,7 @@ io.on("connection", async (client) => {
         console.log("connected user is ",data.connected_user);
         console.log("connected user is ",data.current_user);
         client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
-        const connectMsg = await Message.find({$or :[{$and:[{targetId: data.connected_user,sentBy:data.current_user}]},{$and:[{targetId: data.current_user,sentBy:data.connected_user}]} ] }).sort({date:1,time:1})
+        const connectMsg = await Message.find({$or :[{$and:[{targetId: data.connected_user,sentBy:data.current_user}]},{$and:[{targetId: data.current_user,sentBy:data.connected_user}]} ] }).sort({date:1})
         // const currentMsg = await Message.find({$and:[{targetId: data.current_user,sentBy:data.connected_user}]  })
         console.log(connectMsg);
         io.emit('connected-user',connectMsg );
@@ -40,7 +40,7 @@ io.on("connection", async (client) => {
     //listen when user is send the message
     client.on("message", async (data) => {
         console.log(data);
-        const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy, targetId: data.targetId, date: data.date, time: data.time })
+        const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy, targetId: data.targetId, date: data.date })
         // console.log("viewMsg", viewMsg); 
         client.broadcast.emit("message-receive", msg)
     });
