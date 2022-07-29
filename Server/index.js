@@ -25,7 +25,6 @@ const connectedUser = new Set();
 io.on("connection", async (client) => {
     // console.log(client);
     console.log("connected");
-
     client.on('connected-user', async (data) => {
         console.log("connected user is ",data.connected_user);
         console.log("connected user is ",data.current_user);
@@ -43,6 +42,8 @@ io.on("connection", async (client) => {
         // console.log("viewMsg", viewMsg); 
         client.emit("message-receive", msg)
     });
+
+    
     client.on('keyboard', function name(data) {
         console.log(data);
         client.broadcast.emit('keyboard', data);
@@ -53,6 +54,7 @@ io.on("connection", async (client) => {
         connectedUser.delete(client.id);
         // io.emit('connected-user', connectedUser.size);
     })
+
     //listens when there's an error detected and logs the error on the console
     client.on('error', function (err) {
         console.log('Error detected', client.id);
@@ -63,16 +65,14 @@ io.on("connection", async (client) => {
     })
     client.on('username', function(username) {
         groupUser.username=username
-        io.emit('is_online', '🔵 <i>' + username + ' join the chat..</i>');
+        client.emit('is_online', '🔵 <i>' + username + ' join the chat..</i>');
     });
-
     client.on('disconnect-user', function(username) {
         delete groupUser[username]
-        io.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
+        client.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
     })
-
     client.on('chat_message', function(user) {
-        io.emit('chat_message', '<strong>' + user.username + '</strong>: ' + user.message);
+        client.emit('chat_message', '<strong>' + user.username + '</strong>: ' + user.message);
     });
     // io.of("/").adapter.on("create-room", (room) => {
     //     console.log(`room ${room} was created`);
@@ -82,7 +82,6 @@ io.on("connection", async (client) => {
     //     console.log(`socket ${id} has joined room ${room}`);
     //   });
 })
-
 server.listen(port, () => {
     console.log("server started");
 })
