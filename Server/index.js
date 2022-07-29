@@ -40,7 +40,7 @@ io.on("connection", async (client) => {
     //listen when user is send the message
     client.on("message", async (data) => {
         console.log(data);
-        const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy, targetId: data.targetId, date: data.date, time: data.time })
+        const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy, targetId: data.targetId, date: new Date(), time: data.time })
         // console.log("viewMsg", viewMsg); 
         client.broadcast.emit("message-receive", msg)
     });
