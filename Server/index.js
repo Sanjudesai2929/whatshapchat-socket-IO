@@ -29,10 +29,8 @@ io.on("connection", async (client) => {
         console.log("connected user is ",data.connected_user);
         console.log("connected user is ",data.current_user);
         client.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
-
         const connectMsg = await Message.find({$or :[{$and:[{targetId: data.connected_user,sentBy:data.current_user}]},{$and:[{targetId: data.current_user,sentBy:data.connected_user}]} ] }).sort({date:1,time:1})
         // const currentMsg = await Message.find({$and:[{targetId: data.current_user,sentBy:data.connected_user}]  })
-     
         io.emit('connected-user',connectMsg );
     });
     const data = await user.insertMany({ user_id: client.id })
@@ -43,9 +41,8 @@ io.on("connection", async (client) => {
         console.log(data);
         const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy, targetId: data.targetId, date: data.date, time: data.time })
         // console.log("viewMsg", viewMsg); 
-        client.emit("message-receive", msg)
+        client.broadcast.emit("message-receive", msg)
     });
-
     client.on('keyboard', function name(data) {
         console.log(data);
         client.broadcast.emit('keyboard', data);
@@ -57,7 +54,7 @@ io.on("connection", async (client) => {
         client.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
         connectedUser.delete(client.id);
         // io.emit('connected-user', connectedUser.size);
-    })
+    })  
 
     //listens when there's an error detected and logs the error on the console
     client.on('error', function (err) {
