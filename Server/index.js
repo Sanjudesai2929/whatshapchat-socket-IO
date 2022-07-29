@@ -42,7 +42,7 @@ io.on("connection", async (client) => {
         console.log(data);
 
         const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy, targetId: data.targetId, date: new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Kolkata'
+            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }), time: data.time })
         // console.log("viewMsg", viewMsg); 
         client.broadcast.emit("message-receive", msg)
@@ -81,6 +81,7 @@ io.on("connection", async (client) => {
 })
 server.listen(port, () => {
     console.log("server started");
+
 })
 
 
