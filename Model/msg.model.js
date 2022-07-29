@@ -14,7 +14,9 @@ const MsgSchema=new mongoose.Schema({
     date:{
         type:"string",
     },
- 
+    time:{
+        type:"string",
+    }
 })
 
 const Message = new  mongoose.model("message",MsgSchema)
