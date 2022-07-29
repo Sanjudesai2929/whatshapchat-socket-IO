@@ -37,6 +37,7 @@ io.on("connection", async (client) => {
     });
     const data = await user.insertMany({ user_id: client.id })
     connectedUser.add(client.id);   
+
     //listen when user is send the message
     client.on("message", async (data) => {
         console.log(data);
@@ -45,14 +46,15 @@ io.on("connection", async (client) => {
         client.emit("message-receive", msg)
     });
 
-    
     client.on('keyboard', function name(data) {
         console.log(data);
         client.broadcast.emit('keyboard', data);
     })
     //listens when a user is disconnected from the server
     client.on('disconnect', function (username) {
-        console.log('Disconnected...', username);
+        // console.log('Disconnected...', username);
+        console.log(username + 'is offline....');
+
         client.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
         connectedUser.delete(client.id);
         // io.emit('connected-user', connectedUser.size);
@@ -76,8 +78,6 @@ io.on("connection", async (client) => {
     client.on('chat_message', function(user) {
         client.emit('chat_message', '<strong>' + user.username + '</strong>: ' + user.message);
     });
- 
-
 })
 server.listen(port, () => {
     console.log("server started");
