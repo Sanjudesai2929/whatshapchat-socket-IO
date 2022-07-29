@@ -32,7 +32,7 @@ io.on("connection", async (client) => {
 
         const connectMsg = await Message.find({$or :[{$and:[{targetId: data.connected_user,sentBy:data.current_user}]},{$and:[{targetId: data.current_user,sentBy:data.connected_user}]} ] }).sort({date:1,time:1})
         // const currentMsg = await Message.find({$and:[{targetId: data.current_user,sentBy:data.connected_user}]  })
-       console.log(connectMsg);
+     
         io.emit('connected-user',connectMsg );
     });
     const data = await user.insertMany({ user_id: client.id })
@@ -54,7 +54,6 @@ io.on("connection", async (client) => {
     client.on('disconnect', function (username) {
         // console.log('Disconnected...', username);
         console.log(username + 'is offline....');
-
         client.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
         connectedUser.delete(client.id);
         // io.emit('connected-user', connectedUser.size);
