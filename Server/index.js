@@ -28,6 +28,8 @@ io.on("connection", async (client) => {
     client.on('connected-user', async (data) => {
         console.log("connected user is ",data.connected_user);
         console.log("connected user is ",data.current_user);
+        client.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
+
         const connectMsg = await Message.find({$or :[{$and:[{targetId: data.connected_user,sentBy:data.current_user}]},{$and:[{targetId: data.current_user,sentBy:data.connected_user}]} ] }).sort({date:1,time:1})
         // const currentMsg = await Message.find({$and:[{targetId: data.current_user,sentBy:data.connected_user}]  })
        console.log(connectMsg);
@@ -51,6 +53,7 @@ io.on("connection", async (client) => {
     //listens when a user is disconnected from the server
     client.on('disconnect', function () {
         console.log('Disconnected...', client.id);
+        // client.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
         connectedUser.delete(client.id);
         // io.emit('connected-user', connectedUser.size);
     })
@@ -63,24 +66,18 @@ io.on("connection", async (client) => {
     client.on("create-room",(data)=>{
         console.log(data ,"room is created");
     })
-    client.on('username', function(username) {
-        groupUser.username=username
-        client.emit('is_online', '🔵 <i>' + username + ' join the chat..</i>');
-    });
-    client.on('disconnect-user', function(username) {
-        delete groupUser[username]
-        client.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
-    })
+    // client.on('username', function(username) {
+    //     groupUser.username=username
+    // });
+    // client.on('disconnect-user', function(username) {
+    //     delete groupUser[username]
+    //     client.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
+    // })
     client.on('chat_message', function(user) {
         client.emit('chat_message', '<strong>' + user.username + '</strong>: ' + user.message);
     });
-    // io.of("/").adapter.on("create-room", (room) => {
-    //     console.log(`room ${room} was created`);
-    //   });
-      
-    //   io.of("/").adapter.on("join-room", (room, id) => {
-    //     console.log(`socket ${id} has joined room ${room}`);
-    //   });
+ 
+
 })
 server.listen(port, () => {
     console.log("server started");
