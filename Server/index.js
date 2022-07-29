@@ -40,7 +40,8 @@ io.on("connection", async (client) => {
     //listen when user is send the message
     client.on("message", async (data) => {
         console.log(data);
-        const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy, targetId: data.targetId, date: new Date.toLocaleString('en-US', {
+
+        const msg = await Message.insertMany({ message: data.message, sentBy: data.sentBy, targetId: data.targetId, date: new Date().toLocaleString('en-US', {
             timeZone: 'Asia/Kolkata'
             }), time: data.time })
         // console.log("viewMsg", viewMsg); 
