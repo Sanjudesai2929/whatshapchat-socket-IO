@@ -37,8 +37,10 @@ io.on("connection", async (client) => {
     const data = await user.insertMany({ user_id: client.id })
     connectedUser.add(client.id);
     //Get the user list data
-    const userList = await Register.find().select({ "username": 1, "_id": 1 })  
-    client.emit("user-list", userList)
+    const userList = await Register.find().select({ "username": 1, "_id": 1 })
+    const GroupList = await Group.find()
+  const list =[...userList,...GroupList];
+    client.emit("user-list", list)
     //listen when user is send the message
     client.on("message", async (data) => {
         console.log(data);
@@ -46,7 +48,7 @@ io.on("connection", async (client) => {
             message: data.message, sentBy: data.sentBy, targetId: data.targetId, date: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }), time: data.time
-        })    
+        })
         client.broadcast.emit("message-receive", msg)
     });
     client.on('keyboard', function name(data) {
@@ -57,15 +59,15 @@ io.on("connection", async (client) => {
     client.on('disconnect', function (username) {
         console.log(username + 'is offline....');
         client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
-        connectedUser.delete(client.id);        
+        connectedUser.delete(client.id);
     })
     //listens when there's an error detected and logs the err  or on the console
     client.on('error', function (err) {
         console.log('Error detected', client.id);
         console.log(err);
     })
-    client.on("create-room", async (data) => {     
-        const groupData = await Group.insertMany({ groupName: data.group_name,userList:data.member_list,adminName:data.group_owner,groupId:data.group_id })
+    client.on("create-room", async (data) => {
+        const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, groupId: data.group_id })
         console.log(groupData);
         io.emit("create-room", groupData)
     })
@@ -80,8 +82,9 @@ io.on("connection", async (client) => {
         client.emit('chat_message', '<strong>' + user.username + '</strong>: ' + user.message);
     });
 })
-server.listen(port, () => {
+server.listen(port, async() => {
     console.log("server started");
+ 
 })
 
 
