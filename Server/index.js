@@ -13,7 +13,7 @@ env.config()
 const port = process.env.PORT
 var server = http.createServer(app)
 require("../db/db.js")
-var io = require('socket.io')(server)
+var io = require('socket.io')()
 //middleware
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -31,7 +31,7 @@ io.on("connection", async (client) => {
         console.log("connected user is ", data.current_user);
         client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
         const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.connected_user, sentBy: data.current_user }] }, { $and: [{ targetId: data.current_user, sentBy: data.connected_user }] }] }).sort({ date: 1 })
-        console.log(connectMsg);
+        // console.log(connectMsg);
         io.emit('connected-user', connectMsg);
     });
     const data = await user.insertMany({ user_id: client.id })
