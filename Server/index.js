@@ -23,7 +23,7 @@ app.use(cors())
 app.use("/", router)
 //login router
 app.use("/", loginRouter)
-app.use("/api", express.static(path.join(__dirname,"../")))
+app.use("/upload", express.static(path.join(__dirname,"../upload")))
 
 const connectedUser = new Set();
 
@@ -74,13 +74,7 @@ io.on("connection", async (client) => {
         console.log(groupData);
         io.emit("create-room", groupData)
     })
-    // client.on('username', function(username) {
-    //     groupUser.username=username
-    // });
-    // client.on('disconnect-user', function(username) {
-    //     delete groupUser[username]
-    //     client.emit('is_online','🔴 <i>' + username + ' left the chat..</i>');
-    // })
+
     client.on('chat_message', function (user) {
         client.emit('chat_message', '<strong>' + user.username + '</strong>: ' + user.message);
     });
