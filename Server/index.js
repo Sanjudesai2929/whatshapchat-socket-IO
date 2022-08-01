@@ -1,6 +1,7 @@
 const express = require('express');
 const http = require("http")
 const app = express();
+const path=require("path")
 const cors = require('cors');
 const env = require("dotenv");
 const user = require("../Model/user.model")
@@ -22,7 +23,7 @@ app.use(cors())
 app.use("/", router)
 //login router
 app.use("/", loginRouter)
-app.use("/", express.static("../"))
+app.use("/api", express.static(path.join(__dirname,"../")))
 
 const connectedUser = new Set();
 
@@ -86,7 +87,7 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async() => {
     console.log("server started");
- 
+  console.log(path.join(__dirname,"../"));
 })
 
 
