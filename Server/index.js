@@ -13,7 +13,7 @@ env.config()
 const port = process.env.PORT
 var server = http.createServer(app)
 require("../db/db.js")
-var io = require('socket.io')()
+var io = require('socket.io')(server)
 //middleware
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -37,7 +37,7 @@ io.on("connection", async (client) => {
     const data = await user.insertMany({ user_id: client.id })
     connectedUser.add(client.id);
     //Get the user list data
-    const userList = await Register.find().select({ "username": 1, "_id": 1 })  
+    // const userList = await Register.find().select({ "username": 1, "_id": 1 })  
     client.emit("user-list", userList)
     //listen when user is send the message
     client.on("message", async (data) => {
