@@ -28,7 +28,7 @@ io.on("connection", async (client) => {
     console.log("connected");
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data.connected_user);
-        console.log("con+nected user is ", data.current_user);
+        console.log("current user is ", data.current_user);
         client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
         const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.connected_user, sentBy: data.current_user }] }, { $and: [{ targetId: data.current_user, sentBy: data.connected_user }] }] }).sort({ date: 1 })
         // console.log(connectMsg);
@@ -53,7 +53,7 @@ io.on("connection", async (client) => {
         console.log(data);
         client.broadcast.emit('keyboard_status', data);
     })
-    //listens when a user is disconnected from the server
+    //listens when a user is disconnected from the server   
     client.on('disconnect', function (username) {
         console.log(username + 'is offline....');
         client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
@@ -65,7 +65,7 @@ io.on("connection", async (client) => {
         console.log(err);
     })
     client.on("create-room", async (data) => {     
-        const groupData = await Group.insertMany({ groupName: data })
+        const groupData = await Group.insertMany({ groupName: data.group_name,userList:data.member_list,adminName:data.group_owner,groupId:data.group_id })
         console.log(groupData);
         io.emit("create-room", groupData)
     })
@@ -74,12 +74,11 @@ io.on("connection", async (client) => {
     // });
     // client.on('disconnect-user', function(username) {
     //     delete groupUser[username]
-    //     client.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
+    //     client.emit('is_online','🔴 <i>' + username + ' left the chat..</i>');
     // })
     client.on('chat_message', function (user) {
         client.emit('chat_message', '<strong>' + user.username + '</strong>: ' + user.message);
     });
-    
 })
 server.listen(port, () => {
     console.log("server started");
