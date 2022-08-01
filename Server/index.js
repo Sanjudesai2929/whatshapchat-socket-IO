@@ -74,7 +74,7 @@ io.on("connection", async (client) => {
         // console.log(data, "room is created");
         const groupData =await Group.insertMany({groupName:data})
         console.log(groupData);
-        io.on("create-room",groupData)
+        io.emit("create-room",groupData)
     })
     // client.on('username', function(username) {
     //     groupUser.username=username
