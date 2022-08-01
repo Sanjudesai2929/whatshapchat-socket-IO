@@ -24,7 +24,7 @@ app.use("/", router)
 app.use("/", loginRouter)
 const connectedUser = new Set();
 
-io.on("connections", async (client) => {
+io.on("connection", async (client) => {
     console.log("connected");
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data.connected_user);
