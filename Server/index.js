@@ -13,7 +13,7 @@ env.config()
 const port = process.env.PORT
 var server = http.createServer(app)
 require("../db/db.js")
-var io = require('socket.io')(server)
+var io = require('socket.io')()
 //middleware
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
