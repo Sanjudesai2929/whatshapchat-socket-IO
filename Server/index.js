@@ -8,6 +8,7 @@ const router = require("../routes/register.routes")
 const loginRouter = require("../routes/login.routes")
 const Message = require("../Model/msg.model")
 const Group = require("../Model/Group.model")
+const Register = require("../Model/register.model")
 env.config()
 const port = process.env.PORT
 var server = http.createServer(app)
@@ -38,7 +39,7 @@ io.on("connection", async (client) => {
     const data = await user.insertMany({ user_id: client.id })
     connectedUser.add(client.id);
     //Get the user list data
-    const userList = await user.find()
+    const userList = await Register.find({_id:1,username:1})
     client.emit("user-list", userList)
     //listen when user is send the message
     client.on("message", async (data) => {
@@ -55,7 +56,6 @@ io.on("connection", async (client) => {
         console.log(data);
         client.broadcast.emit('keyboard_status', data);
     })
-
     //listens when a user is disconnected from the server
     client.on('disconnect', function (username) {
         // console.log('Disconnected...', username);
@@ -64,12 +64,11 @@ io.on("connection", async (client) => {
         connectedUser.delete(client.id);
         // io.emit('connected-user', connectedUser.size);   
     })
-
-    //listens when there's an error detected and logs the error on the console
+   //listens when there's an error detected and logs the error on the console
     client.on('error', function (err) {
         console.log('Error detected', client.id);
         console.log(err);
-    })
+    }) 
     client.on("create-room",async (data) => {
         // console.log(data, "room is created");
         const groupData =await Group.insertMany({groupName:data})
