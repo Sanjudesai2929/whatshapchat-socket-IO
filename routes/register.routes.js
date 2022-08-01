@@ -2,7 +2,6 @@ const register = require("../Model/register.model")
 const express = require("express")
 const router = new express.Router()
 router.post("/register", async (req, res) => {
-
     const { username, password, country_code, email, phone, cpassword } = req.body
     try {
         if (username && password && country_code && email && phone && cpassword) {

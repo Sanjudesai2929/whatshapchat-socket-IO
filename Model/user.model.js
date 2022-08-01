@@ -4,6 +4,5 @@ const Schema=new mongoose.Schema({
         type:"string"
     }
 })
-
 const user = new  mongoose.model("user",Schema)
 module.exports= user
