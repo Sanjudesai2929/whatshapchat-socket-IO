@@ -22,6 +22,8 @@ app.use(cors())
 app.use("/", router)
 //login router
 app.use("/", loginRouter)
+app.use("/", express.static("../"))
+
 const connectedUser = new Set();
 
 io.on("connection", async (client) => {
