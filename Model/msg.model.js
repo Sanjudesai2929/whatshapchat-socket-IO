@@ -1,32 +1,32 @@
 const mongoose = require('mongoose');
 const MsgSchema = new mongoose.Schema({
     message: {
-        type: "string"
+        type: String
     },
     sentByUsername: {
-        type: "string",
+        type: String,
     },
     sentById: {
-        type: "string",
+        type: String,
     },
     msgid: {
-        type: "string",
+        type: String,
     },
     targetId: {
-        type: "string",
+        type: String,
     },
     targetUsername: {
-        type: "string",
+        type: String,
     },
-    date:{
-        type: "string",
+    day:{
+        type: String,
 
     },
-    dateTime: {
+    date: {
         type: Date,
     },
     time: {
-        type: "string",
+        type: String,
     },
 
 },

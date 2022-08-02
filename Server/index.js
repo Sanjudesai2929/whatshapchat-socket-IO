@@ -50,9 +50,9 @@ io.on("connection", async (client) => {
     //listen when user is send the message
     client.on("message", async (data) => {
         const msg = await Message.insertMany({
-            message: data.message, sentByUsername: data.sentByUsername,sentById: data.sentById, targetId: data.targetId,targetUsername: data.targetUsername, msgid: data.msgid,dateTime: new Date().toLocaleString('en-US', {
+            message: data.message, sentByUsername: data.sentByUsername,sentById: data.sentById, targetId: data.targetId,targetUsername: data.targetUsername, msgid: data.msgid,date: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-            }),date:data.date, time: data.time
+            }),day:data.day, time: data.time
         })
         console.log("message is ",msg);
         client.broadcast.emit("message-receive", msg)
@@ -81,7 +81,7 @@ io.on("connection", async (client) => {
         const msg = await GroupMsg.insertMany({
             message: user.message, sentByUsername: user.sentByUsername,sentById: user.sentById, grpid: user.grpid, msgid: user.msgid,date: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-            }),time: user.time
+            }),day:user.day,time: user.time
         })
         console.log("group message is ",msg);
         client.broadcast.emit("grp_message_receive",msg)
