@@ -55,7 +55,7 @@ io.on("connection", async (client) => {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),day:data.day, time: data.time,path:data.path
         })
-        console.log("message is ",msg);
+     
         client.broadcast.emit("message-receive", msg)
     });
     client.on('keyboard', function name(data) {
