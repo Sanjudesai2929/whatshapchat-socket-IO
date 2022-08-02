@@ -79,9 +79,9 @@ io.on("connection", async (client) => {
     })
     client.on('grp_message', async(user) => {
         const msg = await GroupMsg.insertMany({
-            message: data.message, sentBy: data.sentByUsername,sentById: data.sentById, groupId: data.grpid, msgId: data.msgid,date: new Date().toLocaleString('en-US', {
+            message: user.message, sentBy: user.sentByUsername,sentById: user.sentById, groupId: user.grpid, msgId: user.msgid,date: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-            }), time: data.time
+            }), time: user.time
         })
         console.log("group message is ",msg);
         client.broadcast.emit("grp_message_receive",msg)
