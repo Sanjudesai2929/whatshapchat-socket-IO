@@ -11,9 +11,16 @@ const groupMsgSchema=new mongoose.Schema({
         type:String,
         require:true
     },
+    date:{
+        type:Date,
+    },
+    time:{
+        type:String,
+    },
+   
  
 },
 )
 
-const GroupMsg = new  mongoose.model("group",groupMsgSchema)
+const GroupMsg = new  mongoose.model("groupMsg",groupMsgSchema)
 module.exports= GroupMsg

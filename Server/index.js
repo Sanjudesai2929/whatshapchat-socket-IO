@@ -1,7 +1,7 @@
 const express = require('express');
 const http = require("http")
 const app = express();
-const path=require("path")
+const path = require("path")
 const cors = require('cors');
 const env = require("dotenv");
 const user = require("../Model/user.model")
@@ -23,7 +23,7 @@ app.use(cors())
 app.use("/", router)
 //login router
 app.use("/", loginRouter)
-app.use("/upload", express.static(path.join(__dirname,"../upload")))
+app.use("/upload", express.static(path.join(__dirname, "../upload")))
 
 const connectedUser = new Set();
 
@@ -42,7 +42,7 @@ io.on("connection", async (client) => {
     //Get the user list data
     const userList = await Register.find().select({ "username": 1, "_id": 1 })
     const GroupList = await Group.find()
-  const list =[...userList,...GroupList];
+    const list = [...userList, ...GroupList];
     client.emit("user-list", list)
     //listen when user is send the message
     client.on("message", async (data) => {
@@ -78,7 +78,7 @@ io.on("connection", async (client) => {
         client.emit('chat_message', '<strong>' + user.username + '</strong>: ' + user.message);
     });
 })
-server.listen(port, async() => {
+server.listen(port, async () => {
     console.log("server started");
 })
 

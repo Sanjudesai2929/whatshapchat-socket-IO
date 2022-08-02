@@ -14,7 +14,8 @@ console.log(username);
         if (cofirm) {
             res.json({
                 status: true,
-                message: "Logging Successfully"
+                message: "Logging Successfully",
+                data:userData
             })
         }
         else {
