@@ -18,7 +18,6 @@ const groupMsgSchema=new mongoose.Schema({
     date:{
         type:Date,
     },
-    
     time:{
         type:String,
     },
