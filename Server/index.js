@@ -79,6 +79,7 @@ io.on("connection", async (client) => {
     client.on('grp_message', function (user) {
         console.log("group message is ",user);
         // client.emit('chat_message', '<strong>' + user.username + '</strong>: ' + user.message);
+        client.broadcast.emit("grp_message_receive",user)
     });
 })
 server.listen(port, async () => {
