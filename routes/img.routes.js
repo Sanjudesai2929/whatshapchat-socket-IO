@@ -9,7 +9,7 @@ router.post("/addimg", upload.single("file"), (req, res) => {
     res.json({
         status: true,
         message: "Image upload successfully",
-        file: process.env.BASE_URL + file
+        file: process.env.BASE_URL +"/"+ file
     })
 })
 
