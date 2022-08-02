@@ -50,12 +50,12 @@ io.on("connection", async (client) => {
     //listen when user is send the message
     client.on("message", async (data) => {
         console.log("message data ",data);
-        const msg = await Message.insertMany({
+        const msgData = await Message.insertMany({
             message: data.message, sentByUsername: data.sentByUsername,sentById: data.sentById, targetId: data.targetId,targetUsername: data.targetUsername, msgid: data.msgid,date: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),day:data.day, time: data.time,path:data.path
         })    
-        client.broadcast.emit("message-receive", msg)
+        client.broadcast.emit("message-receive", msgData)
     });
     client.on('keyboard', function name(data) {
         console.log(data);
@@ -78,12 +78,12 @@ io.on("connection", async (client) => {
         io.emit("create-room", groupData)
     })
     client.on('grp_message', async(user) => {
+        console.log("group message is ",user);
         const msg = await GroupMsg.insertMany({
             message: user.message, sentByUsername: user.sentByUsername,sentById: user.sentById, grpid: user.grpid, msgid: user.msgid,date: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),day:user.day,time:user.time
         })
-        console.log("group message is ",msg);
         client.broadcast.emit("grp_message_receive",msg)
     });
 })
