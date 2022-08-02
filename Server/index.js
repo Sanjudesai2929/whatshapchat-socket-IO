@@ -11,6 +11,7 @@ const Message = require("../Model/msg.model")
 const Group = require("../Model/Group.model")
 const Register = require("../Model/register.model")
 const imgRouter=require("../routes/img.routes")
+const GroupMsg =require("../Model/GroupMsg.model")
 env.config()
 const port = process.env.PORT
 var server = http.createServer(app)
@@ -48,13 +49,13 @@ io.on("connection", async (client) => {
     client.emit("user-list", list)
     //listen when user is send the message
     client.on("message", async (data) => {
-        console.log("message is ",data);
-        // const msg = await Message.insertMany({
-        //     message: data.message, sentBy: data.sentBy, targetId: data.targetId, date: new Date().toLocaleString('en-US', {
-        //         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-        //     }), time: data.time
-        // })
-        client.broadcast.emit("message-receive", data)
+        const msg = await Message.insertMany({
+            message: data.message, sentBy: data.sentByUsername,sentById: data.sentById, targetId: data.targetId,target: data.targetUsername, msgId: data.msgid,date: new Date().toLocaleString('en-US', {
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            }), time: data.time
+        })
+        console.log("message is ",msg);
+        client.broadcast.emit("message-receive", msg)
     });
     client.on('keyboard', function name(data) {
         console.log(data);
@@ -76,10 +77,14 @@ io.on("connection", async (client) => {
         console.log(groupData);
         io.emit("create-room", groupData)
     })
-    client.on('grp_message', function (user) {
-        console.log("group message is ",user);
-        // client.emit('chat_message', '<strong>' + user.username + '</strong>: ' + user.message);
-        client.broadcast.emit("grp_message_receive",user)
+    client.on('grp_message', async(user) => {
+        const msg = await GroupMsg.insertMany({
+            message: data.message, sentBy: data.sentByUsername,sentById: data.sentById, groupId: data.grpid, msgId: data.msgid,date: new Date().toLocaleString('en-US', {
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            }), time: data.time
+        })
+        console.log("group message is ",msg);
+        client.broadcast.emit("grp_message_receive",msg)
     });
 })
 server.listen(port, async () => {
