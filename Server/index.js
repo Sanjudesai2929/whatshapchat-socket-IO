@@ -48,13 +48,13 @@ io.on("connection", async (client) => {
     client.emit("user-list", list)
     //listen when user is send the message
     client.on("message", async (data) => {
-        console.log(data);
-        const msg = await Message.insertMany({
-            message: data.message, sentBy: data.sentBy, targetId: data.targetId, date: new Date().toLocaleString('en-US', {
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-            }), time: data.time
-        })
-        client.broadcast.emit("message-receive", msg)
+        console.log("message is ",data);
+        // const msg = await Message.insertMany({
+        //     message: data.message, sentBy: data.sentBy, targetId: data.targetId, date: new Date().toLocaleString('en-US', {
+        //         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        //     }), time: data.time
+        // })
+        client.broadcast.emit("message-receive", data)
     });
     client.on('keyboard', function name(data) {
         console.log(data);
@@ -76,8 +76,9 @@ io.on("connection", async (client) => {
         console.log(groupData);
         io.emit("create-room", groupData)
     })
-    client.on('chat_message', function (user) {
-        client.emit('chat_message', '<strong>' + user.username + '</strong>: ' + user.message);
+    client.on('grp_message', function (user) {
+        console.log("group message is ",user);
+        // client.emit('chat_message', '<strong>' + user.username + '</strong>: ' + user.message);
     });
 })
 server.listen(port, async () => {
