@@ -6,6 +6,7 @@ const fs =require("fs")
 const env = require("dotenv")
 env.config()
 router.post("/addimg", upload.single("file"), (req, res) => {
+    console.log(req.body);
     const file = req.file.filename
     // const encoded = req.file.path.buffer.toString('base64')
     // const data =new Buffer(req.file.path).toString("base64")
