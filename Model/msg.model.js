@@ -20,7 +20,6 @@ const MsgSchema = new mongoose.Schema({
     },
     day:{
         type: String,
-
     },
     date: {
         type: Date,
@@ -28,7 +27,6 @@ const MsgSchema = new mongoose.Schema({
     time: {
         type: String,
     },
-
 },
 )
 

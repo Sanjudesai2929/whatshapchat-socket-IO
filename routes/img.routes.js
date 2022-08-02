@@ -16,6 +16,11 @@ router.post("/addimg", upload.single("file"), (req, res) => {
         message: "Image upload successfully",
         file: process.env.BASE_URL +"/upload/"+ file
     })
+    console.log({
+        status: true,
+        message: "Image upload successfully",
+        file: process.env.BASE_URL +"/upload/"+ file
+    });
 })
 
 module.exports = router
