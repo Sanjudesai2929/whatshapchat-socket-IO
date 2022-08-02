@@ -13,7 +13,7 @@ router.post("/addimg" ,(req, res) => {
             return res.status(400).send({ status:false,message: err.message })
         }
         const file = req.file.filename
-        const {sentById,targetId,msgid,date,time} =req.body
+
         console.log("api data ",req.body);
         // const encoded = req.file.path.buffer.toString('base64')
         // const data =new Buffer(req.file.path).toString("base64")
@@ -24,13 +24,9 @@ router.post("/addimg" ,(req, res) => {
             status: true,
             message: "Image upload successfully",
             file: process.env.BASE_URL + "/upload/" + file,
-            data :{
-                sentById:sentById,
-                targetId:targetId,
-                msgid:msgid,
-                date:date,
-                time:time
-            }
+            data :
+               req.body
+            
         })
     })
 })
