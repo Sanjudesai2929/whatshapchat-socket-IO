@@ -1,5 +1,7 @@
+const { ifError } = require('assert');
 const multer =require('multer');
 const path=require("path")
+const maxSize=1024 * 1024 *10
 const storage=multer.diskStorage({
     destination:(req,file,cb)=>{
         cb(null,path.join(__dirname,"../upload"))
@@ -9,6 +11,8 @@ const storage=multer.diskStorage({
     }
 })
 const upload=multer({
-    storage:storage
+    storage:storage,
+    limits: { fileSize: maxSize }
+    
 })
 module.exports = upload
