@@ -23,8 +23,8 @@ router.post("/addimg" ,(req, res) => {
         res.json({
             status: true,
             message: "Image upload successfully",
+            file: process.env.BASE_URL + "/upload/" + file,
             data :{
-                file: process.env.BASE_URL + "/upload/" + file,
                 sentById:sentById,
                 targetId:targetId,
                 msgid:msgid,
