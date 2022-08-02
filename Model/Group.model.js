@@ -11,11 +11,7 @@ const groupSchema=new mongoose.Schema({
         type:String,
         require:true
     },
-    groupId:{
-        type:String,
-    },
-  
-   
+
 },
 )
 

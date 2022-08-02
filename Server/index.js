@@ -70,11 +70,10 @@ io.on("connection", async (client) => {
         console.log(err);
     })
     client.on("create-room", async (data) => {
-        const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, groupId: data.group_id })
+        const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, _id: data.group_id })
         console.log(groupData);
         io.emit("create-room", groupData)
     })
-
     client.on('chat_message', function (user) {
         client.emit('chat_message', '<strong>' + user.username + '</strong>: ' + user.message);
     });
