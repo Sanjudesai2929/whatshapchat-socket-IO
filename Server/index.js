@@ -10,6 +10,7 @@ const loginRouter = require("../routes/login.routes")
 const Message = require("../Model/msg.model")
 const Group = require("../Model/Group.model")
 const Register = require("../Model/register.model")
+const imgRouter=require("../routes/img.routes")
 env.config()
 const port = process.env.PORT
 var server = http.createServer(app)
@@ -23,6 +24,7 @@ app.use(cors())
 app.use("/", router)
 //login router
 app.use("/", loginRouter)
+app.use("/",imgRouter)
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
 
 const connectedUser = new Set();
@@ -70,7 +72,7 @@ io.on("connection", async (client) => {
         console.log(err);
     })
     client.on("create-room", async (data) => {
-        const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, _id: data.group_id })
+        const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner})
         console.log(groupData);
         io.emit("create-room", groupData)
     })
@@ -80,6 +82,7 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
+  
 })
 
 
