@@ -53,7 +53,7 @@ io.on("connection", async (client) => {
         const msg = await Message.insertMany({
             message: data.message, sentByUsername: data.sentByUsername,sentById: data.sentById, targetId: data.targetId,targetUsername: data.targetUsername, msgid: data.msgid,date: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-            }),day:data.day, time: data.time
+            }),day:data.day, time: data.time,path:data.path
         })
         console.log("message is ",msg);
         client.broadcast.emit("message-receive", msg)

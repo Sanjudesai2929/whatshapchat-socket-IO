@@ -18,6 +18,9 @@ const MsgSchema = new mongoose.Schema({
     targetUsername: {
         type: String,
     },
+    path:{
+        type:String
+    },
     day:{
         type: String,
     },
