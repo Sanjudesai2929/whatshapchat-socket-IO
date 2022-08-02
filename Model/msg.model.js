@@ -3,19 +3,19 @@ const MsgSchema = new mongoose.Schema({
     message: {
         type: "string"
     },
-    sentBy: {
+    sentByUsername: {
         type: "string",
     },
     sentById: {
         type: "string",
     },
-    msgId: {
+    msgid: {
         type: "string",
     },
     targetId: {
         type: "string",
     },
-    target: {
+    targetUsername: {
         type: "string",
     },
     date: {

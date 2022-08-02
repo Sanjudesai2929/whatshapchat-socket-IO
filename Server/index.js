@@ -50,7 +50,7 @@ io.on("connection", async (client) => {
     //listen when user is send the message
     client.on("message", async (data) => {
         const msg = await Message.insertMany({
-            message: data.message, sentBy: data.sentByUsername,sentById: data.sentById, targetId: data.targetId,target: data.targetUsername, msgId: data.msgid,date: new Date().toLocaleString('en-US', {
+            message: data.message, sentByUsername: data.sentByUsername,sentById: data.sentById, targetId: data.targetId,targetUsername: data.targetUsername, msgid: data.msgid,date: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }), time: data.time
         })
@@ -79,7 +79,7 @@ io.on("connection", async (client) => {
     })
     client.on('grp_message', async(user) => {
         const msg = await GroupMsg.insertMany({
-            message: user.message, sentBy: user.sentByUsername,sentById: user.sentById, groupId: user.grpid, msgId: user.msgid,date: new Date().toLocaleString('en-US', {
+            message: user.message, sentByUsername: user.sentByUsername,sentById: user.sentById, grpid: user.grpid, msgid: user.msgid,date: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }), time: user.time
         })

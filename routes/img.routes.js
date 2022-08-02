@@ -6,6 +6,8 @@ const env = require("dotenv")
 env.config()
 router.post("/addimg", upload.single("file"), (req, res) => {
     const file = req.file.filename
+    const encoded = req.file.filename.buffer.toString('base64')
+    console.log(encoded);
     res.json({
         status: true,
         message: "Image upload successfully",

@@ -3,13 +3,13 @@ const groupMsgSchema=new mongoose.Schema({
     message:{
         type:String
     },
-    msgId:{
+    msgid:{
         type:String,
     },
-    sentBy:{
+    sentByUsername:{
         type: String,
     },
-    groupId:{
+    grpid:{
         type:String,
     },
     sentById:{
