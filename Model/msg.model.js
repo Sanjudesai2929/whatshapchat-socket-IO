@@ -18,9 +18,7 @@ const MsgSchema = new mongoose.Schema({
     targetUsername: {
         type: String,
     },
-    path:{
-        type:String
-    },
+
     day:{
         type: String,
     },
@@ -33,6 +31,20 @@ const MsgSchema = new mongoose.Schema({
     type:{
         type: String,
         
+    },
+    path:{
+        type:String
+    },
+    filename:{
+        type: String,
+
+    },
+    filesize:{
+        type: String,
+
+    },
+    extension:{
+        type: String,
     }
 },
 )

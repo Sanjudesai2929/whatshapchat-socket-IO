@@ -58,7 +58,7 @@ io.on("connection", async (client) => {
         const msgData = await Message.insertMany({
             message: data.message, sentByUsername: data.sentByUsername,sentById: data.sentById, targetId: data.targetId,targetUsername: data.targetUsername, msgid: data.msgid,date: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-            }),day:data.day, time: data.time,path:data.path,type:data.type
+            }),day:data.day, time: data.time,path:data.path,type:data.type,filename:data.filename,filesize:data.filesize,extension:data.extension
         })    
         client.broadcast.emit("message-receive", msgData)
     });
@@ -90,7 +90,7 @@ io.on("connection", async (client) => {
         const msg = await GroupMsg.insertMany({
             message: user.message, sentByUsername: user.sentByUsername,sentById: user.sentById, grpid: user.grpid, msgid: user.msgid,date: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-            }),day:user.day,time:user.time,type:data.type
+            }),day:user.day,time:user.time,path:user.path,type:user.type,filename:user.filename,filesize:user.filesize,extension:user.extension
         })
         client.broadcast.emit("grp_message_receive",msg)
     });
