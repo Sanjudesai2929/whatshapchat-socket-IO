@@ -86,6 +86,12 @@ io.on("connection", async (client) => {
         })
         client.broadcast.emit("grp_message_receive",msg)
     });
+    client.on('connected-group-user', async (data) => {
+        console.log("connected group user is ", data);
+        const connectMsg = await GroupMsg.find({ grpid:data.grpid}).sort({ date: 1 })
+        // console.log(connectMsg);
+        client.emit('connected-group-user', connectMsg);
+    });
 })
 server.listen(port, async () => {
     console.log("server started");
