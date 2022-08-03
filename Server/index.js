@@ -78,9 +78,10 @@ io.on("connection", async (client) => {
         console.log(err);
     })
     client.on("create-room", async (data) => {
-        const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner})
-        console.log(groupData);
-        io.emit("create-room", groupData)
+        console.log("create room data is",data);
+        // const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner})
+        // console.log(groupData);
+        io.emit("create-room", data)
     })
     client.on('grp_message', async(user) => {
         console.log("group message is ",user);
