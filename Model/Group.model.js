@@ -11,7 +11,13 @@ const groupSchema=new mongoose.Schema({
         type:String,
         require:true
     },
+    memberids:{
+        type:Array,
 
+    },
+    date:{
+        type:Date,
+    }
 },
 )
 
