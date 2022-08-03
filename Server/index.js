@@ -59,7 +59,7 @@ io.on("connection", async (client) => {
             date: new Date().toLocaleDateString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
-            dateTime:new Date().toLocaleString('en-U    S', {
+            dateTime:new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
             day:data.day, 
