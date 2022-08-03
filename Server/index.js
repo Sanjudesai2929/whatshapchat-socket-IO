@@ -98,5 +98,8 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
+//     const date=new Date()
+//     const fullDate=date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate()
+//   await Group.insertMany({ date:fullDate})
 
 })
