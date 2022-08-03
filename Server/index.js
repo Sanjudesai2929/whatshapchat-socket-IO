@@ -80,7 +80,7 @@ io.on("connection", async (client) => {
     client.on("create-room", async (data) => {
         console.log("create room data is",data);
         const date=new Date()
-        const fullDate=date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate()
+        const fullDate=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()
         const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner,memberids:data.memberids,date:fullDate})
         console.log(groupData);
         client.emit("create-room", groupData)
@@ -98,8 +98,5 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-//     const date=new Date()
-//     const fullDate=date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate()
-//   await Group.insertMany({ date:fullDate})
-
+  
 })
