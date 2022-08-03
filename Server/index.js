@@ -30,6 +30,7 @@ app.use("/upload", express.static(path.join(__dirname, "../upload")))
 
 const connectedUser = new Set();
 
+
 io.on("connection", async (client) => {
     console.log("connected");
     client.on('connected-user', async (data) => {
@@ -94,7 +95,6 @@ io.on("connection", async (client) => {
         console.log(groupData);
         client.emit("create-room", groupData)
     })
-    
     client.on('grp_message', async(user) => {
         console.log("group message is ",user);
         const msg = await GroupMsg.insertMany({

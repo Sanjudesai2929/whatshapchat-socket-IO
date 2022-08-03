@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon Server/index.js",
-    "heroku-postbuild" : "mkdir upload" 
+    "start": "nodemon Server/index.js"
   },
   "keywords": [],
   "author": "",
