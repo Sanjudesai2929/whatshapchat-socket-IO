@@ -67,6 +67,7 @@ io.on("connection", async (client) => {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                 hour: '2-digit', minute:'2-digit'
             }),
+            localpath:data.localpath,
             path:data.path,type:data.type,filename:data.filename,filesize:data.filesize,extension:data.extension
         })    
         client.broadcast.emit("message-receive", msgData)
@@ -109,6 +110,7 @@ io.on("connection", async (client) => {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                 hour: '2-digit', minute:'2-digit'
             }),
+            localpath:user.localpath,
             path:user.path,type:user.type,filename:user.filename,filesize:user.filesize,extension:user.extension
         })
         client.broadcast.emit("grp_message_receive",msg)

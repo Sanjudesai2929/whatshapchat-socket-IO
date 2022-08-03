@@ -29,15 +29,16 @@ const groupMsgSchema=new mongoose.Schema({
         type:String,
     },
     type:{
-        type: String,
-        
+        type: String,  
     },
     path:{
         type:String
     },
+    localpath:{
+        type:String
+    },
     filename:{
         type: String,
-
     },
     filesize:{
         type: String,
