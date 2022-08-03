@@ -95,6 +95,7 @@ io.on("connection", async (client) => {
         console.log(groupData);
         client.emit("create-room", groupData)
     })
+    
     client.on('grp_message', async(user) => {
         console.log("group message is ",user);
         const msg = await GroupMsg.insertMany({
