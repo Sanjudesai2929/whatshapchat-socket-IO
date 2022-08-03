@@ -30,7 +30,6 @@ app.use("/upload", express.static(path.join(__dirname, "../upload")))
 
 const connectedUser = new Set();
 
-
 io.on("connection", async (client) => {
     console.log("connected");
     client.on('connected-user', async (data) => {
