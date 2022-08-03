@@ -26,7 +26,7 @@ const MsgSchema = new mongoose.Schema({
         type: Date,
     },
     time: {
-        type: String,
+        type: Date,
     },
     type:{
         type: String,
