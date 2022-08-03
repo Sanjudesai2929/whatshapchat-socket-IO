@@ -82,6 +82,7 @@ io.on("connection", async (client) => {
         client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
         connectedUser.delete(client.id);
     })
+    
     //listens when there's an error detected and logs the err  or on the console
     client.on('error', function (err) {
         console.log('Error detected', client.id);
