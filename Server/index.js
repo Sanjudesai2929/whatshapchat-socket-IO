@@ -59,12 +59,13 @@ io.on("connection", async (client) => {
             date: new Date().toLocaleDateString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
-            dateTime:new Date().toLocaleString('en-US', {
+            dateTime:new Date().toLocaleString('en-U    S', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
             day:data.day, 
             time: new Date().toLocaleTimeString('en-US', {
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                hour: '2-digit', minute:'2-digit'
             }),
             path:data.path,type:data.type,filename:data.filename,filesize:data.filesize,extension:data.extension
         })    
@@ -105,7 +106,8 @@ io.on("connection", async (client) => {
             }),
             day:user.day,
             time: new Date().toLocaleTimeString('en-US', {
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                hour: '2-digit', minute:'2-digit'
             }),
             path:user.path,type:user.type,filename:user.filename,filesize:user.filesize,extension:user.extension
         })

@@ -18,7 +18,6 @@ const MsgSchema = new mongoose.Schema({
     targetUsername: {
         type: String,
     },
-
     day:{
         type: String,
     },
