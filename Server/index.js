@@ -40,6 +40,12 @@ io.on("connection", async (client) => {
         // console.log(connectMsg);
         io.emit('connected-user', connectMsg);
     });
+    client.on('connected-group-user', async (data) => {
+        console.log("connected group user is ", data);
+        const connectMsg = await GroupMsg.find({ grpid:data.grpid}).sort({ date: 1 })
+        // console.log(connectMsg);
+        client.emit('connected-group-user', connectMsg);
+    });
     const data = await user.insertMany({ user_id: client.id })
     connectedUser.add(client.id);
     //Get the user list data
@@ -86,12 +92,7 @@ io.on("connection", async (client) => {
         })
         client.broadcast.emit("grp_message_receive",msg)
     });
-    client.on('connected-group-user', async (data) => {
-        console.log("connected group user is ", data);
-        const connectMsg = await GroupMsg.find({ grpid:data.grpid}).sort({ date: 1 })
-        // console.log(connectMsg);
-        client.emit('connected-group-user', connectMsg);
-    });
+    
 })
 server.listen(port, async () => {
     console.log("server started");
