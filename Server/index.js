@@ -34,10 +34,10 @@ io.on("connection", async (client) => {
     console.log("connected");
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
-        client.broadcast.emit('is_online', '🔵 <i>' + data.sentById + ' join the chat..</i>');
-        // const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetUsername: data.current_user, sentByUsername: data.connected_user }] }] }).sort({ date: 1 })
+        client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
+        const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).sort({ date: 1 })
         // console.log(connectMsg);
-        io.emit('connected-user', data);
+        io.emit('connected-user', connectMsg);
     });
     client.on('connected-group-user', async (data) => {
         console.log("connected group user is ", data);
