@@ -27,9 +27,7 @@ app.use("/", router)
 app.use("/", loginRouter)
 app.use("/",imgRouter)
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
-
 const connectedUser = new Set();
-
 
 io.on("connection", async (client) => {
     console.log("connected");
@@ -116,9 +114,5 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-    // await Message.insertMany({date:new Date().toLocaleDateString('en-US', {
-    //     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-    // })})
 
-   
 })

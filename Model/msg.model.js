@@ -29,7 +29,7 @@ const MsgSchema = new mongoose.Schema({
         type:Date
     },
     time: {
-        type: Date,
+        type: String,
     },
     type:{
         type: String,
