@@ -25,6 +25,10 @@ const groupMsgSchema=new mongoose.Schema({
     time:{
         type:String,
     },
+    type:{
+        type: String,
+        
+    }
    
  
 },
