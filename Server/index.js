@@ -35,13 +35,13 @@ io.on("connection", async (client) => {
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
         client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
-        const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).sort({ date: 1 })
+        const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).sort({ date: 1 }).select({ "dateTime":0})
         // console.log(connectMsg);
         io.emit('connected-user', connectMsg);
     });
     client.on('connected-group-user', async (data) => {
         console.log("connected group user is ", data);
-        const connectMsg = await GroupMsg.find({ grpid:data.grpid}).sort({ date: 1 })
+        const connectMsg = await GroupMsg.find({ grpid:data.grpid}).sort({ date: 1 }).select({ "dateTime":0})
         // console.log(connectMsg);
         client.emit('connected-group-user', connectMsg);
     });
@@ -56,9 +56,18 @@ io.on("connection", async (client) => {
     client.on("message", async (data) => {
         console.log("message data ",data);
         const msgData = await Message.insertMany({
-            message: data.message, sentByUsername: data.sentByUsername,sentById: data.sentById, targetId: data.targetId,targetUsername: data.targetUsername, msgid: data.msgid,date: new Date().toLocaleString('en-US', {
+            message: data.message, sentByUsername: data.sentByUsername,sentById: data.sentById, targetId: data.targetId,targetUsername: data.targetUsername, msgid: data.msgid,
+            date: new Date().toLocaleDateString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-            }),day:data.day, time: data.time,path:data.path,type:data.type,filename:data.filename,filesize:data.filesize,extension:data.extension
+            }),
+            dateTime:new Date().toLocaleString('en-US', {
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            }),
+            day:data.day, 
+            time: new Date().toLocaleTimeString('en-US', {
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            }),
+            path:data.path,type:data.type,filename:data.filename,filesize:data.filesize,extension:data.extension
         })    
         client.broadcast.emit("message-receive", msgData)
     });
@@ -88,15 +97,27 @@ io.on("connection", async (client) => {
     client.on('grp_message', async(user) => {
         console.log("group message is ",user);
         const msg = await GroupMsg.insertMany({
-            message: user.message, sentByUsername: user.sentByUsername,sentById: user.sentById, grpid: user.grpid, msgid: user.msgid,date: new Date().toLocaleString('en-US', {
+            message: user.message, sentByUsername: user.sentByUsername,sentById: user.sentById, grpid: user.grpid, msgid: user.msgid,
+            date: new Date().toLocaleDateString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-            }),day:user.day,time:user.time,path:user.path,type:user.type,filename:user.filename,filesize:user.filesize,extension:user.extension
+            }),
+            dateTime: new Date().toLocaleString('en-US', {
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            }),
+            day:user.day,
+            time: new Date().toLocaleTimeString('en-US', {
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            }),
+            path:user.path,type:user.type,filename:user.filename,filesize:user.filesize,extension:user.extension
         })
         client.broadcast.emit("grp_message_receive",msg)
     });
 })
 server.listen(port, async () => {
     console.log("server started");
+    // await Message.insertMany({date:new Date().toLocaleDateString('en-US', {
+    //     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    // })})
 
    
 })
