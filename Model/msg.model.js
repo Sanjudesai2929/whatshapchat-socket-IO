@@ -30,6 +30,10 @@ const MsgSchema = new mongoose.Schema({
     time: {
         type: String,
     },
+    type:{
+        type: String,
+        
+    }
 },
 )
 
