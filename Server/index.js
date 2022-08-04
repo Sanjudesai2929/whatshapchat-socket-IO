@@ -27,6 +27,7 @@ app.use("/", router)
 app.use("/", loginRouter)
 app.use("/",imgRouter)
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
+
 const connectedUser = new Set();
 
 io.on("connection", async (client) => {
@@ -38,7 +39,7 @@ io.on("connection", async (client) => {
         // console.log(connectMsg);
         io.emit('connected-user', connectMsg);
     });
-    
+
     client.on('connected-group-user', async (data) => {
         console.log("connected group user is ", data);
         const connectMsg = await GroupMsg.find({ grpid:data.grpid}).sort({ date: 1 }).select({ "dateTime":0})

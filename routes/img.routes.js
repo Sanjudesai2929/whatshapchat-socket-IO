@@ -9,6 +9,7 @@ const uploadSingleImage=upload.single("file")
 router.post("/addimg" ,(req, res) => {
     uploadSingleImage(req, res, function (err) {
         if (err) {
+            console.log(err);
             return res.status(400).send({ status:false,message: err.message })
         }
         const file = req.file.filename
@@ -20,8 +21,8 @@ router.post("/addimg" ,(req, res) => {
         res.json({
             status: true,
             message: "Image upload successfully",
-            // file: process.env.BASE_URL + "/upload/" + file,
-            file:req.file.path,
+            file: process.env.BASE_URL + "/upload/" + file,
+            // file:req.file.path,
             data :
                req.body
         })
