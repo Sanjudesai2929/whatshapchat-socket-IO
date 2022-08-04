@@ -33,9 +33,10 @@ io.on("connection", async (client) => {
     console.log("connected");
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
-        Message.update(
+         const mss = Message.update(
             {targetId: data.targetId || data.sentById,}, 
             {$push: {chatId:data.chatid}},{new: true, upsert: true })
+            console.log(mss);
         client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
         const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).sort({ date: 1 }).select({ "dateTime":0})
         console.log("connectMsg",connectMsg);
