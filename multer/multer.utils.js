@@ -15,5 +15,4 @@ const upload=multer({
     limits: { fileSize: maxSize }
     
 })
-
 module.exports = upload
