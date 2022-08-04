@@ -119,13 +119,13 @@ io.on("connection", async (client) => {
             localpath: user.localpath,
             path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension
         })
-        if(msg){
-            client.emit("deliver-status",true)
-        }
-        else{
-            client.emit("deliver-status",false)
+        // if(msg){
+        //     client.emit("deliver-status",true)
+        // }
+        // else{
+        //     client.emit("deliver-status",false)
 
-        }
+        // }
         client.broadcast.emit("grp_message_receive", msg)
     });
 })
