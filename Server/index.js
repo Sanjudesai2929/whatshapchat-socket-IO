@@ -33,9 +33,12 @@ io.on("connection", async (client) => {
     console.log("connected");
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
+        Message.update(
+            {targetId: data.targetId || data.sentById,}, 
+            {$push: {chatId:data.chatid}},{new: true, upsert: true })
         client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
         const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).sort({ date: 1 }).select({ "dateTime":0})
-        // console.log(connectMsg);
+        console.log("connectMsg",connectMsg);
         io.emit('connected-user', connectMsg);
     });
     client.on('connected-group-user', async (data) => {
@@ -82,7 +85,6 @@ io.on("connection", async (client) => {
         client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
         connectedUser.delete(client.id);
     })
-    
     //listens when there's an error detected and logs the err  or on the console
     client.on('error', function (err) {
         console.log('Error detected', client.id);

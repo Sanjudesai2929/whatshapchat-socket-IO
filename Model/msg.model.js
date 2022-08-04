@@ -49,6 +49,10 @@ const MsgSchema = new mongoose.Schema({
     },
     extension:{
         type: String,
+    },
+    chatId:{
+        type: String,
+
     }
 },
 )
