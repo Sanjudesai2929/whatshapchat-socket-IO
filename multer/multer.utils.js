@@ -6,9 +6,9 @@ const { CloudinaryStorage } =require('multer-storage-cloudinary');
 const maxSize=1024 * 1024 *10
 const cloud = cloudinary.v2;
 cloud.config({
-    cloud_name:dbexfgu3b,
-    api_key:815558359675226,
-    api_secret:ZoYjpkA6l-_33qAjYbrLyTMyM2c,
+    cloud_name:"dbexfgu3b",
+    api_key:"815558359675226",
+    api_secret:"ZoYjpkA6l-_33qAjYbrLyTMyM2c",
 })
 const storage1 = new CloudinaryStorage({
     cloudinary: cloud,
