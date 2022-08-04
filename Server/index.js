@@ -33,7 +33,7 @@ io.on("connection", async (client) => {
     console.log("connected");
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
-         const mss = Message.update(
+         const mss =await  Message.update(
             {targetId: data.targetId || data.sentById,}, 
             {$push: {chatId:data.chatid}},{new: true, upsert: true })
             console.log(mss);
