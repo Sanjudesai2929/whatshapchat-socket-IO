@@ -28,7 +28,7 @@ app.use("/", loginRouter)
 app.use("/", imgRouter)
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
 const connectedUser = new Set();
-
+//connection established
 io.on("connection", async (client) => {
     console.log("connected");
     client.on('connected-user', async (data) => {
@@ -91,7 +91,7 @@ io.on("connection", async (client) => {
         console.log('Error detected', client.id);
         console.log(err);
     })
-
+    //listens when a user is create the room   
     client.on("create-room", async (data) => {
         console.log("create room data is", data);
         const date = new Date()
@@ -100,6 +100,7 @@ io.on("connection", async (client) => {
         console.log(groupData);
         client.emit("create-room", groupData)
     })
+    //listens when a user is send the message in group chat   
     client.on('grp_message', async (user) => {
         console.log("group message is ", user);
         const msg = await GroupMsg.insertMany({
@@ -118,9 +119,17 @@ io.on("connection", async (client) => {
             localpath: user.localpath,
             path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension
         })
+        if(msg){
+            client.emit("deliver-status",true)
+        }
+        else{
+            client.emit("deliver-status",false)
+
+        }
         client.broadcast.emit("grp_message_receive", msg)
     });
 })
+
 server.listen(port, async () => {
     console.log("server started");   
 })

@@ -23,7 +23,6 @@ const groupMsgSchema=new mongoose.Schema({
     },
     day:{
         type:String,
-
     },
     time:{
         type:String,
@@ -42,14 +41,10 @@ const groupMsgSchema=new mongoose.Schema({
     },
     filesize:{
         type: String,
-
     },
     extension:{
         type: String,
-
     }
-   
- 
 },
 )
 
