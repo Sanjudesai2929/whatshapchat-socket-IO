@@ -23,8 +23,7 @@ const storage1 = new CloudinaryStorage({
 
 const upload=multer({
     storage:storage1,
-    limits: { fileSize: maxSize }
-    
+    limits: { fileSize: maxSize }  
 })
 // const storage=multer.diskStorage({
 //     destination:(req,file,cb)=>{
