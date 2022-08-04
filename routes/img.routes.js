@@ -26,6 +26,7 @@ router.post("/addimg" ,(req, res) => {
             data :
                req.body
         })
+        
     })
 })
 router.get('/', function (req, res) {
