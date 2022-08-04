@@ -1,15 +1,17 @@
 const { ifError } = require('assert');
 const multer =require('multer');
+const env=require("dotenv")
 const path=require("path")
+env.config()
 const cloudinary = require('cloudinary');
 const { CloudinaryStorage } =require('multer-storage-cloudinary');
 const maxSize=1024 * 1024 *10
 const cloud = cloudinary.v2;
 cloud.config({
-    cloud_name:"dbexfgu3b",
-    api_key:"815558359675226",
-    api_secret:"ZoYjpkA6l-_33qAjYbrLyTMyM2c",
-})
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
 const storage1 = new CloudinaryStorage({
     cloudinary: cloud,
     params: {
@@ -18,18 +20,23 @@ const storage1 = new CloudinaryStorage({
         `${file.originalname.split('.')[0]}-${Date.now()}`,
     },
   });
-const storage=multer.diskStorage({
-    storage1,
-    // destination:(req,file,cb)=>{
-    //     cb(null,path.join(__dirname,"../upload"))
-    // },
-    // filename:(req,file,cb)=>{
-    //     cb(null, Date.now()+'-'+file.originalname);
-    // }
-})
+
 const upload=multer({
-    storage:storage,
+    storage:storage1,
     limits: { fileSize: maxSize }
     
 })
+// const storage=multer.diskStorage({
+//     destination:(req,file,cb)=>{
+//         cb(null,path.join(__dirname,"../upload"))
+//     },
+//     filename:(req,file,cb)=>{
+//         cb(null, Date.now()+'-'+file.originalname);
+//     }
+// })
+// const upload=multer({
+//     storage:storage,
+//     limits: { fileSize: maxSize }
+    
+// })
 module.exports = upload
