@@ -3,10 +3,10 @@ const multer = require('multer');
 const env = require("dotenv")
 const path = require("path")
 env.config()
-const cloudinary = require('cloudinary');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const maxSize = 1024 * 1024 * 100
-const cloud = cloudinary.v2;
+// const cloudinary = require('cloudinary');
+// const { CloudinaryStorage } = require('multer-storage-cloudinary');
+// const cloud = cloudinary.v2;
 // cloud.config({
 //     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
 //     api_key: process.env.CLOUDINARY_API_KEY,
