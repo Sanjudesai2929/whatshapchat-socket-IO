@@ -32,7 +32,7 @@ router.post("/addimg" ,(req, res) => {
 })
 router.get('/', function (req, res) {
     res.json({
-        message:"hello1"
+        message:"hello2"
     })
 })
 module.exports = router
