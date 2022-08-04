@@ -33,10 +33,10 @@ io.on("connection", async (client) => {
     console.log("connected");
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
-        const mss = await Message.updateOne(
-            { targetId: data.targetId || data.sentById, },
-            { $push: { chatId: data.chatid } }, {  upsert: true })
-        console.log(mss);
+    await Message.updateOne(
+            { $or:[{targetId: data.targetId },{sentById : data.targetId}]},
+            { $set: { chatId: data.chatid } },)
+    
         client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
         const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).sort({ date: 1 }).select({ "dateTime": 0 })
         console.log("connectMsg", connectMsg);
@@ -123,5 +123,7 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-
+    // await Message.updateMany(
+    //     { $or:[{targetId: "123" },{targetId: "456"}]},
+    //     { $set: { chatId: "fdf" } })
 })
