@@ -10,8 +10,8 @@ const loginRouter = require("../routes/login.routes")
 const Message = require("../Model/msg.model")
 const Group = require("../Model/Group.model")
 const Register = require("../Model/register.model")
-const imgRouter=require("../routes/img.routes")
-const GroupMsg =require("../Model/GroupMsg.model")
+const imgRouter = require("../routes/img.routes")
+const GroupMsg = require("../Model/GroupMsg.model")
 env.config()
 const port = process.env.PORT
 var server = http.createServer(app)
@@ -25,7 +25,7 @@ app.use(cors())
 app.use("/", router)
 //login router
 app.use("/", loginRouter)
-app.use("/",imgRouter)
+app.use("/", imgRouter)
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
 const connectedUser = new Set();
 
@@ -33,18 +33,18 @@ io.on("connection", async (client) => {
     console.log("connected");
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
-         const mss =await  Message.update(
-            {targetId: data.targetId || data.sentById,}, 
-            {$push: {chatId:data.chatid}},{new: true, upsert: true })
-            console.log(mss);
+        const mss = await Message.updateOne(
+            { targetId: data.targetId || data.sentById, },
+            { $push: { chatId: data.chatid } }, { new: true, upsert: true })
+        console.log(mss);
         client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
-        const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).sort({ date: 1 }).select({ "dateTime":0})
-        console.log("connectMsg",connectMsg);
+        const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).sort({ date: 1 }).select({ "dateTime": 0 })
+        console.log("connectMsg", connectMsg);
         io.emit('connected-user', connectMsg);
     });
     client.on('connected-group-user', async (data) => {
         console.log("connected group user is ", data);
-        const connectMsg = await GroupMsg.find({ grpid:data.grpid}).sort({ date: 1 }).select({ "dateTime":0})
+        const connectMsg = await GroupMsg.find({ grpid: data.grpid }).sort({ date: 1 }).select({ "dateTime": 0 })
         // console.log(connectMsg);
         client.emit('connected-group-user', connectMsg);
     });
@@ -57,23 +57,23 @@ io.on("connection", async (client) => {
     client.emit("user-list", list)
     //listen when user is send the message
     client.on("message", async (data) => {
-        console.log("message data ",data);
+        console.log("message data ", data);
         const msgData = await Message.insertMany({
-            message: data.message, sentByUsername: data.sentByUsername,sentById: data.sentById, targetId: data.targetId,targetUsername: data.targetUsername, msgid: data.msgid,
+            message: data.message, sentByUsername: data.sentByUsername, sentById: data.sentById, targetId: data.targetId, targetUsername: data.targetUsername, msgid: data.msgid,
             date: new Date().toLocaleDateString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
-            dateTime:new Date().toLocaleString('en-US', {
+            dateTime: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
-            day:data.day, 
+            day: data.day,
             time: new Date().toLocaleTimeString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                hour: '2-digit', minute:'2-digit'
+                hour: '2-digit', minute: '2-digit'
             }),
-            localpath:data.localpath,
-            path:data.path,type:data.type,filename:data.filename,filesize:data.filesize,extension:data.extension
-        })    
+            localpath: data.localpath,
+            path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension
+        })
         client.broadcast.emit("message-receive", msgData)
     });
     client.on('keyboard', function name(data) {
@@ -93,32 +93,32 @@ io.on("connection", async (client) => {
     })
 
     client.on("create-room", async (data) => {
-        console.log("create room data is",data);
-        const date=new Date()
-        const fullDate=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()
-        const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner,memberids:data.memberids,date:fullDate})
+        console.log("create room data is", data);
+        const date = new Date()
+        const fullDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
+        const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, memberids: data.memberids, date: fullDate })
         console.log(groupData);
         client.emit("create-room", groupData)
     })
-    client.on('grp_message', async(user) => {
-        console.log("group message is ",user);
+    client.on('grp_message', async (user) => {
+        console.log("group message is ", user);
         const msg = await GroupMsg.insertMany({
-            message: user.message, sentByUsername: user.sentByUsername,sentById: user.sentById, grpid: user.grpid, msgid: user.msgid,
+            message: user.message, sentByUsername: user.sentByUsername, sentById: user.sentById, grpid: user.grpid, msgid: user.msgid,
             date: new Date().toLocaleDateString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
             dateTime: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
-            day:user.day,
+            day: user.day,
             time: new Date().toLocaleTimeString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                hour: '2-digit', minute:'2-digit'
+                hour: '2-digit', minute: '2-digit'
             }),
-            localpath:user.localpath,
-            path:user.path,type:user.type,filename:user.filename,filesize:user.filesize,extension:user.extension
+            localpath: user.localpath,
+            path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension
         })
-        client.broadcast.emit("grp_message_receive",msg)
+        client.broadcast.emit("grp_message_receive", msg)
     });
 })
 server.listen(port, async () => {
