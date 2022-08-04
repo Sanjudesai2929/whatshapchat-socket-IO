@@ -88,7 +88,7 @@ io.on("connection", async (client) => {
         console.log('Error detected', client.id);
         console.log(err);
     })
-    
+
     client.on("create-room", async (data) => {
         console.log("create room data is",data);
         const date=new Date()
@@ -118,6 +118,7 @@ io.on("connection", async (client) => {
         client.broadcast.emit("grp_message_receive",msg)
     });
 })
+
 server.listen(port, async () => {
     console.log("server started");
 
