@@ -35,13 +35,14 @@ let connectedId
 //connection established
 io.on("connection", async (client) => {
     console.log("connected");
-    client.on("loginid",(data)=>{
+    client.on("loginid",async(data)=>{
         console.log("loginid is ",data);
         connectedId=data.loginuserid
-    console.log("abc",connectedId);
 
+    const user = await Register.find({_id:connectedId})
+ console.log(user)
     })
-    console.log("ab",connectedId);
+
     // const user =req.cookies.user()
      //Get the user list data
      const userwiseList = await Message.find({})
