@@ -12,6 +12,7 @@ router.post("/login", async (req, res) => {
     if (userData) {
         const cofirm = await bcrypt.compare(password, userData.password)
         if (cofirm) {
+            // res.cookie("user",userData.username)
             res.json({
                 status: true,
                 message: "Logging Successfully",

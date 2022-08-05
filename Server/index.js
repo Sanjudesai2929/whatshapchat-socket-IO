@@ -12,6 +12,7 @@ const Group = require("../Model/Group.model")
 const Register = require("../Model/register.model")
 const imgRouter = require("../routes/img.routes")
 const GroupMsg = require("../Model/GroupMsg.model")
+// var cookieParser = require('cookie-parser')
 env.config()
 const port = process.env.PORT
 var server = http.createServer(app)
@@ -27,10 +28,19 @@ app.use("/", router)
 app.use("/", loginRouter)
 app.use("/", imgRouter)
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
+// app.use(cookieParser())
 const connectedUser = new Set();
+
 //connection established
 io.on("connection", async (client) => {
-    console.log("connected");
+    console.log("connected",client);
+    // const user =req.cookies.user()
+     //Get the user list data
+    //  const userwiseList = await Register.find().select({ "username": 1, "_id": 1 })
+     const GroupwiseList = await Group.find()
+     const list1 = [...userwiseList, ...GroupwiseList];
+    client.emit("user-wise-list", list1)
+
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
         await Message.updateOne(
@@ -50,7 +60,7 @@ io.on("connection", async (client) => {
     });
     const data = await user.insertMany({ user_id: client.id })
     connectedUser.add(client.id);
-    //Get the user list data
+    //Get the all user list data
     const userList = await Register.find().select({ "username": 1, "_id": 1 })
     const GroupList = await Group.find()
     const list = [...userList, ...GroupList];
