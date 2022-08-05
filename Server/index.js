@@ -43,12 +43,7 @@ io.on("connection", async (client) => {
         const userwiseList = await Message.find({ sentByUsername: user.username }).select({ targetUsername: 1, chatId: 1, _id: 1 })
     const GroupwiseList = await Group.find({memberids:connectedId})
         
-        const data3 = GroupwiseList.filter((data2) => {
-            data2.memberids.map((data1) => {
-                return data1 != connectedId
-            })
-        })
-        console.log("aa",data3);
+    
         const list1 = [...userwiseList, ...GroupwiseList];
         console.log(list1);
         client.emit("user-wise-list", list1)
