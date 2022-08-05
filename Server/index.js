@@ -38,24 +38,25 @@ io.on("connection", async (client) => {
     client.on("loginid", async (data) => {
         console.log("loginid is ", data);
         connectedId = data.loginuserid
-
         const user = await Register.find({ _id: connectedId })
         //Get the user list data
         const userwiseList = await Message.find({sentByUsername:user.username}).select({targetUsername:1,chatId:1,_id:1})
         const GroupwiseList = await Group.find()
+       const data3 =  GroupwiseList.filter((data2)=>{
+               data2.memberids.map((data1)=>{
+                  return data1 ==connectedId
+               })
+        })
+        console.log(data3);
         const list1 = [...userwiseList, ...GroupwiseList];
         console.log(list1);
         client.emit("user-wise-list", list1)
     })
-
-
-
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
         await Message.updateOne(
             { $or: [{ targetId: data.targetId }, { sentById: data.targetId }] },
             { $set: { chatId: data.chatid } })
-
         client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
         const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).sort({ date: 1 }).select({ "dateTime": 0 })
         console.log("connectMsg", connectMsg);
