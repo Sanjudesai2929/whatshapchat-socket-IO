@@ -36,10 +36,10 @@ io.on("connection", async (client) => {
     console.log("connected",client);
     // const user =req.cookies.user()
      //Get the user list data
-    //  const userwiseList = await Register.find().select({ "username": 1, "_id": 1 })
+     const userwiseList = await Message.find()
      const GroupwiseList = await Group.find()
      const list1 = [...userwiseList, ...GroupwiseList];
-    client.emit("user-wise-list", list1)
+    // client.emit("user-wise-list", list1)
 
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
