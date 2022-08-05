@@ -91,10 +91,10 @@ io.on("connection", async (client) => {
         })
         if (msgData) {
             // console.log( { msgid: data.msgid, msgstatus: true });
-            client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
+            client.broadcast.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
         }
         else {
-            client.emit("deliver-status", { msgid: msgData.msgid, msgstatus: false })
+            client.broadcast.emit("deliver-status", { msgid: msgData.msgid, msgstatus: false })
         }
         // client.emit("pending",{chatId: msgData.msgid, msgstatus: false})
         client.broadcast.emit("message-receive", msgData)
