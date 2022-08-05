@@ -41,6 +41,7 @@ io.on("connection", async (client) => {
         const user = await Register.find({ _id: connectedId })
         //Get the user list data
         const userwiseList = await Message.find({ sentByUsername: user.username }).sort({dateTime:1}).select({ targetUsername: 1, chatId: 1, _id: 1 })
+        console.log(userwiseList);
         const GroupwiseList = await Group.find({ memberids: connectedId })
         const list1 = [...userwiseList, ...GroupwiseList];
         console.log(list1);
