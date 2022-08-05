@@ -36,7 +36,7 @@ const connectedId = new Set();
 io.on("connection", async (client) => {
     client.on("loginid",(data)=>{
         console.log("loginid is ",data);
-        connectedId.add(data.loginid)
+        connectedId.add(data)
     })
     console.log("connected");
     console.log(connectedId);
