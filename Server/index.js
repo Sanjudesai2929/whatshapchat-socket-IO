@@ -12,7 +12,7 @@ const Group = require("../Model/Group.model")
 const Register = require("../Model/register.model")
 const imgRouter = require("../routes/img.routes")
 const GroupMsg = require("../Model/GroupMsg.model")
-// var cookieParser = require('cookie-parser')
+
 env.config()
 const port = process.env.PORT
 var server = http.createServer(app)
@@ -28,27 +28,27 @@ app.use("/", router)
 app.use("/", loginRouter)
 app.use("/", imgRouter)
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
-// app.use(cookieParser())
+
 const connectedUser = new Set();
-let connectedId 
+let connectedId
 
 //connection established
 io.on("connection", async (client) => {
     console.log("connected");
-    client.on("loginid",async(data)=>{
-        console.log("loginid is ",data);
-        connectedId=data.loginuserid
+    client.on("loginid", async (data) => {
+        console.log("loginid is ", data);
+        connectedId = data.loginuserid
 
-    const user = await Register.find({_id:connectedId})
- console.log(user)
+        const user = await Register.find({ _id: connectedId })
+        //Get the user list data
+        const userwiseList = await Message.find({sentByUsername:user.username}).select({targetUsername:1,chatId:1,_id:1})
+        const GroupwiseList = await Group.find()
+        const list1 = [...userwiseList, ...GroupwiseList];
+        console.log(list1);
+        client.emit("user-wise-list", list1)
     })
 
-    // const user =req.cookies.user()
-     //Get the user list data
-     const userwiseList = await Message.find({})
-     const GroupwiseList = await Group.find()
-     const list1 = [...userwiseList, ...GroupwiseList];
-    // client.emit("user-wise-list", list1)
+
 
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
@@ -91,13 +91,13 @@ io.on("connection", async (client) => {
                 hour: '2-digit', minute: '2-digit'
             }),
             localpath: data.localpath,
-            path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension,msgstatus:true
+            path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, msgstatus: true
         })
-        if(msgData){
-            client.emit("deliver-status",{msgid: msgData.msgid, msgstatus: msgData.msgstatus})
+        if (msgData) {
+            client.emit("deliver-status", { msgid: msgData.msgid, msgstatus: msgData.msgstatus })
         }
-        else{
-            client.emit("deliver-status",{msgid: msgData.msgid, msgstatus: false})
+        else {
+            client.emit("deliver-status", { msgid: msgData.msgid, msgstatus: false })
         }
         // client.emit("pending",{chatId: msgData.msgid, msgstatus: false})
 
@@ -146,10 +146,10 @@ io.on("connection", async (client) => {
             localpath: user.localpath,
             path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension
         })
-      
+
         client.broadcast.emit("grp_message_receive", msg)
     });
 })
 server.listen(port, async () => {
-    console.log("server started");   
+    console.log("server started");
 })
