@@ -40,10 +40,8 @@ io.on("connection", async (client) => {
         connectedId = data.loginuserid
         const user = await Register.find({ _id: connectedId })
         //Get the user list data
-        const userwiseList = await Message.find({ sentByUsername: user.username }).select({ targetUsername: 1, chatId: 1, _id: 1 })
+        const userwiseList = await Message.find({ sentByUsername: user.username }).sort({dateTime:1}).select({ targetUsername: 1, chatId: 1, _id: 1 })
         const GroupwiseList = await Group.find({ memberids: connectedId })
-
-
         const list1 = [...userwiseList, ...GroupwiseList];
         console.log(list1);
         client.broadcast.emit("user-wise-list", list1)
@@ -97,7 +95,6 @@ io.on("connection", async (client) => {
             client.emit("deliver-status", { msgid: msgData.msgid, msgstatus: false })
         }
         // client.emit("pending",{chatId: msgData.msgid, msgstatus: false})
-
         client.broadcast.emit("message-receive", msgData)
     });
     client.on('keyboard', function name(data) {
@@ -124,6 +121,7 @@ io.on("connection", async (client) => {
         console.log(groupData);
         client.emit("create-room", groupData)
     })
+
     //listens when a user is send the message in group chat   
     client.on('grp_message', async (user) => {
         console.log("group message is ", user);
@@ -143,11 +141,9 @@ io.on("connection", async (client) => {
             localpath: user.localpath,
             path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension
         })
-
         client.broadcast.emit("grp_message_receive", msg)
     });
 })
 server.listen(port, async () => {
     console.log("server started");
-
 })
