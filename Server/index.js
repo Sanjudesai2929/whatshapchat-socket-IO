@@ -39,7 +39,7 @@ io.on("connection", async (client) => {
         connectedId.add(data.loginuserid)
     })
     console.log("connected");
-    console.log(connectedId);
+    console.log(connectedId[0]);
     // const user =req.cookies.user()
      //Get the user list data
      const userwiseList = await Message.find({})
