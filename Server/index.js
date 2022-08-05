@@ -40,14 +40,15 @@ io.on("connection", async (client) => {
         connectedId = data.loginuserid
         const user = await Register.find({ _id: connectedId })
         //Get the user list data
-        const userwiseList = await Message.find({sentByUsername:user.username}).select({targetUsername:1,chatId:1,_id:1})
-        const GroupwiseList = await Group.find()
-       const data3 =  GroupwiseList.filter((data2)=>{
-               data2.memberids.map((data1)=>{
-                  return data1 !=connectedId
-               })
+        const userwiseList = await Message.find({ sentByUsername: user.username }).select({ targetUsername: 1, chatId: 1, _id: 1 })
+    const GroupwiseList = await Group.find({memberids:connectedId})
+        
+        const data3 = GroupwiseList.filter((data2) => {
+            data2.memberids.map((data1) => {
+                return data1 != connectedId
+            })
         })
-        console.log(data3);
+        console.log("aa",data3);
         const list1 = [...userwiseList, ...GroupwiseList];
         console.log(list1);
         client.emit("user-wise-list", list1)
@@ -153,4 +154,5 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
+    
 })
