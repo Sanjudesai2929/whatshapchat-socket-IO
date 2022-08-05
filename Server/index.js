@@ -44,7 +44,7 @@ io.on("connection", async (client) => {
         const GroupwiseList = await Group.find()
        const data3 =  GroupwiseList.filter((data2)=>{
                data2.memberids.map((data1)=>{
-                  return data1 ==connectedId
+                  return data1 !=connectedId
                })
         })
         console.log(data3);
