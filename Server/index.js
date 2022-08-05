@@ -30,7 +30,7 @@ app.use("/", imgRouter)
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
 // app.use(cookieParser())
 const connectedUser = new Set();
-const id=""
+var id=""
 //connection established
 io.on("connection", async (client) => {
     client.on("loginid",(data)=>{
