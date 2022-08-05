@@ -34,11 +34,11 @@ let connectedId
 
 //connection established
 io.on("connection", async (client) => {
+    console.log("connected");
     client.on("loginid",(data)=>{
         console.log("loginid is ",data);
         connectedId=data.loginuserid
     })
-    console.log("connected");
     console.log("ab",connectedId);
     // const user =req.cookies.user()
      //Get the user list data
