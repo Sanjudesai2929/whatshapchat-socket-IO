@@ -74,7 +74,7 @@ io.on("connection", async (client) => {
             localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension
         })
-        if(msg){
+        if(msgData){
             client.emit("deliver-status",true)
         }
         else{
