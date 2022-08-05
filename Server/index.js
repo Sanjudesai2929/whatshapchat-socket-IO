@@ -43,7 +43,7 @@ io.on("connection", async (client) => {
         const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ targetUsername: 1, chatId: 1 })
         console.log(userwiseList);
         const GroupwiseList = await Group.find({ memberids: connectedId })
-        const list1 = [userwiseList, ...GroupwiseList];
+        const list1 = [...userwiseList, ...GroupwiseList];
         console.log(list1);
         client.broadcast.emit("user-wise-list", list1)
     })
