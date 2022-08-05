@@ -74,6 +74,13 @@ io.on("connection", async (client) => {
             localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension
         })
+        if(msg){
+            client.emit("deliver-status",true)
+        }
+        else{
+            client.emit("deliver-status",false)
+
+        }
         client.broadcast.emit("message-receive", msgData)
     });
     client.on('keyboard', function name(data) {
@@ -119,17 +126,10 @@ io.on("connection", async (client) => {
             localpath: user.localpath,
             path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension
         })
-        if(msg){
-            client.emit("deliver-status",true)
-        }
-        else{
-            client.emit("deliver-status",false)
-
-        }
+      
         client.broadcast.emit("grp_message_receive", msg)
     });
 })
-
 server.listen(port, async () => {
     console.log("server started");   
 })
