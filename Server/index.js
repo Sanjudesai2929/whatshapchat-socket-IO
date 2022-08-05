@@ -79,8 +79,9 @@ io.on("connection", async (client) => {
         }
         else{
             client.emit("deliver-status",{msgid: msgData.msgid, msgstatus: false})
-
         }
+        // client.emit("pending",{chatId: msgData.msgid, msgstatus: false})
+
         client.broadcast.emit("message-receive", msgData)
     });
     client.on('keyboard', function name(data) {
