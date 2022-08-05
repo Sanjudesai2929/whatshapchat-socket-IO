@@ -72,13 +72,13 @@ io.on("connection", async (client) => {
                 hour: '2-digit', minute: '2-digit'
             }),
             localpath: data.localpath,
-            path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension
+            path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension,msgstatus:true
         })
         if(msgData){
-            client.emit("deliver-status",true)
+            client.emit("deliver-status",{msgid: msgData.msgid, msgstatus: msgData.msgstatus})
         }
         else{
-            client.emit("deliver-status",false)
+            client.emit("deliver-status",{msgid: msgData.msgid, msgstatus: false})
 
         }
         client.broadcast.emit("message-receive", msgData)
