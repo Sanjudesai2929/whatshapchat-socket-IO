@@ -34,11 +34,11 @@ const id=""
 //connection established
 io.on("connection", async (client) => {
     client.on("loginid",(data)=>{
-        console.log("loginid is ",loginid);
-        id=loginid
+        console.log("loginid is ",data);
+        // id=loginid
     })
     console.log("connected");
-    console.log(id);
+    // console.log(id);
     // const user =req.cookies.user()
      //Get the user list data
      const userwiseList = await Message.find({})
