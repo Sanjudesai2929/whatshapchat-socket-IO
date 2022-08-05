@@ -33,10 +33,13 @@ const connectedUser = new Set();
 
 //connection established
 io.on("connection", async (client) => {
-    console.log("connected",client);
+    client.on("loginid",(data)=>{
+        console.log("loginid is ",loginid);
+    })
+    console.log("connected");
     // const user =req.cookies.user()
      //Get the user list data
-     const userwiseList = await Message.find()
+     const userwiseList = await Message.find({})
      const GroupwiseList = await Group.find()
      const list1 = [...userwiseList, ...GroupwiseList];
     // client.emit("user-wise-list", list1)
