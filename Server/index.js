@@ -36,10 +36,10 @@ let connectedId
 io.on("connection", async (client) => {
     client.on("loginid",(data)=>{
         console.log("loginid is ",data);
-        connectedId=data
+        connectedId=data.loginuserid
     })
     console.log("connected");
-    console.log("a",connectedId);
+    console.log("ab",connectedId);
     // const user =req.cookies.user()
      //Get the user list data
      const userwiseList = await Message.find({})
