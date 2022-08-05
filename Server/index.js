@@ -90,8 +90,8 @@ io.on("connection", async (client) => {
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, msgstatus: true
         })
         if (msgData) {
-            console.log( { msgid: msgData.msgid, msgstatus: msgData.msgstatus });
-            client.emit("deliver-status", { msgid: msgData.msgid, msgstatus: msgData.msgstatus })
+            console.log( { msgid: data.msgid, msgstatus: true });
+            client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
         }
         else {
             client.emit("deliver-status", { msgid: msgData.msgid, msgstatus: false })
