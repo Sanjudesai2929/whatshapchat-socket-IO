@@ -38,6 +38,8 @@ io.on("connection", async (client) => {
     client.on("loginid",(data)=>{
         console.log("loginid is ",data);
         connectedId=data.loginuserid
+    console.log("abc",connectedId);
+
     })
     console.log("ab",connectedId);
     // const user =req.cookies.user()
