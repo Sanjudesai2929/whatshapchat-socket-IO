@@ -40,7 +40,7 @@ io.on("connection", async (client) => {
         connectedId = data.loginuserid
         const user = await Register.find({ _id: connectedId })
         //Get the user list data
-        const userwiseList = await Message.find({ sentByUsername: user.username }).sort({dateTime:1}).select({ targetUsername: 1, chatId: 1, _id: 1 })
+        const userwiseList = await Message.find({ sentByUsername: user.username }).select({ targetUsername: 1, chatId: 1, _id: 1 })
         console.log(userwiseList);
         const GroupwiseList = await Group.find({ memberids: connectedId })
         const list1 = [...userwiseList, ...GroupwiseList];
@@ -90,7 +90,7 @@ io.on("connection", async (client) => {
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, msgstatus: true
         })
         if (msgData) {
-            console.log( { msgid: data.msgid, msgstatus: true });
+            // console.log( { msgid: data.msgid, msgstatus: true });
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
         }
         else {
