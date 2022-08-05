@@ -30,16 +30,16 @@ app.use("/", imgRouter)
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
 // app.use(cookieParser())
 const connectedUser = new Set();
-const connectedId = new Set();
+var connectedId 
 
 //connection established
 io.on("connection", async (client) => {
     client.on("loginid",(data)=>{
         console.log("loginid is ",data);
-        connectedId.add(data.loginuserid)
+        connectedId=data
     })
     console.log("connected");
-    console.log(connectedId[0]);
+    console.log(connectedId);
     // const user =req.cookies.user()
      //Get the user list data
      const userwiseList = await Message.find({})
