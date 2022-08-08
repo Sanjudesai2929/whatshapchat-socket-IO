@@ -40,12 +40,12 @@ io.on("connection", async (client) => {
         connectedId = data.loginuserid
         const user = await Register.find({ _id: connectedId })
         //Get the user list data
-        const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ targetUsername: 1, chatId: 1 }).limit(1)
+        const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ targetUsername: 1, chatId: 1 ,sentByUsername:1}).limit(1)
         // console.log(userwiseList);
         const GroupwiseList = await Group.find({ memberids: connectedId })
         const list1 = [...userwiseList, ...GroupwiseList];
         console.log(list1);
-        client.broadcast.emit("user-wise-list", list1)
+        client.emit("user-wise-list", list1)
     })
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
