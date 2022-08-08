@@ -42,7 +42,7 @@ io.on("connection", async (client) => {
         //Get the user list data
         const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ targetUsername: 1, chatId: 1 ,sentByUsername:1}).limit(1)
         // console.log(userwiseList);
-        const GroupwiseList = await Group.find({ memberids: connectedId })
+        const GroupwiseList = await Group.find({$or:[{memberids: connectedId},{adminName:user[0].username}]  })
         const list1 = [...userwiseList, ...GroupwiseList];
         console.log(list1);
         client.emit("user-wise-list", list1)
@@ -149,5 +149,5 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-   
+
 })
