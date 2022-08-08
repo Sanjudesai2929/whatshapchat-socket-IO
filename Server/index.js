@@ -42,7 +42,8 @@ io.on("connection", async (client) => {
         //Get the user list data
         const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ targetUsername: 1, chatId: 1 ,sentByUsername:1}).limit(1)
         // console.log(userwiseList);
-        const GroupwiseList = await Group.find({userList: {member_id:connectedId} })
+        const GroupwiseList = await Group.find({userList:{$elemMatch: {member_id:connectedId}} })
+
         const list1 = [...userwiseList, ...GroupwiseList];
         console.log(list1);
         client.emit("user-wise-list", list1)
