@@ -5,20 +5,19 @@ const groupSchema=new mongoose.Schema({
     },
     userList:[
         {
-
             member_id:String,
             member_name:String,
             adminstatus:Boolean
         }
-        
     ]
-       
     ,
     adminName:{
         type:String,
-        require:true
     },
+    chatId:{
+        type:String,
 
+    },
     date:{
         type:String,
     }
