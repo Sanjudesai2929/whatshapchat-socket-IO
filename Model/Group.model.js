@@ -8,7 +8,7 @@ const groupSchema=new mongoose.Schema({
 
             member_id:String,
             member_name:String,
-            adminstatus:String
+            adminstatus:Boolean
         }
         
     ]
