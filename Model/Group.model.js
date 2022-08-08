@@ -3,18 +3,22 @@ const groupSchema=new mongoose.Schema({
     groupName:{
         type:String
     },
-    userList:{
-        type: Array,
-        require:true
-    },
+    userList:[
+        {
+
+            member_id:String,
+            member_name:String,
+            adminstatus:String
+        }
+        
+    ]
+       
+    ,
     adminName:{
         type:String,
         require:true
     },
-    memberids:{
-        type:Array,
 
-    },
     date:{
         type:String,
     }
