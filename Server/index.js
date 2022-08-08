@@ -44,7 +44,7 @@ io.on("connection", async (client) => {
         console.log(userwiseList);
         const GroupwiseList = await Group.find({ memberids: connectedId })
         const list1 = [...userwiseList, ...GroupwiseList];
-        console.log(list1);
+        // console.log(list1);
         client.broadcast.emit("user-wise-list", list1)
     })
     client.on('connected-user', async (data) => {
@@ -94,10 +94,11 @@ io.on("connection", async (client) => {
             client.broadcast.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
         }
         else {
-            client.broadcast.emit("deliver-status", { msgid: msgData.msgid, msgstatus: false })
+            client.broadcast.emit("deliver-status", { msgid: data.msgid, msgstatus: false })
         }
         // client.emit("pending",{chatId: msgData.msgid, msgstatus: false})
         client.broadcast.emit("message-receive", msgData)
+        client.broadcast.emit("deliver-dbl-click", { msgid: data.msgid, msgstatus: true })
     });
     client.on('keyboard', function name(data) {
         console.log(data);
