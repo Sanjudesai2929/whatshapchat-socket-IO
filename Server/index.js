@@ -121,7 +121,7 @@ io.on("connection", async (client) => {
         console.log("create room data is", data);
         const date = new Date()
         const fullDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
-        const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, date: fullDate })
+        const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner,chatId:data.chatId, date: fullDate })
         console.log(groupData);
         client.emit("create-room", groupData)
     })
