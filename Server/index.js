@@ -101,7 +101,7 @@ io.on("connection", async (client) => {
     const GroupList = await Group.find()
     const list = [...userList, ...GroupList];
     client.emit("user-list", list)
-    io.on("message_chatid", async(data) => {
+    client.on("message_chatid", async(data) => {
         console.log("aa",data);
         const res=await Message.updateOne(
             { $or: [{ targetId: data.userid }, { sentById: data.userid }] },
@@ -109,7 +109,7 @@ io.on("connection", async (client) => {
             const res1=await Message.find(        
                     { $or: [{ targetId: data.userid }, { sentById: data.userid }] },
                 )
-            client.emit("message_chatid_receive",res1)
+            io.emit("message_chatid_receive",res1)
     })
     //listen when user is send the message
     client.on("message", async (data) => {
