@@ -11,7 +11,8 @@ const Message = require("../Model/msg.model")
 const Group = require("../Model/Group.model")
 const Register = require("../Model/register.model")
 const imgRouter = require("../routes/img.routes")
-const GroupMsg = require("../Model/GroupMsg.model")
+const GroupMsg = require("../Model/GroupMsg.model");
+const { ifError } = require('assert');
 
 env.config()
 const port = process.env.PORT
@@ -40,11 +41,14 @@ io.on("connection", async (client) => {
         connectedId = data.loginuserid
         const user = await Register.find({ _id: connectedId })
         //Get the user list data
-        const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ targetUsername: 1, chatId: 1 ,sentByUsername:1}).limit(1)
-        // console.log(userwiseList);
-        const GroupwiseList = await Group.find({userList:{$elemMatch: {member_id:connectedId}} })
+        const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ targetUsername: 1, chatId: 1, sentByUsername: 1 })
+        const arrayUniqueByKey = [...new Map(userwiseList.map(item =>
+            [item["targetUsername"], item])).values()];
+          
 
-        const list1 = [...userwiseList, ...GroupwiseList];
+        const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
+
+        const list1 = [...arrayUniqueByKey, ...GroupwiseList];
         console.log(list1);
         client.emit("user-wise-list", list1)
     })
@@ -121,7 +125,7 @@ io.on("connection", async (client) => {
         console.log("create room data is", data);
         const date = new Date()
         const fullDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
-        const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner,chatId:data.chatId, date: fullDate })
+        const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, chatId: data.chatId, date: fullDate })
         console.log(groupData);
         client.emit("create-room", groupData)
     })
@@ -146,9 +150,10 @@ io.on("connection", async (client) => {
             path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension
         })
         client.broadcast.emit("grp_message_receive", msg)
-    }); 
+    });
 })
 server.listen(port, async () => {
     console.log("server started");
+ 
 
 })
