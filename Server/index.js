@@ -40,6 +40,7 @@ io.on("connection", async (client) => {
         console.log("loginid is ", data);
         connectedId = data.loginuserid
         const user = await Register.find({ _id: connectedId })
+        console.log(user);
         //Get the user list data
         const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ targetUsername: 1, chatId: 1, sentByUsername: 1 })
         const arrayUniqueByKey = [...new Map(userwiseList.map(item =>
