@@ -80,6 +80,7 @@ io.on("connection", async (client) => {
     })
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
+        data &&
         await Message.updateOne(
             { $or: [{ targetId: data.targetId }, { sentById: data.targetId }] },
             { $set: { chatId: data.chatId } })
