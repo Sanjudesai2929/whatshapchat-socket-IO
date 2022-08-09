@@ -51,7 +51,7 @@ io.on("connection", async (client) => {
     if (userwiseList) {
 
         const arr = userwiseList.map((data) => {
-            return { user: data.targetUsername,id:data.targetId }
+            return { user: data.targetUsername,_id:data.targetId ,chatId:data.chatId}
 
         })
         data.push(...arr)
@@ -62,7 +62,7 @@ io.on("connection", async (client) => {
     if (userwiseList1) {
        
         const arr1 = userwiseList1.map((data) => {
-            return { user: data.sentByUsername ,id:data.sentById}
+            return { user: data.sentByUsername ,_id:data.sentById,chatId:data.chatId}
         })
         data.push(...arr1)
 
