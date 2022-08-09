@@ -107,7 +107,10 @@ io.on("connection", async (client) => {
         const res=await Message.updateOne(
             { $or: [{ targetId: data.userid }, { sentById: data.userid }] },
             { $set: { chatId: data.chatid } })
-            client.emit("message_chatid_receive",res)
+            const res1=await Message.find(        
+                    { $or: [{ targetId: data.userid }, { sentById: data.userid }] },
+                )
+            client.emit("message_chatid_receive",res1)
     })
     //listen when user is send the message
     client.on("message", async (data) => {
