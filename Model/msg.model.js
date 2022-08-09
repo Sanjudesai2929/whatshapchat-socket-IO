@@ -52,7 +52,7 @@ const MsgSchema = new mongoose.Schema({
     },
     chatId:{
         type: String,
-
+         default:""
     },
     msgstatus:{
         type: Boolean,
