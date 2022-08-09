@@ -101,17 +101,7 @@ io.on("connection", async (client) => {
     const GroupList = await Group.find()
     const list = [...userList, ...GroupList];
     client.emit("user-list", list)
-    client.on("message_chatid", async(data) => {
-        console.log("aa",data);
-        const res=await Message.updateOne(
-            { $or: [{ targetId: data.userid }, { sentById: data.userid }] },
-            { $set: { chatId: data.chatid } })
-            const res1=await Message.find(        
-                    { $or: [{ targetId: data.userid }, { sentById: data.userid }] },
-                )
-                console.log("message_chatid_receive:",res1);
-            io.emit("message_chatid_receive",res1)
-    })
+   
     //listen when user is send the message
     client.on("message", async (data) => {
         console.log("message data ", data);
@@ -142,6 +132,17 @@ io.on("connection", async (client) => {
         client.broadcast.emit("message-receive", msgData)
         client.broadcast.emit("deliver-dbl-click", { msgid: data.msgid, msgstatus: true })
     });
+    client.on("message_chatid", async(data) => {
+        console.log("aa",data);
+        const res=await Message.updateOne(
+            { $or: [{ targetId: data.userid }, { sentById: data.userid }] },
+            { $set: { chatId: data.chatid } })
+            const res1=await Message.find(        
+                    { $or: [{ targetId: data.userid }, { sentById: data.userid }] },
+                )
+                console.log("message_chatid_receive:",res1);
+            io.emit("message_chatid_receive",res1)
+    })
     client.on('keyboard', function name(data) {
         console.log(data);
         client.broadcast.emit('keyboard_status', data);
