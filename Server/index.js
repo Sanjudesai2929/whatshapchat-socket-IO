@@ -141,7 +141,7 @@ io.on("connection", async (client) => {
                     { $or: [{ targetId: data.userid }, { sentById: data.userid }] },
                 )
                 console.log("message_chatid_receive:",res1);
-            io.emit("message_chatid_receive",res1)
+            client.emit("message_chatid_receive",res1)
     })
     client.on('keyboard', function name(data) {
         console.log(data);
