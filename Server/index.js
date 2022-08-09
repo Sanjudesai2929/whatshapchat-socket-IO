@@ -42,14 +42,39 @@ io.on("connection", async (client) => {
         const user = await Register.find({ _id: connectedId })
         console.log(user);
         //Get the user list data
-        const userwiseList = await Message.find({$or:[{ sentByUsername: user[0].username },{ targetUsername:user[0].username}]}).select({ sentById:1,targetId:1,targetUsername: 1, chatId: 1, sentByUsername: 1 })
-        const arrayUniqueByKey = [...new Map(userwiseList.map(item =>
-            [item["targetUsername"], item])).values()];
-          
-       console.log("user data is",arrayUniqueByKey);
+        // const userwiseList = await Message.find({$or:[{ sentByUsername: user[0].username },{ targetUsername:user[0].username}]}).select({ sentById:1,targetId:1,targetUsername: 1, chatId: 1, sentByUsername: 1 })
+        // const arrayUniqueByKey = [...new Map(userwiseList.map(item =>
+        //     [item["targetUsername"], item])).values()];
+        var data = []
+
+        const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
+        if (userwiseList) {
+    
+            const arr = userwiseList.map((data) => {
+                return { user: data.sentByUsername,id:data.sentById }
+    
+            })
+            data.push(...arr)
+    
+        }
+    
+        const userwiseList1 = await Message.find({ targetUsername: user[0].username }).select({ sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
+        if (userwiseList1) {
+           
+            const arr1 = userwiseList1.map((data) => {
+                return { user: data.targetUsername ,id:data.targetId}
+            })
+            data.push(...arr1)
+    
+    
+        }
+        const arrayUniqueByKey = [...new Map(data.map(item =>
+            [item["user"], item])).values()];
+      
+        console.log("user data is", arrayUniqueByKey);
         const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
 
-        const list1 = [...arrayUniqueByKey,...GroupwiseList];
+        const list1 = [...arrayUniqueByKey, ...GroupwiseList];
         console.log(list1);
         client.emit("user-wise-list", list1)
     })
@@ -155,6 +180,5 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-
 
 })
