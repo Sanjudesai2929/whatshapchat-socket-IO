@@ -46,7 +46,7 @@ io.on("connection", async (client) => {
         const arrayUniqueByKey = [...new Map(userwiseList.map(item =>
             [item["targetUsername"], item])).values()];
           
-console.log("user data is",arrayUniqueByKey);
+       console.log("user data is",arrayUniqueByKey);
         const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
 
         const list1 = [...arrayUniqueByKey,...GroupwiseList];
