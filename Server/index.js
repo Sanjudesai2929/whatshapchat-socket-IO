@@ -106,7 +106,7 @@ io.on("connection", async (client) => {
         console.log("aa",data);
         const res=await Message.updateOne(
             {_id: data.userid },
-            { $set: { chatId: data.chatId } })
+            { $set: { chatId: data.chatid } })
             client.broadcast.emit("message_chatid_receive",res)
     })
     //listen when user is send the message
