@@ -126,13 +126,14 @@ io.on("connection", async (client) => {
                 hour: '2-digit', minute: '2-digit'
             }),
             localpath: data.localpath,
-            path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, msgstatus: true
+            path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus
         })
         client.emit("message_chatid_receive", msgData)
         client.broadcast.emit("message_chatid_receive", msgData)
         if (msgData) {
             // console.log( { msgid: data.msgid, msgstatus: true });
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
+            await Message.updateOne({msgid:data.msgid},{$set:{messagestatus:"send"}})
         }
         else {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: false })
@@ -146,7 +147,7 @@ io.on("connection", async (client) => {
         console.log(data);
         client.broadcast.emit('keyboard_status', data);
     })
-    //listens when a user is disconnected from the server   
+    //listens when a user is disconnected f rom the server   
     client.on('disconnect', function (username) {
         console.log(username + 'is offline....');
         client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
@@ -190,5 +191,4 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
- 
 })

@@ -54,8 +54,8 @@ const MsgSchema = new mongoose.Schema({
         type: String,
          default:""
     },
-    msgstatus:{
-        type: Boolean,
+    messagestatus:{
+        type: String,
 
     },
     
