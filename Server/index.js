@@ -125,6 +125,8 @@ io.on("connection", async (client) => {
             localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, msgstatus: true
         })
+        client.emit("message_chatid_receive", res1)
+        client.broadcast.emit("message_chatid_receive", res1)
 
         if (msgData) {
             // console.log( { msgid: data.msgid, msgstatus: true });
@@ -186,4 +188,5 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
+
 })
