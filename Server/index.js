@@ -47,7 +47,7 @@ io.on("connection", async (client) => {
         //     [item["targetUsername"], item])).values()];
         var data = []
 
-        const userwiseList = await Message.find({ sentByUsername: "dp" }).select({ sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
+        const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
                 return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId }
@@ -55,7 +55,7 @@ io.on("connection", async (client) => {
             data.push(...arr)
         }
 
-        const userwiseList1 = await Message.find({ targetUsername: "dp" }).select({ sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
+        const userwiseList1 = await Message.find({ targetUsername: user[0].username }).select({ sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
 
             const arr1 = userwiseList1.map((data) => {
@@ -63,7 +63,10 @@ io.on("connection", async (client) => {
             })
             data.push(...arr1)
         }
-        const arrayUniqueByKey = [...new Map(data.map(item =>
+        const val =data.filter((data)=>{
+            return  data.chatId != ""
+         })
+        const arrayUniqueByKey = [...new Map(val.map(item =>
             [item["user"], item])).values()];
         console.log("user data is", arrayUniqueByKey);
         const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
@@ -110,7 +113,7 @@ io.on("connection", async (client) => {
     client.on("message", async (data) => {
         console.log("message data ", data);
         const msgData = await Message.insertMany({
-            message: data.message, sentByUsername: data.sentByUsername, sentById: data.sentById, targetId: data.targetId, targetUsername: data.targetUsername, msgid: data.msgid,chatId: data.chatId,
+            message: data.message, sentByUsername: data.sentByUsername, sentById: data.sentById, targetId: data.targetId, targetUsername: data.targetUsername, msgid: data.msgid, chatId: data.chatId,
             date: new Date().toLocaleDateString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
@@ -188,5 +191,5 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-
+ 
 })
