@@ -130,13 +130,12 @@ io.on("connection", async (client) => {
         })
         client.emit("message_chatid_receive", msgData)
         client.broadcast.emit("message_chatid_receive", msgData)
-
         if (msgData) {
             // console.log( { msgid: data.msgid, msgstatus: true });
-            client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
+            io.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
         }
         else {
-            client.emit("deliver-status", { msgid: data.msgid, msgstatus: false })
+            io.emit("deliver-status", { msgid: data.msgid, msgstatus: false })
         }
         // client.emit("pending",{chatId: msgData.msgid, msgstatus: false})
         client.broadcast.emit("message-receive", msgData)
