@@ -102,7 +102,17 @@ io.on("connection", async (client) => {
     const list = [...userList, ...GroupList];
     client.emit("user-list", list)
   
-    
+    client.on("message_chatid", async(data) => {
+        console.log("aa",data);
+        const res=await Message.updateOne(
+            { $or: [{ targetId: data.userid }, { sentById: data.userid }] },
+            { $set: { chatId: data.chatid } })
+            const res1=await Message.find(        
+                    { $or: [{ targetId: data.userid }, { sentById: data.userid }] },
+                )
+                console.log("message_chatid_receive:",res1);
+            client.emit("message_chatid_receive",res1)
+    })
     //listen when user is send the message
     client.on("message", async (data) => {
         console.log("message data ", data);
@@ -122,17 +132,7 @@ io.on("connection", async (client) => {
             localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, msgstatus: true
         })
-        client.on("message_chatid", async(data) => {
-            console.log("aa",data);
-            const res=await Message.updateOne(
-                { $or: [{ targetId: data.userid }, { sentById: data.userid }] },
-                { $set: { chatId: data.chatid } })
-                const res1=await Message.find(        
-                        { $or: [{ targetId: data.userid }, { sentById: data.userid }] },
-                    )
-                    console.log("message_chatid_receive:",res1);
-                client.emit("message_chatid_receive",res1)
-        })
+       
         if (msgData) {
             // console.log( { msgid: data.msgid, msgstatus: true });
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
