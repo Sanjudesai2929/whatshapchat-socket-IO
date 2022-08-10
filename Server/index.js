@@ -112,7 +112,6 @@ io.on("connection", async (client) => {
                 )
                 console.log("message_chatid_receive:",res1);
             client.emit("message_chatid_receive",res1)
-            client.broadcast.emit("message_chatid_receive",res1)
 
     })
 
