@@ -111,6 +111,8 @@ io.on("connection", async (client) => {
             { $or: [{ targetId: data.userid }, { sentById: data.userid }] },
         )
         console.log("message_chatid_receive:", res1);
+        client.emit("message_chatid_receive", res1)
+
         client.broadcast.emit("message_chatid_receive", res1)
     })
     //listen when user is send the message
