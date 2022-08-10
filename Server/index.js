@@ -49,13 +49,10 @@ io.on("connection", async (client) => {
 
         const userwiseList = await Message.find({ sentByUsername: "dp" }).select({ sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
-
             const arr = userwiseList.map((data) => {
                 return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId }
-
             })
             data.push(...arr)
-
         }
 
         const userwiseList1 = await Message.find({ targetUsername: "dp" }).select({ sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
@@ -65,15 +62,11 @@ io.on("connection", async (client) => {
                 return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId }
             })
             data.push(...arr1)
-
-
         }
         const arrayUniqueByKey = [...new Map(data.map(item =>
             [item["user"], item])).values()];
-
         console.log("user data is", arrayUniqueByKey);
         const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
-
         const list1 = [...arrayUniqueByKey, ...GroupwiseList];
         console.log(list1);
         client.emit("user-wise-list", list1)
@@ -101,24 +94,23 @@ io.on("connection", async (client) => {
     const GroupList = await Group.find()
     const list = [...userList, ...GroupList];
     client.emit("user-list", list)
-
-    client.on("message_chatid", async (data) => {
-        console.log("aa", data);
-        const res = await Message.updateOne(
-            { $or: [{ targetId: data.userid }, { sentById: data.userid }] },
-            { $set: { chatId: data.chatId } })
-        const res1 = await Message.find(
-            { $or: [{ targetId: data.userid }, { sentById: data.userid }] },
-        )
-        console.log("message_chatid_receive:", res1);
-        client.emit("message_chatid_receive", res1)
-        // client.broadcast.emit("message_chatid_receive", res1)
-    })
+    // client.on("message_chatid", async (data) => {
+    //     console.log("aa", data);
+    //     const res = await Message.updateOne(
+    //         { $or: [{ targetId: data.userid }, { sentById: data.userid }] },
+    //         { $set: { chatId: data.chatId } })
+    //     const res1 = await Message.find(
+    //         { $or: [{ targetId: data.userid }, { sentById: data.userid }] },
+    //     )
+    //     console.log("message_chatid_receive:", res1);
+    //     client.emit("message_chatid_receive", res1)
+    //     // client.broadcast.emit("message_chatid_receive", res1)
+    // })
     //listen when user is send the message
     client.on("message", async (data) => {
         console.log("message data ", data);
         const msgData = await Message.insertMany({
-            message: data.message, sentByUsername: data.sentByUsername, sentById: data.sentById, targetId: data.targetId, targetUsername: data.targetUsername, msgid: data.msgid,
+            message: data.message, sentByUsername: data.sentByUsername, sentById: data.sentById, targetId: data.targetId, targetUsername: data.targetUsername, msgid: data.msgid,chatId: data.chatId,
             date: new Date().toLocaleDateString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
@@ -170,7 +162,6 @@ io.on("connection", async (client) => {
         console.log(groupData);
         client.emit("create-room", groupData)
     })
-
     //listens when a user is send the message in group chat   
     client.on('grp_message', async (user) => {
         console.log("group message is ", user);
@@ -195,5 +186,4 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-
 })
