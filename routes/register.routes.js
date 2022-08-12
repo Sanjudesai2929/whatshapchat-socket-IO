@@ -13,7 +13,8 @@ router.post("/register", async (req, res) => {
                 if (res_data) {
                     res.json({
                         status: true,
-                        message: "register successfully"
+                        message: "register successfully",
+                        data:data
                     })
                 }
             }

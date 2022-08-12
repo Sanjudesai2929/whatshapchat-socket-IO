@@ -10,6 +10,7 @@ router.post("/addimg" ,(req, res) => {
     uploadSingleImage(req, res, function (err) {
 
         if (err) {
+            console.log(err);
             return res.status(400).send({ status:false,message: err.message })
         }
         const file = req.file.filename
@@ -19,14 +20,13 @@ router.post("/addimg" ,(req, res) => {
         // const data =new Buffer(req.file.path).toString("base64")
         //  const data = fs.readFileSync(req.file.path, 'base64')
         //  console.log(data);
-
+ 
         res.json({
             status: true,
             message: "Image upload successfully",
             file: process.env.BASE_URL + "/upload/" + file,
             data :
-               req.body
-            
+               req.body  
         })
     })
 })

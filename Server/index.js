@@ -11,6 +11,7 @@ const Message = require("../Model/msg.model")
 const Group = require("../Model/Group.model")
 const Register = require("../Model/register.model")
 const imgRouter = require("../routes/img.routes")
+const ProfileRouter = require("../routes/profile.routes")
 const GroupMsg = require("../Model/GroupMsg.model");
 const { ifError } = require('assert');
 
@@ -28,6 +29,8 @@ app.use("/", router)
 //login router
 app.use("/", loginRouter)
 app.use("/", imgRouter)
+app.use("/", ProfileRouter)
+
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
 
 const connectedUser = new Set();
@@ -140,8 +143,13 @@ io.on("connection", async (client) => {
         else {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: false })
         }
-        // client.emit("pending",{chatId: msgData.msgid, msgstatus: false})
+
         client.broadcast.emit("message-receive", msgData)
+        client.on("deliver-dbl-click",async(data)=>{
+   console.log(data);
+   await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "seen" } })
+
+        })
         // client.broadcast.emit("deliver-dbl-click", { msgid: data.msgid, msgstatus: true })
     });
     client.on('keyboard', function name(data) {
@@ -193,7 +201,5 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
- console.log(new Date().toLocaleString('en-US', {
-    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-}));  
+ 
 })
