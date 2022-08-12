@@ -14,7 +14,7 @@ const imgRouter = require("../routes/img.routes")
 const ProfileRouter = require("../routes/profile.routes")
 const GroupMsg = require("../Model/GroupMsg.model");
 const { ifError } = require('assert');
-
+const GProfileRouter = require('../routes/Gprofile.routes')
 env.config()
 const port = process.env.PORT
 var server = http.createServer(app)
@@ -30,6 +30,7 @@ app.use("/", router)
 app.use("/", loginRouter)
 app.use("/", imgRouter)
 app.use("/", ProfileRouter)
+app.use("/", GProfileRouter)
 
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
 
@@ -142,17 +143,17 @@ io.on("connection", async (client) => {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: false })
         }
         client.broadcast.emit("message-receive", msgData)
-      
+
         // client.broadcast.emit("deliver-dbl-click", { msgid: data.msgid, msgstatus: true })
         // client.on("deliver-dbl-click", async (data) => {
         //     console.log(data);
         //     await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "delivered" } })
         // })
     });
-      client.on("deliver-dbl-click", async (data) => {
-            console.log(data);
-            // await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "seen" } })
-        })
+    client.on("deliver-dbl-click", async (data) => {
+        console.log(data);
+        // await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "seen" } })
+    })
     client.on('keyboard', function name(data) {
         console.log(data);
         client.broadcast.emit('keyboard_status', data);
