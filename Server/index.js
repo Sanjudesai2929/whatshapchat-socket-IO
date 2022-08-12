@@ -63,9 +63,9 @@ io.on("connection", async (client) => {
             })
             data.push(...arr1)
         }
-        const val =data.filter((data)=>{
-            return  data.chatId != ""
-         })
+        const val = data.filter((data) => {
+            return data.chatId != ""
+        })
         const arrayUniqueByKey = [...new Map(val.map(item =>
             [item["user"], item])).values()];
         console.log("user data is", arrayUniqueByKey);
@@ -114,17 +114,19 @@ io.on("connection", async (client) => {
         console.log("message data ", data);
         const msgData = await Message.insertMany({
             message: data.message, sentByUsername: data.sentByUsername, sentById: data.sentById, targetId: data.targetId, targetUsername: data.targetUsername, msgid: data.msgid, chatId: data.chatId,
-            date: new Date().toLocaleDateString('en-US', {
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-            }),
+            // date: new Date().toLocaleDateString('en-US', {
+            //     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            // }),
+            date:data.date,
             dateTime: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
             day: data.day,
-            time: new Date().toLocaleTimeString('en-US', {
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                hour: '2-digit', minute: '2-digit'
-            }),
+            // time: new Date().toLocaleTimeString('en-US', {
+            //     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            //     hour: '2-digit', minute: '2-digit'
+            // }),
+            time:data.time,
             localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus
         })
@@ -133,16 +135,15 @@ io.on("connection", async (client) => {
         if (msgData) {
             // console.log( { msgid: data.msgid, msgstatus: true });
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
-            await Message.updateOne({msgid:data.msgid},{$set:{messagestatus:"send"}})
+            await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
         }
         else {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: false })
         }
         // client.emit("pending",{chatId: msgData.msgid, msgstatus: false})
         client.broadcast.emit("message-receive", msgData)
-        client.broadcast.emit("deliver-dbl-click", { msgid: data.msgid, msgstatus: true })
+        // client.broadcast.emit("deliver-dbl-click", { msgid: data.msgid, msgstatus: true })
     });
-
     client.on('keyboard', function name(data) {
         console.log(data);
         client.broadcast.emit('keyboard_status', data);
@@ -172,17 +173,19 @@ io.on("connection", async (client) => {
         console.log("group message is ", user);
         const msg = await GroupMsg.insertMany({
             message: user.message, sentByUsername: user.sentByUsername, sentById: user.sentById, grpid: user.grpid, msgid: user.msgid,
-            date: new Date().toLocaleDateString('en-US', {
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-            }),
+            // date: new Date().toLocaleDateString('en-US', {
+            //     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            // }),
+            date:user.date,
             dateTime: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
             day: user.day,
-            time: new Date().toLocaleTimeString('en-US', {
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                hour: '2-digit', minute: '2-digit'
-            }),
+            // time: new Date().toLocaleTimeString('en-US', {
+            //     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            //     hour: '2-digit', minute: '2-digit'
+            // }),
+            time:user.time,
             localpath: user.localpath,
             path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension
         })
@@ -191,4 +194,22 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
+    // const msg = await GroupMsg.insertMany({
+
+    //     date: new Date().toLocaleDateString('en-US', {
+    //         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    //     }),
+    //     dateTime: new Date().toLocaleString('en-US', {
+    //         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    //     }),
+    //     time: new Date().toLocaleTimeString('en-US', {
+    //         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    //         hour: '2-digit', minute: '2-digit'
+    //     }),
+
+    // })
+    // console.log(msg);
+    // console.log(new Date().toLocaleString( {
+    //     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    // }));
 })

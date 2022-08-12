@@ -21,8 +21,10 @@
     "http": "^0.0.1-security",
     "mongoose": "^6.4.6",
     "multer": "^1.4.5-lts.1",
+    "multer-sftp": "^1.1.1",
     "multer-storage-cloudinary": "^4.0.0",
     "nodemon": "^2.0.19",
+    "queue": "^6.0.2",
     "socket.io": "^2.3.0"
   }
 }
