@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
+  bio:{
+    type: String,
+
+  }
 });
 
 // schema.pre("save", async function (next) {
