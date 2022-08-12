@@ -1,7 +1,7 @@
 const register = require("../Model/register.model")
 const express = require("express")
 const router = new express.Router()
-router.post("/profile/:id", async (req, res) => {
+router.get("/profile/:id", async (req, res) => {
     const _id =req.params.id
  const { username, country_code, email, phone,bio,password } = req.body
     try {
