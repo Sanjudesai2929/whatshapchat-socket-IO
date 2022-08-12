@@ -3,13 +3,13 @@ const express = require("express")
 const router = new express.Router()
 router.post("/profileUpdate/:id", async (req, res) => {
     const _id =req.params.id
-    const { username, country_code, email, phone,bio } = req.body
+    const { username, country_code, email, phone,bio,password } = req.body
     try {
-        const user= await register.updateOne({_id:_id},{$set:{username, country_code, email, phone ,bio}} )
+        const user= await register.updateOne({_id:_id},{$set:{username, country_code, email, phone ,bio,password}} )
         if(user){
             res.json({
                 status:true,
-                message:"update Successfully ",
+                message:"update Successfully",
             })
         }
     }
@@ -20,8 +20,6 @@ router.post("/profileUpdate/:id", async (req, res) => {
             })  
     }
 })
-
-
 module.exports = router
 
 
