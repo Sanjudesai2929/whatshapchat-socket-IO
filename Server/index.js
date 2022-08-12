@@ -120,7 +120,7 @@ io.on("connection", async (client) => {
             date: new Date().toLocaleDateString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
-         
+
             dateTime: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
@@ -129,7 +129,7 @@ io.on("connection", async (client) => {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                 hour: '2-digit', minute: '2-digit'
             }),
-     
+
             localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus
         })
@@ -145,10 +145,9 @@ io.on("connection", async (client) => {
         }
 
         client.broadcast.emit("message-receive", msgData)
-        client.on("deliver-dbl-click",async(data)=>{
-   console.log(data);
-   await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "seen" } })
-
+        client.on("deliver-dbl-click", async (data) => {
+            console.log(data);
+            // await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "seen" } })
         })
         // client.broadcast.emit("deliver-dbl-click", { msgid: data.msgid, msgstatus: true })
     });
@@ -184,7 +183,7 @@ io.on("connection", async (client) => {
             date: new Date().toLocaleDateString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
-         
+
             dateTime: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
@@ -201,5 +200,5 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
- 
+
 })
