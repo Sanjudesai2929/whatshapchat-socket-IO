@@ -145,7 +145,7 @@ io.on("connection", async (client) => {
         }
 
         client.broadcast.emit("message-receive", msgData)
-        client.on("deliver-dbl-click", async (data) => {
+        io.on("deliver-dbl-click", async (data) => {
             console.log(data);
             // await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "seen" } })
         })
@@ -200,5 +200,4 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-
 })
