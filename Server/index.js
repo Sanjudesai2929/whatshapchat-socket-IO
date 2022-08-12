@@ -144,11 +144,11 @@ io.on("connection", async (client) => {
         client.broadcast.emit("message-receive", msgData)
       
         // client.broadcast.emit("deliver-dbl-click", { msgid: data.msgid, msgstatus: true })
+        client.on("deliver-dbl-click", async (data) => {
+            console.log(data);
+            await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "delivered" } })
+        })
     });
-    client.on("deliver-dbl-click", async (data) => {
-        console.log(data);
-        // await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "seen" } })
-    })
     client.on('keyboard', function name(data) {
         console.log(data);
         client.broadcast.emit('keyboard_status', data);
