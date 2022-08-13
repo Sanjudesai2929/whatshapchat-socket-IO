@@ -202,10 +202,12 @@ io.on("connection", async (client) => {
     });
     client.on("usermsg-delete", async (data) => {
         console.log("delete msg data is :", data);
-        const msg = await Message.findOneAndDelete({ msgid: { $in: data.msg_delete_listid } })
-        console.log("delete", msg);
+        const msg1 = await Message.find({ msgid: { $in: data.msg_delete_listid } })
+
+         await Message.deletMany({ msgid: { $in: data.msg_delete_listid } })
+        console.log("delete", msg1);
         // const msg = await Message.find({ $nor: [{ msgid: data.msg_delete_listid }] })
-        client.broadcast.emit('usermsg-delete-receive', msg);
+        client.broadcast.emit('usermsg-delete-receive', msg1);
 
     })
     client.on("chat-delete", async (data) => {
@@ -214,9 +216,9 @@ io.on("connection", async (client) => {
     })
 })
 server.listen(port, async () => {
-    // const data =["89419650-1a31-11ed-9987-31e62303a938","892582d0-1a31-11ed-9987-31e62303a938"]
+    // const data =["7310d8e0-1aff-11ed-97d3-2d97b0665e1f","7fd8a300-1aff-11ed-8b81-4fd957e3d6ae"]
     console.log("server started");
-    // const msg=  await Message.findOneAndDelete({msgid:{$in:data}})
+    // const msg = await Message.findByIdAndDelete({ msgid: { $in: data} })
 
     //    console.log(msg);
 })
