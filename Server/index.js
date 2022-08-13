@@ -169,6 +169,7 @@ io.on("connection", async (client) => {
         console.log('Error detected', client.id);
         console.log(err);
     })
+    
     //listens when a user is create the room   
     client.on("create-room", async (data) => {
         console.log("create room data is", data);
@@ -186,7 +187,6 @@ io.on("connection", async (client) => {
             date: new Date().toLocaleDateString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
-
             dateTime: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
@@ -202,8 +202,8 @@ io.on("connection", async (client) => {
     });
     client.on("usermsg-delete", async (data) => {
         console.log("delete msg data is :", data);
-    const msg=  await Message.findOneAndDelete({msgid:{$in:datamsg_delete_listid}})
-console.log("delete",msg);
+        const msg = await Message.findOneAndDelete({ msgid: { $in: datamsg_delete_listid } })
+        console.log("delete", msg);
         // const msg = await Message.find({ $nor: [{ msgid: data.msg_delete_listid }] })
         client.broadcast.emit('usermsg-delete-receive', msg);
 
@@ -218,6 +218,6 @@ server.listen(port, async () => {
     console.log("server started");
     // const msg=  await Message.findOneAndDelete({msgid:{$in:data}})
 
-        //    console.log(msg);
+    //    console.log(msg);
 })
 
