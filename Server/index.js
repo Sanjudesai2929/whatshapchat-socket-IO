@@ -212,7 +212,11 @@ io.on("connection", async (client) => {
     })
     client.on("chat-delete", async (data) => {
         console.log("delete chat data is :", data);
-        //    await Message.deleteOne({})
+        const msg1 = await Message.find({ chatId: { $in: data.chat_delete_id } })
+        const msg2 = await Message.find({ sentById: msg1.sentById } )
+        await Message.deleteMany({ sentById:msg1.sentById  })
+        client.broadcast.emit('chat-delete-receive', msg2);
+
     })
 })
 server.listen(port, async () => {
