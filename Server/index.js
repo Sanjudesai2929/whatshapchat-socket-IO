@@ -204,7 +204,7 @@ io.on("connection", async (client) => {
         console.log("delete msg data is :", data);
         const msg1 = await Message.find({ msgid: { $in: data.msg_delete_listid } })
 
-         await Message.deletMany({ msgid: { $in: data.msg_delete_listid } })
+         await Message.deleteMany({ msgid: { $in: data.msg_delete_listid } })
         console.log("delete", msg1);
         // const msg = await Message.find({ $nor: [{ msgid: data.msg_delete_listid }] })
         client.broadcast.emit('usermsg-delete-receive', msg1);
