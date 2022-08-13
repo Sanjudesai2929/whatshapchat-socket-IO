@@ -6,6 +6,7 @@ router.get("/profile/:id", async (req, res) => {
  const { username, country_code, email, phone,bio,password } = req.body
     try {
         const user= await register.find({_id:_id} )
+        console.log(user);
         if(user){
             res.json({
                 status:true,

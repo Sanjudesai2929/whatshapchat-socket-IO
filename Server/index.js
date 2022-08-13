@@ -200,7 +200,17 @@ io.on("connection", async (client) => {
         })
         client.broadcast.emit("grp_message_receive", msg)
     });
+    client.on("usermsg-delete",async(data)=>{
+       console.log("delete msg data is :",data);
+    //    await Message.deleteOne({})
+    })
+    client.on("chat-delete",async(data)=>{
+        console.log("delete chat data is :",data);
+     //    await Message.deleteOne({})
+     })
 })
 server.listen(port, async () => {
     console.log("server started");
 })
+
+ 
