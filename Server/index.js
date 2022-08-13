@@ -200,17 +200,24 @@ io.on("connection", async (client) => {
         })
         client.broadcast.emit("grp_message_receive", msg)
     });
-    client.on("usermsg-delete",async(data)=>{
-       console.log("delete msg data is :",data);
-    //    await Message.deleteOne({})
+    client.on("usermsg-delete", async (data) => {
+        console.log("delete msg data is :", data);
+    const msg=  await Message.findOneAndDelete({msgid:{$in:datamsg_delete_listid}})
+console.log("delete",msg);
+        // const msg = await Message.find({ $nor: [{ msgid: data.msg_delete_listid }] })
+        client.broadcast.emit('usermsg-delete-receive', msg);
+
     })
-    client.on("chat-delete",async(data)=>{
-        console.log("delete chat data is :",data);
-     //    await Message.deleteOne({})
-     })
+    client.on("chat-delete", async (data) => {
+        console.log("delete chat data is :", data);
+        //    await Message.deleteOne({})
+    })
 })
 server.listen(port, async () => {
+    // const data =["89419650-1a31-11ed-9987-31e62303a938","892582d0-1a31-11ed-9987-31e62303a938"]
     console.log("server started");
+    // const msg=  await Message.findOneAndDelete({msgid:{$in:data}})
+
+        //    console.log(msg);
 })
 
- 
