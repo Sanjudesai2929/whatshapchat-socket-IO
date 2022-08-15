@@ -164,7 +164,6 @@ io.on("connection", async (client) => {
         client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
         connectedUser.delete(client.id);
     })
-
     //listens when there's an error detected and logs the err  or on the console
     client.on('error', function (err) {
         console.log('Error detected', client.id);
@@ -218,9 +217,9 @@ io.on("connection", async (client) => {
     })
     client.on("groupmsg-delete", async (data) => {
         console.log("delete group msg is :", data);
-        // const msg1 = await GroupMsg.find({ msgid: { $in: data.msg_delete_listid } })
-        //  await GroupMsg.deleteMany({grpid:data.grpid})
-        // client.broadcast.emit('group-msg-delete-receive', msg1);
+        const msg1 = await GroupMsg.find({ msgid: { $in: data.groupmsg_delete_listid } })
+         await GroupMsg.deleteMany({ msgid: { $in: data.groupmsg_delete_listid } })
+        client.broadcast.emit('group-msg-delete-receive', msg1);
     })
     client.on("group-chat-delete", async (data) => {
         console.log("delete group chat data is :", data);
