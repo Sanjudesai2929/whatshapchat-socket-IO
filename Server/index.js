@@ -143,7 +143,6 @@ io.on("connection", async (client) => {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: false })
         }
         client.broadcast.emit("message-receive", msgData)
-
         // client.broadcast.emit("deliver-dbl-click", { msgid: data.msgid, msgstatus: true })
         // client.on("deliver-dbl-click", async (data) => {
         //     console.log(data);
@@ -169,7 +168,6 @@ io.on("connection", async (client) => {
         console.log('Error detected', client.id);
         console.log(err);
     })
-
     //listens when a user is create the room   
     client.on("create-room", async (data) => {
         console.log("create room data is", data);
@@ -215,15 +213,13 @@ io.on("connection", async (client) => {
         const msg2 = await Message.find({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
         console.log("delete chat  :", msg2);
         await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
-        client.broadcast.emit('chat-delete-receive', msg2);
-
+        client.broadcast.emit('chat-delete-receive', {chatId:data.chat_delete_id});
     })
     client.on("groupmsg-delete", async (data) => {
         console.log("delete group msg is :", data);
         // const msg1 = await GroupMsg.find({ msgid: { $in: data.msg_delete_listid } })
         //  await GroupMsg.deleteMany({grpid:data.grpid})
         // client.broadcast.emit('group-msg-delete-receive', msg1);
-
     })
     client.on("group-chat-delete", async (data) => {
         console.log("delete group chat data is :", data);
@@ -232,7 +228,6 @@ io.on("connection", async (client) => {
         //  await Group.deleteMany({_id:data.grpid})
         //  await GroupMsg.deleteMany({grpid:data.grpid})
         // client.broadcast.emit('group-chat-delete-receive', msg);
-        
     })
 })
 server.listen(port, async () => {
