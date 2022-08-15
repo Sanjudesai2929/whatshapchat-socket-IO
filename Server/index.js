@@ -217,6 +217,7 @@ io.on("connection", async (client) => {
         console.log("delete chat  :", msg2);
         await Message.deleteMany( { $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId}] })
         client.broadcast.emit('chat-delete-receive', msg2);
+        
     })
 })
 server.listen(port, async () => {
