@@ -225,14 +225,13 @@ io.on("connection", async (client) => {
         const msg1 = await GroupMsg.find({ grpid: msg._id })
         await Group.deleteMany({ chatId: data.group_chat_id })
         await GroupMsg.deleteMany({ grpid: msg._id })
-        client.broadcast.emit('group-chat-delete-receive', { chatId: data.group_chat_id });
+        client.emit('group-chat-delete-receive', { chatId: data.group_chat_id });
     })
     client.on("live-search", async (data) => {
         console.log(data);
-        // const user = await Message.find({ sentByUsername: { $regex: "ha", $options: 'i' } })
+        // const user = await Message.find({ sentByUsername: { $regex: "ha", $options: 'i' } }).limit(10)
         // console.log(user);
         // client.broadcast.emit('live-search-response', user);
-
     })
 })
 server.listen(port, async () => {
