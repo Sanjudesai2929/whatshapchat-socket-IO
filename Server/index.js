@@ -214,6 +214,7 @@ io.on("connection", async (client) => {
         console.log("delete chat data is :", data);
         const msg1 = await Message.find({ chatId: { $in: data.chat_delete_id } })
         const msg2 = await Message.find({ targetId: msg1.targetId } )
+        console.log("delete chat  :", msg2);
         await Message.deleteMany({ targetId:msg1.targetId  })
         client.broadcast.emit('chat-delete-receive', msg2);
     })
