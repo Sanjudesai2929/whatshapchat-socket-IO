@@ -32,7 +32,6 @@ app.use("/", imgRouter)
 app.use("/", ProfileRouter)
 app.use("/", GProfileRouter)
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
-const connectedUser = new Set();
 let connectedId
 //connection established
 io.on("connection", async (client) => {
@@ -47,6 +46,7 @@ io.on("connection", async (client) => {
         // const arrayUniqueByKey = [...new Map(userwiseList.map(item =>
         //     [item["targetUsername"], item])).values()];
         var data = []
+        
         const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
@@ -56,12 +56,10 @@ io.on("connection", async (client) => {
         }
         const userwiseList1 = await Message.find({ targetUsername: user[0].username }).select({ sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
-
             const arr1 = userwiseList1.map((data) => {
                 return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId }
             })
             data.push(...arr1)
-
         }
         const val = data.filter((data) => {
             return data.chatId != ""
@@ -73,7 +71,6 @@ io.on("connection", async (client) => {
         const list1 = [...arrayUniqueByKey, ...GroupwiseList];
         console.log(list1);
         client.emit("user-wise-list", list1)
-
     })
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
@@ -85,15 +82,14 @@ io.on("connection", async (client) => {
         console.log("connectMsg", connectMsg);
         io.emit('connected-user', connectMsg);
     });
-    
     client.on('connected-group-user', async (data) => {
         console.log("connected group user is ", data);
         const connectMsg = await GroupMsg.find({ grpid: data.grpid }).sort({ date: 1 }).select({ "dateTime": 0 })
         // console.log(connectMsg);
         client.emit('connected-group-user', connectMsg);
     });
-    const data = await user.insertMany({ user_id: client.id })
-    connectedUser.add(client.id);
+    // const data = await user.insertMany({ user_id: client.id })
+   
     //Get the all user list data
     const userList = await Register.find().select({ "username": 1, "_id": 1 })
     const GroupList = await Group.find()
@@ -130,11 +126,9 @@ io.on("connection", async (client) => {
             localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus
         })
-
         client.emit("message_chatid_receive", msgData)
         client.broadcast.emit("message_chatid_receive", msgData)
         if (msgData) {
-            // console.log( { msgid: data.msgid, msgstatus: true });
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
             await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
         }
@@ -148,21 +142,20 @@ io.on("connection", async (client) => {
         //     await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "delivered" } })
         // })
     });
+    //listens when a user seen the msg   
     client.on("deliver-dbl-click", async (data) => {
         console.log(data);
         await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "seen" } })
     })
-
+    //listens when a user is open keyboard   
     client.on('keyboard', function name(data) {
         console.log(data);
         client.broadcast.emit('keyboard_status', data);
     })
-
     //listens when a user is disconnected f rom the server   
     client.on('disconnect', function (username) {
         console.log(username + 'is offline....');
         client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
-        connectedUser.delete(client.id);
     })
     //listens when there's an error detected and logs the err  or on the console
     client.on('error', function (err) {
@@ -178,6 +171,7 @@ io.on("connection", async (client) => {
         console.log(groupData);
         client.emit("create-room", groupData)
     })
+   
     //listens when a user is send the message in group chat   
     client.on('grp_message', async (user) => {
         console.log("group message is ", user);
@@ -199,6 +193,7 @@ io.on("connection", async (client) => {
         })
         client.broadcast.emit("grp_message_receive", msg)
     });
+    //listens when a user is delete the message in  chat   
     client.on("usermsg-delete", async (data) => {
         console.log("delete msg data is :", data);
         const msg1 = await Message.find({ msgid: { $in: data.msg_delete_listid } })
@@ -207,6 +202,7 @@ io.on("connection", async (client) => {
         // const msg = await Message.find({ $nor: [{ msgid: data.msg_delete_listid }] })
         client.broadcast.emit('usermsg-delete-receive', msg1);
     })
+    //listens when a user is delete the entire chat
     client.on("chat-delete", async (data) => {
         console.log("delete chat data is :", data);
         const msg1 = await Message.find({ chatId: data.chat_delete_id })
@@ -215,22 +211,24 @@ io.on("connection", async (client) => {
         await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
         client.broadcast.emit('chat-delete-receive', {chatId:data.chat_delete_id});       
     })
+    //listens when a user is delete the group message in group chat 
     client.on("groupmsg-delete", async (data) => {
         console.log("delete group msg is :", data);
         const msg1 = await GroupMsg.find({ msgid: { $in: data.groupmsg_delete_listid } })
          await GroupMsg.deleteMany({ msgid: { $in: data.groupmsg_delete_listid } })
         client.broadcast.emit('groupmsg-delete-receive', msg1);
     })
+    //listens when a admin  user is delete the group 
     client.on("group-chat-delete", async (data) => {
         console.log("delete group chat data is :", data);
-        // const msg = await Group.find({_id:data.grpid})
-        // const msg1 = await GroupMsg.find({grpid:data.grpid})
-        // await Group.deleteMany({_id:data.grpid})
-        // await GroupMsg.deleteMany({grpid:data.grpid})
-        // client.broadcast.emit('group-chat-delete-receive', msg);
+        const msg = await Group.find({chatId:data.group-chat_id})
+        console.log("delete chat",msg);
+        const msg1 = await GroupMsg.find({grpid:data._id})
+        await Group.deleteMany({chatId:data.group-chat_id})
+        await GroupMsg.deleteMany({grpid:data._id})
+        client.broadcast.emit('group-chat-delete-receive', msg);
     })  
-
-})
+})  
 server.listen(port, async () => {
     console.log("server started");
 })
