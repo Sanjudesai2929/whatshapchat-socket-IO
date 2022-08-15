@@ -203,8 +203,7 @@ io.on("connection", async (client) => {
     client.on("usermsg-delete", async (data) => {
         console.log("delete msg data is :", data);
         const msg1 = await Message.find({ msgid: { $in: data.msg_delete_listid } })
-
-         await Message.deleteMany({ msgid: { $in: data.msg_delete_listid } })
+        await Message.deleteMany({ msgid: { $in: data.msg_delete_listid } })
         console.log("delete", msg1);
         // const msg = await Message.find({ $nor: [{ msgid: data.msg_delete_listid }] })
         client.broadcast.emit('usermsg-delete-receive', msg1);
@@ -212,17 +211,33 @@ io.on("connection", async (client) => {
     })
     client.on("chat-delete", async (data) => {
         console.log("delete chat data is :", data);
-        const msg1 = await Message.find({ chatId: data.chat_delete_id  })
-        const msg2 = await Message.find( { $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId}] })
+        const msg1 = await Message.find({ chatId: data.chat_delete_id })
+        const msg2 = await Message.find({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
         console.log("delete chat  :", msg2);
-        await Message.deleteMany( { $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId}] })
+        await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
         client.broadcast.emit('chat-delete-receive', msg2);
+
+    })
+    client.on("groupmsg-delete", async (data) => {
+        console.log("delete group msg is :", data);
+        // const msg1 = await GroupMsg.find({ msgid: { $in: data.msg_delete_listid } })
+        //  await GroupMsg.deleteMany({grpid:data.grpid})
+        // client.broadcast.emit('group-msg-delete-receive', msg1);
+
+    })
+    client.on("group-chat-delete", async (data) => {
+        console.log("delete group chat data is :", data);
+        // const msg = await Group.find({_id:data.grpid})
+        // const msg1 = await GroupMsg.find({grpid:data.grpid})
+        //  await Group.deleteMany({_id:data.grpid})
+        //  await GroupMsg.deleteMany({grpid:data.grpid})
+        // client.broadcast.emit('group-chat-delete-receive', msg);
         
     })
 })
 server.listen(port, async () => {
     console.log("server started");
-  
+
 
 })
 
