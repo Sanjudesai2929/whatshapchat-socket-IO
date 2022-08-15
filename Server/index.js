@@ -144,7 +144,6 @@ io.on("connection", async (client) => {
         }
         client.broadcast.emit("message-receive", msgData)
 
-        
         // client.broadcast.emit("deliver-dbl-click", { msgid: data.msgid, msgstatus: true })
         // client.on("deliver-dbl-click", async (data) => {
         //     console.log(data);
@@ -214,10 +213,9 @@ io.on("connection", async (client) => {
     client.on("chat-delete", async (data) => {
         console.log("delete chat data is :", data);
         const msg1 = await Message.find({ chatId: { $in: data.chat_delete_id } })
-        const msg2 = await Message.find({ sentById: msg1.sentById } )
-        await Message.deleteMany({ sentById:msg1.sentById  })
+        const msg2 = await Message.find({ targetId: msg1.targetId } )
+        await Message.deleteMany({ targetId:msg1.targetId  })
         client.broadcast.emit('chat-delete-receive', msg2);
-
     })
 })
 server.listen(port, async () => {
