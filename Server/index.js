@@ -221,10 +221,10 @@ io.on("connection", async (client) => {
     //listens when a admin  user is delete the group 
     client.on("group-chat-delete", async (data) => {
         console.log("delete group chat data is :", data);
-        const msg = await Group.find({chatId:data.group-chat_id})
+        const msg = await Group.find({chatId:data.group_chat_id})
         console.log("delete chat",msg);
         const msg1 = await GroupMsg.find({grpid:data._id})
-        await Group.deleteMany({chatId:data.group-chat_id})
+        await Group.deleteMany({chatId:data.group_chat_id})
         await GroupMsg.deleteMany({grpid:data._id})
         client.broadcast.emit('group-chat-delete-receive', msg);
     })  
