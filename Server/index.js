@@ -205,7 +205,6 @@ io.on("connection", async (client) => {
         console.log("delete", msg1);
         // const msg = await Message.find({ $nor: [{ msgid: data.msg_delete_listid }] })
         client.broadcast.emit('usermsg-delete-receive', msg1);
-
     })
     client.on("chat-delete", async (data) => {
         console.log("delete chat data is :", data);
@@ -214,6 +213,7 @@ io.on("connection", async (client) => {
         console.log("delete chat  :", msg2);
         await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
         client.broadcast.emit('chat-delete-receive', {chatId:data.chat_delete_id});
+        
     })
     client.on("groupmsg-delete", async (data) => {
         console.log("delete group msg is :", data);
@@ -225,14 +225,13 @@ io.on("connection", async (client) => {
         console.log("delete group chat data is :", data);
         // const msg = await Group.find({_id:data.grpid})
         // const msg1 = await GroupMsg.find({grpid:data.grpid})
-        //  await Group.deleteMany({_id:data.grpid})
-        //  await GroupMsg.deleteMany({grpid:data.grpid})
+        // await Group.deleteMany({_id:data.grpid})
+        // await GroupMsg.deleteMany({grpid:data.grpid})
         // client.broadcast.emit('group-chat-delete-receive', msg);
     })
+    
 })
 server.listen(port, async () => {
     console.log("server started");
-
-
 })
 
