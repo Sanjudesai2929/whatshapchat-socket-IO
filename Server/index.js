@@ -144,6 +144,7 @@ io.on("connection", async (client) => {
         }
         client.broadcast.emit("message-receive", msgData)
 
+        
         // client.broadcast.emit("deliver-dbl-click", { msgid: data.msgid, msgstatus: true })
         // client.on("deliver-dbl-click", async (data) => {
         //     console.log(data);
@@ -220,10 +221,6 @@ io.on("connection", async (client) => {
     })
 })
 server.listen(port, async () => {
-    // const data =["7310d8e0-1aff-11ed-97d3-2d97b0665e1f","7fd8a300-1aff-11ed-8b81-4fd957e3d6ae"]
     console.log("server started");
-    // const msg = await Message.findByIdAndDelete({ msgid: { $in: data} })
-
-    //    console.log(msg);
 })
 
