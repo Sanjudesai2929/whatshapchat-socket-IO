@@ -212,8 +212,8 @@ io.on("connection", async (client) => {
     })
     client.on("chat-delete", async (data) => {
         console.log("delete chat data is :", data);
-        const msg1 = await Message.find({ chatId: { $in: data.chat_delete_id } })
-        const msg2 = await Message.find({ targetId: msg1.targetId } )
+        const msg1 = await Message.find({ chatId: data.chat_delete_id  })
+        const msg2 = await Message.find({ targetId: msg1[0].targetId } )
         console.log("delete chat  :", msg2);
         await Message.deleteMany({ targetId:msg1.targetId  })
         client.broadcast.emit('chat-delete-receive', msg2);
@@ -221,5 +221,7 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
+  
+
 })
 
