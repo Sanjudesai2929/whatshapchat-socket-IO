@@ -46,7 +46,6 @@ io.on("connection", async (client) => {
         // const arrayUniqueByKey = [...new Map(userwiseList.map(item =>
         //     [item["targetUsername"], item])).values()];
         var data = []
-        
         const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
@@ -89,7 +88,7 @@ io.on("connection", async (client) => {
         client.emit('connected-group-user', connectMsg);
     });
     // const data = await user.insertMany({ user_id: client.id })
-   
+
     //Get the all user list data
     const userList = await Register.find().select({ "username": 1, "_id": 1 })
     const GroupList = await Group.find()
@@ -171,7 +170,7 @@ io.on("connection", async (client) => {
         console.log(groupData);
         client.emit("create-room", groupData)
     })
-   
+
     //listens when a user is send the message in group chat   
     client.on('grp_message', async (user) => {
         console.log("group message is ", user);
@@ -207,29 +206,37 @@ io.on("connection", async (client) => {
         console.log("delete chat data is :", data);
         const msg1 = await Message.find({ chatId: data.chat_delete_id })
         const msg2 = await Message.find({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
-        console.log("delete chat  :",  {chatId:data.chat_delete_id});
+        console.log("delete chat  :", { chatId: data.chat_delete_id });
         await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
-        client.broadcast.emit('chat-delete-receive', {chatId:data.chat_delete_id});       
+        client.broadcast.emit('chat-delete-receive', { chatId: data.chat_delete_id });
     })
     //listens when a user is delete the group message in group chat 
     client.on("groupmsg-delete", async (data) => {
         console.log("delete group msg is :", data);
         const msg1 = await GroupMsg.find({ msgid: { $in: data.groupmsg_delete_listid } })
-         await GroupMsg.deleteMany({ msgid: { $in: data.groupmsg_delete_listid } })
+        await GroupMsg.deleteMany({ msgid: { $in: data.groupmsg_delete_listid } })
         client.broadcast.emit('groupmsg-delete-receive', msg1);
     })
     //listens when a admin  user is delete the group 
     client.on("group-chat-delete", async (data) => {
         console.log("delete group chat data is :", data);
-        const msg = await Group.find({chatId:data.group_chat_id})
-        console.log("delete chat",msg);
-        const msg1 = await GroupMsg.find({grpid:msg._id})
-        await Group.deleteMany({chatId:data.group_chat_id})
-        await GroupMsg.deleteMany({grpid:msg._id})
-        client.broadcast.emit('group-chat-delete-receive', {chatId:data.group_chat_id});
-    })  
-})  
+        const msg = await Group.find({ chatId: data.group_chat_id })
+        console.log("delete chat", msg);
+        const msg1 = await GroupMsg.find({ grpid: msg._id })
+        await Group.deleteMany({ chatId: data.group_chat_id })
+        await GroupMsg.deleteMany({ grpid: msg._id })
+        client.broadcast.emit('group-chat-delete-receive', { chatId: data.group_chat_id });
+    })
+    client.on("live-search", async (data) => {
+        console.log(data);
+        // const user = await Message.find({ sentByUsername: { $regex: "ha", $options: 'i' } })
+        // console.log(user);
+        // client.broadcast.emit('live-search-response', user);
+
+    })
+})
 server.listen(port, async () => {
     console.log("server started");
+
 })
 

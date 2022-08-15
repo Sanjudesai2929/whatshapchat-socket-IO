@@ -3,7 +3,6 @@ const express = require("express")
 const bcrypt = require("bcrypt")
 const router = require("./register.routes")
 const loginRouter = new express.Router()
-
 router.post("/login", async (req, res) => {
     const { username, password } = req.body
     console.log(username);
@@ -19,7 +18,6 @@ router.post("/login", async (req, res) => {
                 data:userData
             })
         }
-        
         else {
             res.json({
                 status: false,
