@@ -230,7 +230,7 @@ io.on("connection", async (client) => {
     })
     client.on("live-search", async (data) => {
         console.log(data);
-        const user = await Register.find({ username: { $regex: data, $options: 'i' } }).limit(10)
+        const user = await Register.find({ username: { $regex: data, $options: 'i' } }).limit(10).select({country_code:0,phone:0,password:0,cpassword:0})
         console.log(user);
         client.emit('live-search-response', user);
     })
