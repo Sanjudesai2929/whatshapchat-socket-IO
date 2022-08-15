@@ -213,9 +213,9 @@ io.on("connection", async (client) => {
     client.on("chat-delete", async (data) => {
         console.log("delete chat data is :", data);
         const msg1 = await Message.find({ chatId: data.chat_delete_id  })
-        const msg2 = await Message.find({ targetId: msg1[0].targetId } )
+        const msg2 = await Message.find( { $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId}] })
         console.log("delete chat  :", msg2);
-        await Message.deleteMany({ targetId:msg1[0].targetId  })
+        await Message.deleteMany( { $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId}] })
         client.broadcast.emit('chat-delete-receive', msg2);
     })
 })
