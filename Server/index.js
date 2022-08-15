@@ -223,10 +223,10 @@ io.on("connection", async (client) => {
         console.log("delete group chat data is :", data);
         const msg = await Group.find({chatId:data.group_chat_id})
         console.log("delete chat",msg);
-        const msg1 = await GroupMsg.find({grpid:data._id})
+        const msg1 = await GroupMsg.find({grpid:msg._id})
         await Group.deleteMany({chatId:data.group_chat_id})
-        await GroupMsg.deleteMany({grpid:data._id})
-        client.broadcast.emit('group-chat-delete-receive', msg);
+        await GroupMsg.deleteMany({grpid:msg._id})
+        client.broadcast.emit('group-chat-delete-receive', {chatId:data.group_chat_id});
     })  
 })  
 server.listen(port, async () => {
