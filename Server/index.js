@@ -210,10 +210,9 @@ io.on("connection", async (client) => {
         console.log("delete chat data is :", data);
         const msg1 = await Message.find({ chatId: data.chat_delete_id })
         const msg2 = await Message.find({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
-        console.log("delete chat  :", msg2);
+        console.log("delete chat  :",  {chatId:data.chat_delete_id});
         await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
-        client.broadcast.emit('chat-delete-receive', {chatId:data.chat_delete_id});
-        
+        client.broadcast.emit('chat-delete-receive', {chatId:data.chat_delete_id});       
     })
     client.on("groupmsg-delete", async (data) => {
         console.log("delete group msg is :", data);
