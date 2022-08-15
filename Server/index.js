@@ -31,12 +31,9 @@ app.use("/", loginRouter)
 app.use("/", imgRouter)
 app.use("/", ProfileRouter)
 app.use("/", GProfileRouter)
-
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
-
 const connectedUser = new Set();
 let connectedId
-
 //connection established
 io.on("connection", async (client) => {
     console.log("connected");
@@ -50,7 +47,6 @@ io.on("connection", async (client) => {
         // const arrayUniqueByKey = [...new Map(userwiseList.map(item =>
         //     [item["targetUsername"], item])).values()];
         var data = []
-
         const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
@@ -58,7 +54,6 @@ io.on("connection", async (client) => {
             })
             data.push(...arr)
         }
-
         const userwiseList1 = await Message.find({ targetUsername: user[0].username }).select({ sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
 
@@ -66,6 +61,7 @@ io.on("connection", async (client) => {
                 return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId }
             })
             data.push(...arr1)
+
         }
         const val = data.filter((data) => {
             return data.chatId != ""
@@ -77,6 +73,7 @@ io.on("connection", async (client) => {
         const list1 = [...arrayUniqueByKey, ...GroupwiseList];
         console.log(list1);
         client.emit("user-wise-list", list1)
+
     })
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
@@ -88,6 +85,7 @@ io.on("connection", async (client) => {
         console.log("connectMsg", connectMsg);
         io.emit('connected-user', connectMsg);
     });
+    
     client.on('connected-group-user', async (data) => {
         console.log("connected group user is ", data);
         const connectMsg = await GroupMsg.find({ grpid: data.grpid }).sort({ date: 1 }).select({ "dateTime": 0 })
@@ -132,6 +130,7 @@ io.on("connection", async (client) => {
             localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus
         })
+
         client.emit("message_chatid_receive", msgData)
         client.broadcast.emit("message_chatid_receive", msgData)
         if (msgData) {
@@ -151,18 +150,21 @@ io.on("connection", async (client) => {
     });
     client.on("deliver-dbl-click", async (data) => {
         console.log(data);
-        // await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "seen" } })
+        await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "seen" } })
     })
+
     client.on('keyboard', function name(data) {
         console.log(data);
         client.broadcast.emit('keyboard_status', data);
     })
+
     //listens when a user is disconnected f rom the server   
     client.on('disconnect', function (username) {
         console.log(username + 'is offline....');
         client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
         connectedUser.delete(client.id);
     })
+
     //listens when there's an error detected and logs the err  or on the console
     client.on('error', function (err) {
         console.log('Error detected', client.id);
@@ -227,8 +229,8 @@ io.on("connection", async (client) => {
         // await Group.deleteMany({_id:data.grpid})
         // await GroupMsg.deleteMany({grpid:data.grpid})
         // client.broadcast.emit('group-chat-delete-receive', msg);
-    })
-    
+    })  
+
 })
 server.listen(port, async () => {
     console.log("server started");
