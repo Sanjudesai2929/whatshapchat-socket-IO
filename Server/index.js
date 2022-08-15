@@ -125,6 +125,7 @@ io.on("connection", async (client) => {
             localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus
         })
+        
         client.emit("message_chatid_receive", msgData)
         client.broadcast.emit("message_chatid_receive", msgData)
         if (msgData) {
@@ -229,9 +230,9 @@ io.on("connection", async (client) => {
     })
     client.on("live-search", async (data) => {
         console.log(data);
-        // const user = await Message.find({ sentByUsername: { $regex: "ha", $options: 'i' } }).limit(10)
-        // console.log(user);
-        // client.emit('live-search-response', user);
+        const user = await Message.find({ sentByUsername: { $regex: data, $options: 'i' } }).limit(10)
+        console.log(user);
+        client.emit('live-search-response', user);
     })
 })
 server.listen(port, async () => {
