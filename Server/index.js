@@ -74,7 +74,7 @@ io.on("connection", async (client) => {
             [item["user"], item])).values()];
         console.log("user data is", arrayUniqueByKey);
      
-    const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: "62e0d9b8d8618bb4c4ae4eb6" } } })
+    const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
     const Groupa = GroupwiseList.map((data) => {
         return {
             grpid: (data._id).toString(),
