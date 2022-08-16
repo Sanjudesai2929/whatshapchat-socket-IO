@@ -53,22 +53,20 @@ io.on("connection", async (client) => {
         // const arrayUniqueByKey = [...new Map(userwiseList.map(item =>
         //     [item["targetUsername"], item])).values()];
         var data = []
-        const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
+        const userwiseList = await Message.find({ sentByUsername: "demouser" }).select({message:1,time:1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
-                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId }
+                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId ,message:data.message,time:data.time}
             })
             data.push(...arr)
         }
-        const userwiseList1 = await Message.find({ targetUsername: user[0].username }).select({ sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
+        const userwiseList1 = await Message.find({ targetUsername: "demouser" }).select({message:1, time:1,sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
-                return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId }
+                return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId,message:data.message,time:data.time }
             })
             data.push(...arr1)
         }
-
-        
         const val = data.filter((data) => {
             return data.chatId != ""
         })
@@ -135,6 +133,8 @@ io.on("connection", async (client) => {
         })
 
         client.emit("message_chatid_receive", msgData)
+        client.emit("user-wise-list",msgData)
+
         client.broadcast.emit("message_chatid_receive", msgData)
         if (msgData) {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
@@ -244,5 +244,9 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
+//     const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: "62e0d9b8d8618bb4c4ae4eb6" } } })
+//     const GroupwiseList1 = await GroupMsg.find({ userList: { $elemMatch: { member_id: "62e0d9b8d8618bb4c4ae4eb6" } } })
+
+//    console.log(GroupwiseList);
 
 })
