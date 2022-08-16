@@ -68,6 +68,7 @@ io.on("connection", async (client) => {
             data.push(...arr1)
         }
 
+        
         const val = data.filter((data) => {
             return data.chatId != ""
         })
@@ -81,7 +82,6 @@ io.on("connection", async (client) => {
     })
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
-
         client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
         const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).limit(100).sort({ date: 1 }).select({ "dateTime": 0 })
         console.log("connectMsg", connectMsg);
