@@ -15,6 +15,8 @@ const ProfileRouter = require("../routes/profile.routes")
 const GroupMsg = require("../Model/GroupMsg.model");
 const { ifError } = require('assert');
 const GProfileRouter = require('../routes/Gprofile.routes')
+const location = require('../routes/location.routes');
+const { DiffieHellmanGroup } = require('crypto');
 env.config()
 const port = process.env.PORT
 var server = http.createServer(app)
@@ -31,11 +33,13 @@ app.use("/", loginRouter)
 app.use("/", imgRouter)
 app.use("/", ProfileRouter)
 app.use("/", GProfileRouter)
+app.use("/", location)
+
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
 let connectedId
 //connection established
 io.on("connection", async (client) => {
-    console.log("connected");
+    console.log("connected",client.id);
     client.on("loginid", async (data) => {
         console.log("loginid is ", data);
         connectedId = data.loginuserid
@@ -136,11 +140,7 @@ io.on("connection", async (client) => {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: false })
         }
         client.broadcast.emit("message-receive", msgData)
-        // client.broadcast.emit("deliver-dbl-click", { msgid: data.msgid, msgstatus: true })
-        // client.on("deliver-dbl-click", async (data) => {
-        //     console.log(data);
-        //     await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "delivered" } })
-        // })
+     
     });
     //listens when a user seen the msg   
     client.on("deliver-dbl-click", async (data) => {
@@ -228,15 +228,16 @@ io.on("connection", async (client) => {
         await GroupMsg.deleteMany({ grpid: msg._id })
         client.broadcast.emit('group-chat-delete-receive', { chatId: data.group_chat_id });
     })
+    //listens when a admin  user is search any user
     client.on("live-search", async (data) => {
         console.log(data);
         const user = await Register.find({ username: { $regex: data, $options: 'i' } }).limit(10).select({country_code:0,phone:0,password:0,cpassword:0})
         console.log(user);
         client.emit('live-search-response', user);
     })
+
 })
 server.listen(port, async () => {
     console.log("server started");
-
 })
-
+ 

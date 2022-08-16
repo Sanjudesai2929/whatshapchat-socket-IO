@@ -50,6 +50,14 @@ const MsgSchema = new mongoose.Schema({
     extension:{
         type: String,
     },
+    longitude :{
+        type: String,
+
+    },
+    latitude:{
+        type: String,
+
+    },
     chatId:{
         type: String,
          default:""
