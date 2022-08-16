@@ -171,7 +171,7 @@ io.on("connection", async (client) => {
         const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, chatId: data.chatId, date: fullDate })
         console.log(groupData);
         client.emit("create-room", groupData)
-        client.broadcast.emit("user-wise-list ",groupData)
+        client.broadcast.emit("user-wise-list",groupData)
     })
 
     //listens when a user is send the message in group chat   
