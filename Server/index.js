@@ -133,7 +133,7 @@ io.on("connection", async (client) => {
         })
 
         client.emit("message_chatid_receive", msgData)
-        client.emit("user-wise-list",msgData)
+        client.broadcast.emit("user-wise-list",msgData)
 
         client.broadcast.emit("message_chatid_receive", msgData)
         if (msgData) {
@@ -244,9 +244,9 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-//     const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: "62e0d9b8d8618bb4c4ae4eb6" } } })
-//     const GroupwiseList1 = await GroupMsg.find({ userList: { $elemMatch: { member_id: "62e0d9b8d8618bb4c4ae4eb6" } } })
+    const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: "62e0d9b8d8618bb4c4ae4eb6" } } })
+    const GroupwiseList1 = await GroupMsg.find({ userList: { $elemMatch: { member_id: "62e0d9b8d8618bb4c4ae4eb6" } } })
 
-//    console.log(GroupwiseList);
+   console.log(GroupwiseList);
 
 })
