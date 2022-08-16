@@ -77,7 +77,7 @@ io.on("connection", async (client) => {
     const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
     const Groupa = GroupwiseList.map((data) => {
         return {
-            grpid: (data._id).toString(),
+            _id: (data._id).toString(),
             groupName: data.groupName,
             userList: data.userList,
             adminName: data.adminName,
@@ -101,7 +101,7 @@ io.on("connection", async (client) => {
     var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
 
 
-    vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj.grpid), sentByUsername: username.get(obj.grpid), time: time.get(obj.grpid) }));
+    vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
 
         const list1 = [...arrayUniqueByKey, ...vale_data];
         console.log(list1);
