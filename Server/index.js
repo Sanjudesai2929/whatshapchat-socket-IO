@@ -95,21 +95,18 @@ io.on("connection", async (client) => {
     const arrayUniqueByKey1 = [...new Map(user1.map(item =>
         [item["grpid"], item])).values()];
 
-
     var msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
     var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
     var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
 
-
-    vale_data = Groupa.map(obj => ({ ...obj, message: msg.length ?msg.get(obj._id):"", sentByUsername: username.length?username.get(obj._id):"", time: time.length ?time.get(obj._id) :""}));
-
+    vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time:time.get(obj._id)}));
         const list1 = [...arrayUniqueByKey, ...vale_data];
         console.log(list1);
         client.emit("user-wise-list", list1)
     })
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
-        client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
+        client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');  
         const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).limit(100).sort({ date: 1 }).select({ "dateTime": 0 })
         console.log("connectMsg", connectMsg);
         io.emit('connected-user', connectMsg);
@@ -124,11 +121,9 @@ io.on("connection", async (client) => {
         console.log("user-list-request", data);
         //Get the all user list data
         const userList = await Register.find().select({ "username": 1, "_id": 1 })
-
         const list = [...userList];
         client.emit("user-list", list)
     })
-
     // client.on("message_chatid", async (data) => {
     //     console.log("aa", data);
     //     const res = await Message.updateOne(
@@ -173,7 +168,6 @@ io.on("connection", async (client) => {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: false })
         }
         client.broadcast.emit("message-receive", msgData)
-
     });
     //listens when a user seen the msg   
     client.on("deliver-dbl-click", async (data) => {
@@ -265,7 +259,7 @@ io.on("connection", async (client) => {
     //listens when a admin  user is search any user
     client.on("live-search", async (data) => {
         console.log(data);
-        const user = await Register.find({ username: { $regex: data, $options: 'i' } }).limit(10).select({ country_code: 0, phone: 0, password: 0, cpassword: 0 })
+        const user = await Register.find({ username: { $regex: data, $options: 'i' }}).limit(10).select({ country_code: 0, phone: 0, password: 0, cpassword: 0 })
         console.log(user);
         client.emit('live-search-response', user);
     })
