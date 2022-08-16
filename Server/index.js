@@ -12,7 +12,7 @@ const Group = require("../Model/Group.model")
 const Register = require("../Model/register.model")
 const imgRouter = require("../routes/img.routes")
 const ProfileRouter = require("../routes/profile.routes")
-const AdminChangeRouter=require("../routes/adminChange.routes")
+const AdminChangeRouter = require("../routes/adminChange.routes")
 const GroupMsg = require("../Model/GroupMsg.model");
 const { ifError } = require('assert');
 const GProfileRouter = require('../routes/Gprofile.routes')
@@ -53,17 +53,17 @@ io.on("connection", async (client) => {
         // const arrayUniqueByKey = [...new Map(userwiseList.map(item =>
         //     [item["targetUsername"], item])).values()];
         var data = []
-        const userwiseList = await Message.find({ sentByUsername: "demouser" }).select({message:1,time:1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
+        const userwiseList = await Message.find({ sentByUsername: "demouser" }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
-                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId ,message:data.message,time:data.time}
+                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, message: data.message, time: data.time }
             })
             data.push(...arr)
         }
-        const userwiseList1 = await Message.find({ targetUsername: "demouser" }).select({message:1, time:1,sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
+        const userwiseList1 = await Message.find({ targetUsername: "demouser" }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
-                return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId,message:data.message,time:data.time }
+                return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, message: data.message, time: data.time }
             })
             data.push(...arr1)
         }
@@ -73,8 +73,37 @@ io.on("connection", async (client) => {
         const arrayUniqueByKey = [...new Map(val.map(item =>
             [item["user"], item])).values()];
         console.log("user data is", arrayUniqueByKey);
-        const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
-        const list1 = [...arrayUniqueByKey, ...GroupwiseList];
+     
+    const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: "62e0d9b8d8618bb4c4ae4eb6" } } })
+    const Groupa = GroupwiseList.map((data) => {
+        return {
+            grpid: (data._id).toString(),
+            groupName: data.groupName,
+            userList: data.userList,
+            adminName: data.adminName,
+            chatId: data.chatId,
+            date: data.date
+        }
+    })
+
+    const id = GroupwiseList.map((data) => {
+        return data._id
+    })
+
+    const user1 = await GroupMsg.find({ grpid: { $in: id } })
+
+    const arrayUniqueByKey1 = [...new Map(user1.map(item =>
+        [item["grpid"], item])).values()];
+
+
+    var msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
+    var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
+    var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
+
+
+    vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj.grpid), sentByUsername: username.get(obj.grpid), time: time.get(obj.grpid) }));
+
+        const list1 = [...arrayUniqueByKey, ...vale_data];
         console.log(list1);
         client.emit("user-wise-list", list1)
     })
@@ -91,15 +120,15 @@ io.on("connection", async (client) => {
         // console.log(connectMsg);
         client.emit('connected-group-user', connectMsg);
     });
-  client.on("user-list-request",async(data)=>{
-    console.log("user-list-request",data);
-     //Get the all user list data
-     const userList = await Register.find().select({ "username": 1, "_id": 1 })
-    
-     const list = [...userList];
-     client.emit("user-list", list)
-  })
-   
+    client.on("user-list-request", async (data) => {
+        console.log("user-list-request", data);
+        //Get the all user list data
+        const userList = await Register.find().select({ "username": 1, "_id": 1 })
+
+        const list = [...userList];
+        client.emit("user-list", list)
+    })
+
     // client.on("message_chatid", async (data) => {
     //     console.log("aa", data);
     //     const res = await Message.updateOne(
@@ -133,7 +162,7 @@ io.on("connection", async (client) => {
         })
 
         client.emit("message_chatid_receive", msgData)
-        client.broadcast.emit("user-wise-list",msgData)
+        client.broadcast.emit("user-wise-list", msgData)
 
         client.broadcast.emit("message_chatid_receive", msgData)
         if (msgData) {
@@ -174,7 +203,7 @@ io.on("connection", async (client) => {
         const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, chatId: data.chatId, date: fullDate })
         console.log(groupData);
         client.emit("create-room", groupData)
-        client.emit("user-wise-list",groupData)
+        client.emit("user-wise-list", groupData)
     })
 
     //listens when a user is send the message in group chat   
@@ -244,9 +273,6 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-    const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: "62e0d9b8d8618bb4c4ae4eb6" } } })
-    const GroupwiseList1 = await GroupMsg.find({ userList: { $elemMatch: { member_id: "62e0d9b8d8618bb4c4ae4eb6" } } })
-
-   console.log(GroupwiseList);
+  
 
 })
