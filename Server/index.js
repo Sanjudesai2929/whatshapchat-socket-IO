@@ -16,7 +16,7 @@ const GroupMsg = require("../Model/GroupMsg.model");
 const { ifError } = require('assert');
 const GProfileRouter = require('../routes/Gprofile.routes')
 const location = require('../routes/location.routes');
-const { DiffieHellmanGroup } = require('crypto');
+
 env.config()
 const port = process.env.PORT
 var server = http.createServer(app)
@@ -39,7 +39,7 @@ app.use("/upload", express.static(path.join(__dirname, "../upload")))
 let connectedId
 //connection established
 io.on("connection", async (client) => {
-    console.log("connected",client.id);
+    console.log("connected", client.id);
     client.on("loginid", async (data) => {
         console.log("loginid is ", data);
         connectedId = data.loginuserid
@@ -77,9 +77,7 @@ io.on("connection", async (client) => {
     })
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
-        // await Message.updateOne(
-        //     { $or: [{ targetId: data.targetId }, { sentById: data.targetId }] },
-        //     { $set: { chatId: data.chatId } })
+
         client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
         const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).limit(100).sort({ date: 1 }).select({ "dateTime": 0 })
         console.log("connectMsg", connectMsg);
@@ -91,13 +89,15 @@ io.on("connection", async (client) => {
         // console.log(connectMsg);
         client.emit('connected-group-user', connectMsg);
     });
-    // const data = await user.insertMany({ user_id: client.id })
-
-    //Get the all user list data
-    const userList = await Register.find().select({ "username": 1, "_id": 1 })
-    const GroupList = await Group.find()
-    const list = [...userList, ...GroupList];
-    client.emit("user-list", list)
+  client.on("user-list-request",(data)=>{
+    console.log("user-list-request",data);
+     //Get the all user list data
+     const userList = await Register.find().select({ "username": 1, "_id": 1 })
+     const GroupList = await Group.find()
+     const list = [...userList, ...GroupList];
+     client.emit("user-list", list)
+  })
+   
     // client.on("message_chatid", async (data) => {
     //     console.log("aa", data);
     //     const res = await Message.updateOne(
@@ -129,7 +129,7 @@ io.on("connection", async (client) => {
             localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus
         })
-        
+
         client.emit("message_chatid_receive", msgData)
         client.broadcast.emit("message_chatid_receive", msgData)
         if (msgData) {
@@ -140,7 +140,7 @@ io.on("connection", async (client) => {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: false })
         }
         client.broadcast.emit("message-receive", msgData)
-     
+
     });
     //listens when a user seen the msg   
     client.on("deliver-dbl-click", async (data) => {
@@ -231,7 +231,7 @@ io.on("connection", async (client) => {
     //listens when a admin  user is search any user
     client.on("live-search", async (data) => {
         console.log(data);
-        const user = await Register.find({ username: { $regex: data, $options: 'i' } }).limit(10).select({country_code:0,phone:0,password:0,cpassword:0})
+        const user = await Register.find({ username: { $regex: data, $options: 'i' } }).limit(10).select({ country_code: 0, phone: 0, password: 0, cpassword: 0 })
         console.log(user);
         client.emit('live-search-response', user);
     })
@@ -240,4 +240,3 @@ io.on("connection", async (client) => {
 server.listen(port, async () => {
     console.log("server started");
 })
- 
