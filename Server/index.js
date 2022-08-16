@@ -12,6 +12,7 @@ const Group = require("../Model/Group.model")
 const Register = require("../Model/register.model")
 const imgRouter = require("../routes/img.routes")
 const ProfileRouter = require("../routes/profile.routes")
+const AdminChangeRouter=require("../routes/adminChange.routes")
 const GroupMsg = require("../Model/GroupMsg.model");
 const { ifError } = require('assert');
 const GProfileRouter = require('../routes/Gprofile.routes')
@@ -34,6 +35,8 @@ app.use("/", imgRouter)
 app.use("/", ProfileRouter)
 app.use("/", GProfileRouter)
 app.use("/", location)
+app.use("/", AdminChangeRouter)
+
 
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
 let connectedId
@@ -171,7 +174,7 @@ io.on("connection", async (client) => {
         const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, chatId: data.chatId, date: fullDate })
         console.log(groupData);
         client.emit("create-room", groupData)
-        client.broadcast.emit("user-wise-list",groupData)
+        client.emit("user-wise-list",groupData)
     })
 
     //listens when a user is send the message in group chat   
@@ -241,4 +244,5 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
+
 })

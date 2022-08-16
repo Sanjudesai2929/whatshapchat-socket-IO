@@ -11,7 +11,7 @@ const groupSchema=new mongoose.Schema({
         }
     ],
     adminName:{
-        type:String,
+        type:Array,
     },
     chatId:{
         type:String,

@@ -11,11 +11,6 @@ router.post("/location", async (req, res) => {
 
         await Message.insertMany(req.body)
         console.log("location  data  is", req.body);
-        // const encoded = req.file.path.buffer.toString('base64')
-        // const data =new Buffer(req.file.path).toString("base64")
-        //  const data = fs.readFileSync(req.file.path, 'base64')
-        //  console.log(data);
-
         res.json({
             status: true,
             message: "location add successfully",
