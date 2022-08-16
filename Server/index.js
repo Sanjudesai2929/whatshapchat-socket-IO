@@ -97,8 +97,8 @@ io.on("connection", async (client) => {
     console.log("user-list-request",data);
      //Get the all user list data
      const userList = await Register.find().select({ "username": 1, "_id": 1 })
-     const GroupList = await Group.find()
-     const list = [...userList, ...GroupList];
+    
+     const list = [...userList];
      client.emit("user-list", list)
   })
    
