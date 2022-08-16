@@ -89,7 +89,7 @@ io.on("connection", async (client) => {
         // console.log(connectMsg);
         client.emit('connected-group-user', connectMsg);
     });
-  client.on("user-list-request",(data)=>{
+  client.on("user-list-request",async(data)=>{
     console.log("user-list-request",data);
      //Get the all user list data
      const userList = await Register.find().select({ "username": 1, "_id": 1 })
