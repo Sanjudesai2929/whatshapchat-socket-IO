@@ -67,13 +67,15 @@ io.on("connection", async (client) => {
             })
             data.push(...arr1)
         }
-        const val = data.filter((data) => {
-            return data.chatId != ""
-        })
+        const val2 = data[data.length - 1]
+   
+        // const val = data.filter((data) => {
+        //     return data.chatId != ""
+        // })
 
-        const arrayUniqueByKey = [...new Map(val.map(item =>
-            [item["user"], item])).values()];
-        console.log("user data is", arrayUniqueByKey);
+        // const arrayUniqueByKey = [...new Map(val.map(item =>
+        //     [item["user"], item])).values()];
+        console.log("user data is", val2);
         const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
         const Groupa = GroupwiseList.map((data) => {
             return {
@@ -98,7 +100,7 @@ io.on("connection", async (client) => {
         var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
 
         vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
-        const list1 = [...arrayUniqueByKey, ...vale_data];
+        const list1 = [...val2, ...vale_data];
         console.log(list1);
         client.emit("user-wise-list", list1)
     })
@@ -173,7 +175,6 @@ io.on("connection", async (client) => {
         }
         const val2 = data1[data1.length - 1]
         console.log("val2", val2);
-
         client.emit("message_chatid_receive", msgData)
         client.broadcast.emit("message_chatid_receive", msgData)
         client.emit("user-data-list-update", val2)
