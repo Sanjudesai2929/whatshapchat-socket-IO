@@ -171,24 +171,14 @@ io.on("connection", async (client) => {
             })
             data1.push(...arr1)
         }
-        const val2 = data1[data1.length-1]
-  console.log("val2",val2);
+        const val2 = data1[data1.length - 1]
+        console.log("val2", val2);
 
-
-        console.log("data1",data1);
-        const val = data1.filter((data2) => {
-            return data2.chatId != ""
-        })
-        // console.log('I1 ===',val.indexOf(val.length))
-        // console.log('val',val)
-        const arrayUniqueByKey = [...new Map(val.map(item =>
-            [item["user"], item])).values()];
-        console.log("arrayUniqueByKey", arrayUniqueByKey);
         client.emit("message_chatid_receive", msgData)
         client.broadcast.emit("message_chatid_receive", msgData)
-        client.emit("user-data-list-update", arrayUniqueByKey)
+        client.emit("user-data-list-update", val2)
 
-        client.broadcast.emit("user-data-list-update", arrayUniqueByKey)
+        client.broadcast.emit("user-data-list-update", val2)
         if (msgData) {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
             await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
