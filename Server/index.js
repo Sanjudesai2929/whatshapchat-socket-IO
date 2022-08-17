@@ -188,7 +188,6 @@ io.on("connection", async (client) => {
         else {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: false })
         }
-
     });
     //listens when a user seen the msg   
     client.on("deliver-dbl-click", async (data) => {
@@ -294,49 +293,32 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-    // let differenceArray = [
-
-    // ]
-
-    // let array = [
-    //     {
-    //         maths: {
-    //             drimil: 10,
-    //             chirag: 10
-    //         },
-    //         science: {
-    //             drimil: 34,
-    //             chirag: 10
-    //         }
-    //     },
-    //     {
-    //         maths: {
-    //             drimil: 30
-    //         }
-    //     },
-    //     {
-    //         science: {
-    //             chirag: 30
-    //         }
-    //     }
-    // ]
-
-    // let returnObject
-
-    // var uniqueResultOne = array.map(function(obj,i) {
-    //     if(!obj.maths || !array[i-1].maths){
-
-    //     }
-    //     else{
-
-    //         returnObject= obj.maths.drimil - array[i-1].maths.drimil
-    //     }
-
-    // });
-    // //  returnObject = Object.assign({}, array[i], array[i+1]);
 
 
-    // console.log(uniqueResultOne);
+        // let array = [
+        //     {
+        //         maths: {
+        //             drimil: 10,
+        //             chirag: 10
+        //         },
+        //         science: {
+        //             drimil: 34,
+        //             chirag: 10
+        //         }
+        //     },
+        //     {
+        //         maths: {
+        //             drimil: 30
+        //         }
+        //     },
+        //     {
+        //         science: {
+        //             chirag: 30
+        //         }
+        //     }
+        // ]
+
+// array.map((item,i))
     // output:
 
     // drimil: {
