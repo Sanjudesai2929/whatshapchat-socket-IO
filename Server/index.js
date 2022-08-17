@@ -171,6 +171,10 @@ io.on("connection", async (client) => {
             })
             data1.push(...arr1)
         }
+        const val2 = data1[data1[data1.length-1]]
+  console.log("val2",val2);
+
+
         console.log("data1",data1);
         const val = data1.filter((data2) => {
             return data2.chatId != ""
