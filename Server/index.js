@@ -177,12 +177,12 @@ io.on("connection", async (client) => {
 
             data2.push(...arr1)
         }
-        console.log("data1", data1);
+        console.log("data1", data2);
 
         const val2 = data1[data1.length - 1]
         console.log("val2", val2);
         const val3 = data2[data2.length - 1]
-        console.log("val2", val3);
+        console.log("val3", val3);
         client.emit("message_chatid_receive", msgData)
         client.broadcast.emit("message_chatid_receive", msgData)
         client.emit("user-data-list-update", val2)
@@ -232,7 +232,6 @@ io.on("connection", async (client) => {
         client.emit("create-room", groupData)
         client.emit("user-data-list-update", user)
         client.broadcast.emit("user-data-list-update", user)
-
     })
     //listens when a user is send the message in group chat   
     client.on('grp_message', async (user) => {
