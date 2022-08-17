@@ -171,7 +171,7 @@ io.on("connection", async (client) => {
             })
             data1.push(...arr1)
         }
-        const val2 = data1[data1[data1.length-1]]
+        const val2 = data1[data1.length-1]
   console.log("val2",val2);
 
 
