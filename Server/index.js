@@ -155,7 +155,7 @@ io.on("connection", async (client) => {
             localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus
         })
-        
+
         client.broadcast.emit("message-receive", msgData)
         var data1 = []
         const userwiseList = await Message.find({ sentByUsername: data.sentByUsername }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
@@ -181,7 +181,7 @@ io.on("connection", async (client) => {
         console.log("arrayUniqueByKey", arrayUniqueByKey);
         client.emit("message_chatid_receive", msgData)
         client.broadcast.emit("message_chatid_receive", msgData)
-        client.emit("user-wise-list", arrayUniqueByKey)
+        client.broadcast.emit("user-wise-list", arrayUniqueByKey)
         if (msgData) {
 
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
