@@ -9,10 +9,10 @@ env.config()
 
 router.post("/adminchange", async (req, res) => {
     try {
-        const { groupName, member_id, member_name } = req.body
-        const data1 = await Group.find({ groupName: groupName })
-        const data = await Group.updateMany({ groupName, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': true } })
-        data1.adminName != member_name ? await Group.updateMany({ groupName, 'userList.member_id': member_id }, { $push: { adminName: member_name } }) : console.log("aa");
+        const { chatId, member_id, member_name } = req.body
+        const data1 = await Group.find({ chatId })
+        const data = await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': true } })
+        data1.adminName != member_name ? await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $push: { adminName: member_name } }) : console.log("aa");
         res.json({
             status: true,
             message: "admin add successfully",
@@ -32,10 +32,10 @@ router.post("/adminchange", async (req, res) => {
 
 router.post("/adminremove", async (req, res) => {
     try {
-        const { groupName, member_id, member_name } = req.body
-        const data1 = await Group.find({ groupName: groupName })
-        const data = await Group.updateMany({ groupName, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': false } })
-      await Group.updateMany({ groupName, 'userList.member_id': member_id }, {  $pull: { adminName: member_name } }) 
+        const { chatId, member_id, member_name } = req.body
+        const data1 = await Group.find({chatId})
+        const data = await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': false } })
+      await Group.updateMany({ chatId, 'userList.member_id': member_id }, {  $pull: { adminName: member_name } }) 
         res.json({
             status: true,
             message: "admin remove successfully",       
