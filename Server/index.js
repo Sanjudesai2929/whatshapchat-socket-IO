@@ -179,7 +179,7 @@ io.on("connection", async (client) => {
         console.log("arrayUniqueByKey", arrayUniqueByKey);
         client.emit("message_chatid_receive", msgData)
         client.broadcast.emit("message_chatid_receive", msgData)
-        client.broadcast.emit(" ", arrayUniqueByKey)
+        client.broadcast.emit("user-data-list-update", arrayUniqueByKey)
         if (msgData) {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
             await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
@@ -222,7 +222,7 @@ io.on("connection", async (client) => {
         }
         const user = [...groupData, chat]
         client.emit("create-room", groupData)
-        client.emit("user-wise-list", user)
+        client.emit("user-data-list-update", user)
     })
     //listens when a user is send the message in group chat   
     client.on('grp_message', async (user) => {
