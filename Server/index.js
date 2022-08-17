@@ -18,6 +18,7 @@ const { ifError } = require('assert');
 const GProfileRouter = require('../routes/Gprofile.routes')
 const location = require('../routes/location.routes');
 
+
 env.config()
 const port = process.env.PORT
 var server = http.createServer(app)
@@ -175,7 +176,7 @@ io.on("connection", async (client) => {
         })
         const arrayUniqueByKey = [...new Map(val.map(item =>
             [item["user"], item])).values()];
-   
+
         client.emit("message_chatid_receive", msgData)
         client.broadcast.emit("message_chatid_receive", msgData)
         client.broadcast.emit("user-wise-list", arrayUniqueByKey)
@@ -292,7 +293,9 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-
+    // let differenceArray = [
+        
+    // ]
 
     // let array = [
     //     {
@@ -313,19 +316,22 @@ server.listen(port, async () => {
     //     {
     //         science: {
     //             chirag: 30
-    //         } 
+    //         }
     //     }
     // ]
-    // array.map((data)=>{
-    //     console.log( data.maths["drimil"])
-    // })
+    // differenceArray = array.map((v, i, a) => v - (a[i - 1] || 0));
+    // for (let i = 1; i < array.length; i++) {
+    //     differenceArray.push(Math.abs( array[i].maths- array[i - 1].maths));
+
+    // };
+    // console.log(differenceArray);
     // output:
-    
+
     // drimil: {
     // maths: 20,
     // science: 34
     // }
-    
+
     // chirag: {
     // maths: 10,
     // science: 20
