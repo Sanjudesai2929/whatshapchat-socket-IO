@@ -109,12 +109,14 @@ io.on("connection", async (client) => {
         console.log("connectMsg", connectMsg);
         client.emit('connected-user', connectMsg);
     });
+
     client.on('connected-group-user', async (data) => {
         console.log("connected group user is ", data);
         const connectMsg = await GroupMsg.find({ grpid: data.grpid }).sort({ date: 1 }).select({ "dateTime": 0 })
         // console.log(connectMsg);
         client.emit('connected-group-user', connectMsg);
     });
+
     client.on("user-list-request", async (data) => {
         console.log("user-list-request", data);
         //Get the all user list data
@@ -122,6 +124,7 @@ io.on("connection", async (client) => {
         const list = [...userList];
         client.emit("user-list", list)
     })
+
     // client.on("message_chatid", async (data) => {
     //     console.log("aa", data);
     //     const res = await Message.updateOne(
@@ -219,6 +222,7 @@ io.on("connection", async (client) => {
             time: ""
         }
         const user = [...groupData, chat]
+        console.log("user",user);
         client.emit("create-room", groupData)
         client.emit("user-data-list-update", user)
         client.broadcast.emit("user-data-list-update", user)
