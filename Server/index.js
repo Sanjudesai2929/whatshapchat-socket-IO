@@ -70,6 +70,7 @@ io.on("connection", async (client) => {
         const val = data.filter((data) => {
             return data.chatId != ""
         })
+
         const arrayUniqueByKey = [...new Map(val.map(item =>
             [item["user"], item])).values()];
         console.log("user data is", arrayUniqueByKey);
@@ -173,6 +174,7 @@ io.on("connection", async (client) => {
         const val = data1.filter((data2) => {
             return data2.chatId != ""
         })
+        console.log('I1 ===',val.indexOf(val.length))
 
         const arrayUniqueByKey = [...new Map(val.map(item =>
             [item["user"], item])).values()];
@@ -218,7 +220,7 @@ io.on("connection", async (client) => {
         const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, chatId: data.chatId, date: fullDate })
         console.log(groupData);
         const chat = {
-            message:"",
+            message: "",
             sentByUsername: "",
             time: ""
         }
@@ -295,5 +297,5 @@ io.on("connection", async (client) => {
 server.listen(port, async () => {
     console.log("server started");
 
-   
+
 })
