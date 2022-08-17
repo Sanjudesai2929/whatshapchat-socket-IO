@@ -53,14 +53,14 @@ io.on("connection", async (client) => {
         // const arrayUniqueByKey = [...new Map(userwiseList.map(item =>
         //     [item["targetUsername"], item])).values()];
         var data = []
-        const userwiseList = await Message.find({ sentByUsername: "demouser" }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
+        const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
                 return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, message: data.message, time: data.time }
             })
             data.push(...arr)
         }
-        const userwiseList1 = await Message.find({ targetUsername: "demouser" }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
+        const userwiseList1 = await Message.find({ targetUsername: user[0].username }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
                 return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, message: data.message, time: data.time }
@@ -73,40 +73,40 @@ io.on("connection", async (client) => {
         const arrayUniqueByKey = [...new Map(val.map(item =>
             [item["user"], item])).values()];
         console.log("user data is", arrayUniqueByKey);
-     
-    const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
-    const Groupa = GroupwiseList.map((data) => {
-        return {
-            _id: (data._id).toString(),
-            groupName: data.groupName,
-            userList: data.userList,
-            adminName: data.adminName,
-            chatId: data.chatId,
-            date: data.date
-        }
-    })
 
-    const id = GroupwiseList.map((data) => {
-        return data._id
-    })
+        const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
+        const Groupa = GroupwiseList.map((data) => {
+            return {
+                _id: (data._id).toString(),
+                groupName: data.groupName,
+                userList: data.userList,
+                adminName: data.adminName,
+                chatId: data.chatId,
+                date: data.date
+            }
+        })
 
-    const user1 = await GroupMsg.find({ grpid: { $in: id } })
+        const id = GroupwiseList.map((data) => {
+            return data._id
+        })
 
-    const arrayUniqueByKey1 = [...new Map(user1.map(item =>
-        [item["grpid"], item])).values()];
+        const user1 = await GroupMsg.find({ grpid: { $in: id } })
 
-    var msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
-    var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
-    var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
+        const arrayUniqueByKey1 = [...new Map(user1.map(item =>
+            [item["grpid"], item])).values()];
 
-    vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time:time.get(obj._id)}));
+        var msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
+        var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
+        var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
+
+        vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
         const list1 = [...arrayUniqueByKey, ...vale_data];
         console.log(list1);
         client.emit("user-wise-list", list1)
     })
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
-        client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');  
+        client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
         const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).limit(100).sort({ date: 1 }).select({ "dateTime": 0 })
         console.log("connectMsg", connectMsg);
         io.emit('connected-user', connectMsg);
@@ -155,10 +155,9 @@ io.on("connection", async (client) => {
             localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus
         })
-const msg={user: msgData.sentByUsername, _id: msgData._id, chatId: msgData.chatId, message: msgData.message, time: msgData.time}
+        const msg = { user: msgData.sentByUsername, _id: msgData._id, chatId: msgData.chatId, message: msgData.message, time: msgData.time }
         client.emit("message_chatid_receive", msgData)
         client.broadcast.emit("user-wise-list", msg)
-
         client.broadcast.emit("message_chatid_receive", msgData)
         if (msgData) {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
@@ -196,12 +195,12 @@ const msg={user: msgData.sentByUsername, _id: msgData._id, chatId: msgData.chatI
         const fullDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
         const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, chatId: data.chatId, date: fullDate })
         console.log(groupData);
-        const chat={
-            message:"",
-            sentByUsername:"",
-            time:""
+        const chat = {
+            message: "",
+            sentByUsername: "",
+            time: ""
         }
-        const user = [...groupData,chat]
+        const user = [...groupData, chat]
         client.emit("create-room", groupData)
         client.emit("user-wise-list", user)
     })
@@ -265,7 +264,7 @@ const msg={user: msgData.sentByUsername, _id: msgData._id, chatId: msgData.chatI
     //listens when a admin  user is search any user
     client.on("live-search", async (data) => {
         console.log(data);
-        const user = await Register.find({ username: { $regex: data, $options: 'i' }}).limit(10).select({ country_code: 0, phone: 0, password: 0, cpassword: 0 })
+        const user = await Register.find({ username: { $regex: data, $options: 'i' } }).limit(10).select({ country_code: 0, phone: 0, password: 0, cpassword: 0 })
         console.log(user);
         client.emit('live-search-response', user);
     })
@@ -273,5 +272,42 @@ const msg={user: msgData.sentByUsername, _id: msgData._id, chatId: msgData.chatI
 })
 server.listen(port, async () => {
     console.log("server started");
-   
+
+
+    // let array = [
+    //     {
+    //         maths: {
+    //             drimil: 10,
+    //             chirag: 10
+    //         },
+    //         science: {
+    //             drimil: 34,
+    //             chirag: 10
+    //         }
+    //     },
+    //     {
+    //         maths: {
+    //             drimil: 30
+    //         }
+    //     },
+    //     {
+    //         science: {
+    //             chirag: 30
+    //         } 
+    //     }
+    // ]
+    // array.map((data)=>{
+    //     console.log( data.maths["drimil"])
+    // })
+    // output:
+    
+    // drimil: {
+    // maths: 20,
+    // science: 34
+    // }
+    
+    // chirag: {
+    // maths: 10,
+    // science: 20
+    // }
 })
