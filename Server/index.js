@@ -171,12 +171,12 @@ io.on("connection", async (client) => {
             })
             data1.push(...arr1)
         }
+        console.log("data1",data1);
         const val = data1.filter((data2) => {
             return data2.chatId != ""
         })
-        console.log('I1 ===',val.indexOf(val.length))
-        console.log('val',val)
-
+        // console.log('I1 ===',val.indexOf(val.length))
+        // console.log('val',val)
         const arrayUniqueByKey = [...new Map(val.map(item =>
             [item["user"], item])).values()];
         console.log("arrayUniqueByKey", arrayUniqueByKey);
