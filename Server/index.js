@@ -174,9 +174,9 @@ io.on("connection", async (client) => {
                 return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, message: data.message, time: data.time }
             })
             console.log("arr1", arr1);
-
             data2.push(...arr1)
         }
+        
         console.log("data1", data2);
         const val2 = data1[data1.length - 1]
         console.log("val2", val2);
