@@ -73,7 +73,6 @@ io.on("connection", async (client) => {
         const arrayUniqueByKey = [...new Map(val.map(item =>
             [item["user"], item])).values()];
         console.log("user data is", arrayUniqueByKey);
-
         const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
         const Groupa = GroupwiseList.map((data) => {
             return {
@@ -85,7 +84,6 @@ io.on("connection", async (client) => {
                 date: data.date
             }
         })
-
         const id = GroupwiseList.map((data) => {
             return data._id
         })
@@ -181,9 +179,8 @@ io.on("connection", async (client) => {
         console.log("arrayUniqueByKey", arrayUniqueByKey);
         client.emit("message_chatid_receive", msgData)
         client.broadcast.emit("message_chatid_receive", msgData)
-        client.broadcast.emit("user-wise-list", arrayUniqueByKey)
+        client.broadcast.emit(" ", arrayUniqueByKey)
         if (msgData) {
-
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
             await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
         }
@@ -219,7 +216,7 @@ io.on("connection", async (client) => {
         const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, chatId: data.chatId, date: fullDate })
         console.log(groupData);
         const chat = {
-            message: "",
+            message:"",
             sentByUsername: "",
             time: ""
         }
@@ -227,7 +224,6 @@ io.on("connection", async (client) => {
         client.emit("create-room", groupData)
         client.emit("user-wise-list", user)
     })
-
     //listens when a user is send the message in group chat   
     client.on('grp_message', async (user) => {
         console.log("group message is ", user);
@@ -291,43 +287,51 @@ io.on("connection", async (client) => {
         console.log(user);
         client.emit('live-search-response', user);
     })
-
 })
 server.listen(port, async () => {
     console.log("server started");
 
 
-        // let array = [
-        //     {
-        //         maths: {
-        //             drimil: 10,
-        //             chirag: 10
-        //         },
-        //         science: {
-        //             drimil: 34,
-        //             chirag: 10
-        //         }
-        //     },
-        //     {
-        //         maths: {
-        //             drimil: 30
-        //         }
-        //     },
-        //     {
-        //         science: {
-        //             chirag: 30
-        //         }
-        //     }
-        // ]
+    // let array = [
+    //     {
+    //         maths: {
+    //             drimil: 10,
+    //             chirag: 10
+    //         },
+    //         science: {
+    //             drimil: 34,
+    //             chirag: 10
+    //         }
+    //     },
+    //     {
+    //         maths: {
+    //             drimil: 30
+    //         }
+    //     },
+    //     {
+    //         maths: {
+    //             drimil: 0,
+    //             chirag: 0
 
-// array.map((item,i))
+    //         },
+    //         science: {
+    //             chirag: 30
+    //         }
+    //     }
+    // ]
+    // let aa
+    // const data = array.map((item, i) => {
+
+    //     aa = array.maths['drimil'] - array[i - 1].maths.drimil
+    //     return aa
+
+    // })
+    // console.log(data);
     // output:
-
     // drimil: {
     // maths: 20,
     // science: 34
     // }
-
     // chirag: {
     // maths: 10,
     // science: 20
