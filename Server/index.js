@@ -180,7 +180,7 @@ io.on("connection", async (client) => {
         client.broadcast.emit("message_chatid_receive", msgData)
         client.broadcast.emit("user-wise-list", arrayUniqueByKey)
 
-        console.log("aa", data.msgid);
+        console.log("aa", msgData[0].msgid);
         client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
         await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
 
