@@ -155,9 +155,29 @@ io.on("connection", async (client) => {
             localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus
         })
-        const msg = { user: msgData.sentByUsername, _id: msgData._id, chatId: msgData.chatId, message: msgData.message, time: msgData.time }
+        var data = []
+        const userwiseList = await Message.find({ sentByUsername: data.sentByUsername }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
+        if (userwiseList) {
+            const arr = userwiseList.map((data) => {
+                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, message: data.message, time: data.time }
+            })
+            data.push(...arr)
+        }
+        const userwiseList1 = await Message.find({ targetUsername: data.sentByUsername }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
+        if (userwiseList1) {
+            const arr1 = userwiseList1.map((data) => {
+                return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, message: data.message, time: data.time }
+            })
+            data.push(...arr1)
+        }
+        const val = data.filter((data) => {
+            return data.chatId != ""
+        })
+        const arrayUniqueByKey = [...new Map(val.map(item =>
+            [item["user"], item])).values()];
+   
         client.emit("message_chatid_receive", msgData)
-        client.broadcast.emit("user-wise-list", msg)
+        client.broadcast.emit("user-wise-list", arrayUniqueByKey)
         client.broadcast.emit("message_chatid_receive", msgData)
         if (msgData) {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
