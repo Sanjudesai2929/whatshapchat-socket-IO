@@ -178,7 +178,6 @@ io.on("connection", async (client) => {
             data2.push(...arr1)
         }
         console.log("data1", data2);
-
         const val2 = data1[data1.length - 1]
         console.log("val2", val2);
         const val3 = data2[data2.length - 1]
