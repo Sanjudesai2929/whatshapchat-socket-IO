@@ -174,6 +174,7 @@ io.on("connection", async (client) => {
         const val = data1.filter((data2) => {
             return data2.chatId != ""
         })
+        
         const arrayUniqueByKey = [...new Map(val.map(item =>
             [item["user"], item])).values()];
         console.log("arrayUniqueByKey", arrayUniqueByKey);
