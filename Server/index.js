@@ -176,7 +176,7 @@ io.on("connection", async (client) => {
         })
         const arrayUniqueByKey = [...new Map(val.map(item =>
             [item["user"], item])).values()];
-
+console.log("arrayUniqueByKey",arrayUniqueByKey);
         client.emit("message_chatid_receive", msgData)
         client.broadcast.emit("message_chatid_receive", msgData)
         client.broadcast.emit("user-wise-list", arrayUniqueByKey)
