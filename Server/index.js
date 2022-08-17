@@ -87,7 +87,6 @@ io.on("connection", async (client) => {
         const id = GroupwiseList.map((data) => {
             return data._id
         })
-
         const user1 = await GroupMsg.find({ grpid: { $in: id } })
 
         const arrayUniqueByKey1 = [...new Map(user1.map(item =>
@@ -155,6 +154,7 @@ io.on("connection", async (client) => {
         })
 
         client.broadcast.emit("message-receive", msgData)
+        // user-data-list-update data 
         var data1 = []
         const userwiseList = await Message.find({ sentByUsername: data.targetUsername }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
@@ -179,6 +179,8 @@ io.on("connection", async (client) => {
         console.log("arrayUniqueByKey", arrayUniqueByKey);
         client.emit("message_chatid_receive", msgData)
         client.broadcast.emit("message_chatid_receive", msgData)
+        client.emit("user-data-list-update", arrayUniqueByKey)
+
         client.broadcast.emit("user-data-list-update", arrayUniqueByKey)
         if (msgData) {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
@@ -223,6 +225,8 @@ io.on("connection", async (client) => {
         const user = [...groupData, chat]
         client.emit("create-room", groupData)
         client.emit("user-data-list-update", user)
+        client.broadcast.emit("user-data-list-update", user)
+
     })
     //listens when a user is send the message in group chat   
     client.on('grp_message', async (user) => {
@@ -291,49 +295,5 @@ io.on("connection", async (client) => {
 server.listen(port, async () => {
     console.log("server started");
 
-
-    // let array = [
-    //     {
-    //         maths: {
-    //             drimil: 10,
-    //             chirag: 10
-    //         },
-    //         science: {
-    //             drimil: 34,
-    //             chirag: 10
-    //         }
-    //     },
-    //     {
-    //         maths: {
-    //             drimil: 30
-    //         }
-    //     },
-    //     {
-    //         maths: {
-    //             drimil: 0,
-    //             chirag: 0
-
-    //         },
-    //         science: {
-    //             chirag: 30
-    //         }
-    //     }
-    // ]
-    // let aa
-    // const data = array.map((item, i) => {
-
-    //     aa = array.maths['drimil'] - array[i - 1].maths.drimil
-    //     return aa
-
-    // })
-    // console.log(data);
-    // output:
-    // drimil: {
-    // maths: 20,
-    // science: 34
-    // }
-    // chirag: {
-    // maths: 10,
-    // science: 20
-    // }
+   
 })
