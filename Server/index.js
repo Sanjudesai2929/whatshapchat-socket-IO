@@ -18,7 +18,6 @@ const { ifError } = require('assert');
 const GProfileRouter = require('../routes/Gprofile.routes')
 const location = require('../routes/location.routes');
 
-
 env.config()
 const port = process.env.PORT
 var server = http.createServer(app)
@@ -180,13 +179,11 @@ io.on("connection", async (client) => {
         client.emit("message_chatid_receive", msgData)
         client.broadcast.emit("message_chatid_receive", msgData)
         client.broadcast.emit("user-wise-list", arrayUniqueByKey)
-        if (msgData) {
-            client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
-            await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
-        }
-        else {
-            client.emit("deliver-status", { msgid: data.msgid, msgstatus: false })
-        }
+
+        console.log("aa", data.msgid);
+        client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
+        await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
+
         client.broadcast.emit("message-receive", msgData)
     });
     //listens when a user seen the msg   
@@ -294,7 +291,7 @@ io.on("connection", async (client) => {
 server.listen(port, async () => {
     console.log("server started");
     // let differenceArray = [
-        
+
     // ]
 
     // let array = [
@@ -319,12 +316,23 @@ server.listen(port, async () => {
     //         }
     //     }
     // ]
-    // differenceArray = array.map((v, i, a) => v - (a[i - 1] || 0));
-    // for (let i = 1; i < array.length; i++) {
-    //     differenceArray.push(Math.abs( array[i].maths- array[i - 1].maths));
 
-    // };
-    // console.log(differenceArray);
+    // let returnObject
+
+    // var uniqueResultOne = array.map(function(obj,i) {
+    //     if(!obj.maths || !array[i-1].maths){
+
+    //     }
+    //     else{
+
+    //         returnObject= obj.maths.drimil - array[i-1].maths.drimil
+    //     }
+
+    // });
+    // //  returnObject = Object.assign({}, array[i], array[i+1]);
+
+
+    // console.log(uniqueResultOne);
     // output:
 
     // drimil: {
