@@ -167,7 +167,7 @@ io.on("connection", async (client) => {
             })
             data1.push(...arr)
         }
-        const userwiseList1 = await Message.find({ targetUsername: data.targetUsername }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
+        const userwiseList1 = await Message.find({ targetUsername: data.sentByUsername }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
                 return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, message: data.message, time: data.time }
@@ -175,7 +175,7 @@ io.on("connection", async (client) => {
             data1.push(...arr1)
         }
 
-        
+
         const val2 = data1[data1.length - 1]
         console.log("val2", val2);
         client.emit("message_chatid_receive", msgData)
