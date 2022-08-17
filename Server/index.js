@@ -109,14 +109,12 @@ io.on("connection", async (client) => {
         console.log("connectMsg", connectMsg);
         client.emit('connected-user', connectMsg);
     });
-
     client.on('connected-group-user', async (data) => {
         console.log("connected group user is ", data);
         const connectMsg = await GroupMsg.find({ grpid: data.grpid }).sort({ date: 1 }).select({ "dateTime": 0 })
         // console.log(connectMsg);
         client.emit('connected-group-user', connectMsg);
     });
-
     client.on("user-list-request", async (data) => {
         console.log("user-list-request", data);
         //Get the all user list data
@@ -160,31 +158,35 @@ io.on("connection", async (client) => {
         client.broadcast.emit("message-receive", msgData)
         // user-data-list-update data 
         var data1 = []
+        var data2 = []
+
         const userwiseList = await Message.find({ sentByUsername: data.sentByUsername }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
                 return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, message: data.message, time: data.time }
             })
-            console.log("arr",arr);
+            console.log("arr", arr);
             data1.push(...arr)
         }
-        const userwiseList1 = await Message.find({ targetUsername: data.sentByUsername }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
+        const userwiseList1 = await Message.find({ targetUsername: data.targetUsername }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
                 return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, message: data.message, time: data.time }
             })
-            console.log("arr1",arr1);
+            console.log("arr1", arr1);
 
-            data1.push(...arr1)
+            data2.push(...arr1)
         }
         console.log("data1", data1);
 
         const val2 = data1[data1.length - 1]
         console.log("val2", val2);
+        const val3 = data2[data2.length - 1]
+        console.log("val2", val3);
         client.emit("message_chatid_receive", msgData)
         client.broadcast.emit("message_chatid_receive", msgData)
         client.emit("user-data-list-update", val2)
-        client.broadcast.emit("user-data-list-update", val2)
+        client.broadcast.emit("user-data-list-update", val3)
         if (msgData) {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
             await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
@@ -226,7 +228,7 @@ io.on("connection", async (client) => {
             time: ""
         }
         const user = [...groupData, chat]
-        console.log("user",user);
+        console.log("user", user);
         client.emit("create-room", groupData)
         client.emit("user-data-list-update", user)
         client.broadcast.emit("user-data-list-update", user)
@@ -278,6 +280,7 @@ io.on("connection", async (client) => {
         await GroupMsg.deleteMany({ msgid: { $in: data.groupmsg_delete_listid } })
         client.broadcast.emit('groupmsg-delete-receive', msg1);
     })
+
     //listens when a admin  user is delete the group 
     client.on("group-chat-delete", async (data) => {
         console.log("delete group chat data is :", data);
@@ -298,4 +301,45 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
+    // const array = [
+    //     {
+    //         maths: {
+    //             abc: 40,
+    //             pqr: 30
+    //         },
+    //         science: {
+    //             abc: 30,
+    //             pqr: 20
+    //         }
+    //     },
+    //     {
+
+    //         maths: {
+    //             abc: 20,
+    //             pqr: 20
+    //         }
+    //     },
+    //     {
+
+    //         science: {
+    //             abc: 20,
+    //             pqr: 10
+    //         }
+    //     },
+
+    // ]
+    // array.map((item,i)=>{
+    //     console.log(item.maths && item.maths.abc - item.maths && array[i-1].maths.abc
+    //         );
+    // })
+    //  {
+    //     abc:{
+    //         maths:,
+    //         science:
+    //     },
+    //     pqr:{
+    //         maths:,
+    //         science:
+    //     }
+    //  }
 })
