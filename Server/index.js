@@ -100,7 +100,7 @@ io.on("connection", async (client) => {
         var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
 
         vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
-        const list1 = [...val2, ...vale_data];
+        const list1 = [val2, ...vale_data];
         console.log(list1);
         client.emit("user-wise-list", list1)
     })
