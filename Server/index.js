@@ -159,8 +159,6 @@ io.on("connection", async (client) => {
         console.log("msgData", msgData)
         
         client.broadcast.emit("message-receive", msgData)
-
-
         // client.emit("message_chatid_receive", msgData)
         // client.broadcast.emit("message_chatid_receive", msgData)
         // user-data-list-update data 
@@ -174,6 +172,7 @@ io.on("connection", async (client) => {
           
             data1.push(...arr)
         }
+
         const userwiseList1 = await Message.find({ targetUsername: data.targetUsername }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
