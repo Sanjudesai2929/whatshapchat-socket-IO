@@ -46,7 +46,9 @@ io.on("connection", async (client) => {
     client.on("loginid", async (data) => {
         console.log("loginid is ", data);
         connectedId = data.loginuserid
+        client.broadcast.emit("user-online-status-update", { status: "online" })
         client.emit("user-online-status-update", { status: "online" })
+
         await Register.update({ _id: connectedId }, { $set: { status: "online" } })
         const user = await Register.find({ _id: connectedId })
         // client.broadcast.emit('is_online', '🔵 <i>' + user[0].username + ' join the chat..</i>');
@@ -206,7 +208,9 @@ io.on("connection", async (client) => {
     client.on('disconnect', async function (username) {
         console.log(connectedId + 'is offline....');
         client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');   
+        client.broadcast.emit("user-online-status-update",{status:"offline"})
         client.emit("user-online-status-update",{status:"offline"})
+
         await Register.update({ _id: connectedId },{$set:{status:"offline"}})
     })
 
