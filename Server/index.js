@@ -46,6 +46,8 @@ io.on("connection", async (client) => {
     client.on("loginid", async (data) => {
         console.log("loginid is ", data);
         connectedId = data.loginuserid
+
+
         client.emit("user-online-status-update", { status: "online" })
         await Register.update({ _id: connectedId }, { $set: { status: "online" } })
         const user = await Register.find({ _id: connectedId })
@@ -207,9 +209,9 @@ io.on("connection", async (client) => {
         console.log(username + 'is offline....');
         client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');   
         client.emit("user-online-status-update",{status:"offline"})
-        await Register.update({ username: username },{$set:{status:"offline"}})
+        await Register.update({ username: connectedId },{$set:{status:"offline"}})
     })
-    
+
     //listens when there's an error detected and logs the err  or on the console
     client.on('error', function (err) {
         console.log('Error detected', client.id);
@@ -299,8 +301,7 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-  
- 
+
     // let array = [
     //     {
     //         maths: {
