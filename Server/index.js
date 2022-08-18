@@ -159,7 +159,6 @@ io.on("connection", async (client) => {
         console.log("msgData", msgData)
         
 
-        client.broadcast.emit("message-receive", msgData[0])
         // client.emit("message_chatid_receive", msgData)
         // client.broadcast.emit("message_chatid_receive", msgData)
         // user-data-list-update data 
@@ -188,6 +187,8 @@ io.on("connection", async (client) => {
         console.log("val3", val3);
 
         client.emit("user-data-list-update", val2)
+        client.broadcast.emit("message-receive", msgData)
+
         client.broadcast.emit("user-data-list-update", val3)
         if (msgData) {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
