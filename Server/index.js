@@ -74,7 +74,7 @@ io.on("connection", async (client) => {
         }
         const msgUser = await Message.find().sort({ dateTime: -1 }).limit(1)
 
-        if (msgUser[0].type == "location") {
+        if (msgUser.length && msgUser[0].type == "location") {
             var userData = new Map(msgUser.map(({ chatId }) => ([chatId, "location"])));
         }
         else {
@@ -254,8 +254,7 @@ io.on("connection", async (client) => {
         console.log("user", user);
         client.emit("create-room", groupData)
         client.emit("user-data-list-update", user)
-        client.broadcast.emit("user-data-list-update", user)
-        
+        client.broadcast.emit("user-data-list-update", user)    
     })
     //listens when a user is send the message in group chat   
     client.on('grp_message', async (user) => {
