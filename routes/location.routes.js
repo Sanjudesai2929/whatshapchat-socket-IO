@@ -9,7 +9,7 @@ env.config()
 router.post("/location", async (req, res) => {
     try {
 
-        await Message.insertMany(req.body)
+        // await Message.insertMany(req.body)
         console.log("location  data  is", req.body);
         res.json({
             status: true,

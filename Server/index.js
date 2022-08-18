@@ -34,7 +34,7 @@ app.use("/", loginRouter)
 app.use("/", imgRouter)
 app.use("/", ProfileRouter)
 app.use("/", GProfileRouter)
-app.use("/", location)
+// app.use("/", location)
 app.use("/", AdminChangeRouter)
 
 
@@ -139,22 +139,22 @@ io.on("connection", async (client) => {
     //listen when user is send the message
     client.on("message", async (data) => {
         console.log("message data ", data);
-        const msgData = await Message.insertMany({
-            message: data.message, sentByUsername: data.sentByUsername, sentById: data.sentById, targetId: data.targetId, targetUsername: data.targetUsername, msgid: data.msgid, chatId: data.chatId,
-            date: new Date().toLocaleDateString('en-US', {
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-            }),
-            dateTime: new Date().toLocaleString('en-US', {
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-            }),
-            day: data.day,
-            time: new Date().toLocaleTimeString('en-US', {
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                hour: '2-digit', minute: '2-digit'
-            }),
-            localpath: data.localpath,
-            path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus
-        })
+        // const msgData = await Message.insertMany({
+        //     message: data.message, sentByUsername: data.sentByUsername, sentById: data.sentById, targetId: data.targetId, targetUsername: data.targetUsername, msgid: data.msgid, chatId: data.chatId,
+        //     date: new Date().toLocaleDateString('en-US', {
+        //         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        //     }),
+        //     dateTime: new Date().toLocaleString('en-US', {
+        //         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        //     }),
+        //     day: data.day,
+        //     time: new Date().toLocaleTimeString('en-US', {
+        //         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        //         hour: '2-digit', minute: '2-digit'
+        //     }),
+        //     localpath: data.localpath,
+        //     path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus
+        // })
         console.log("msgData", msgData)
         client.broadcast.emit("message-receive", msgData)
         client.emit("testing", "hello")
