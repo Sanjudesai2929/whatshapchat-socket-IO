@@ -157,9 +157,9 @@ io.on("connection", async (client) => {
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus
         })
         console.log("msgData", msgData)
-        client.emit("message-receive", msgData)
+        
 
-        client.broadcast.emit("message-receive", msgData)
+        client.broadcast.emit("message-receive", msgData[0])
         // client.emit("message_chatid_receive", msgData)
         // client.broadcast.emit("message_chatid_receive", msgData)
         // user-data-list-update data 
