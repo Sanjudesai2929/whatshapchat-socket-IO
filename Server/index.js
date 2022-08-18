@@ -139,6 +139,7 @@ io.on("connection", async (client) => {
     //listen when user is send the message
     client.on("message", async (data) => {
         console.log("message data ", data);
+        const msgData={}
         // const msgData = await Message.insertMany({
         //     message: data.message, sentByUsername: data.sentByUsername, sentById: data.sentById, targetId: data.targetId, targetUsername: data.targetUsername, msgid: data.msgid, chatId: data.chatId,
         //     date: new Date().toLocaleDateString('en-US', {
