@@ -206,10 +206,10 @@ io.on("connection", async (client) => {
     })
     //listens when a user is disconnected f rom the server   
     client.on('disconnect', async function (username) {
-        console.log(username + 'is offline....');
+        console.log(connectedId + 'is offline....');
         client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');   
         client.emit("user-online-status-update",{status:"offline"})
-        await Register.update({ username: connectedId },{$set:{status:"offline"}})
+        await Register.update({ _id: connectedId },{$set:{status:"offline"}})
     })
 
     //listens when there's an error detected and logs the err  or on the console
