@@ -158,8 +158,8 @@ io.on("connection", async (client) => {
         })
         console.log("msgData", msgData)
         
-        // client.broadcast.emit("message-receive", msgData)
-        client.broadcast.emit("testing", "hello")
+        client.broadcast.emit("message-receive", msgData)
+
 
         // client.emit("message_chatid_receive", msgData)
         // client.broadcast.emit("message_chatid_receive", msgData)
