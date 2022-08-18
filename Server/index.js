@@ -159,6 +159,10 @@ io.on("connection", async (client) => {
         console.log("msgData", msgData)
         
         client.broadcast.emit("message-receive", msgData)
+        client.emit("testing", "hello")
+
+        client.broadcast.emit("testing", "hello")
+
         // client.emit("message_chatid_receive", msgData)
         // client.broadcast.emit("message_chatid_receive", msgData)
         // user-data-list-update data 
@@ -168,11 +172,9 @@ io.on("connection", async (client) => {
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
                 return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, message: data.message, time: data.time }
-            })
-          
+            })   
             data1.push(...arr)
         }
-
         const userwiseList1 = await Message.find({ targetUsername: data.targetUsername }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
@@ -181,15 +183,11 @@ io.on("connection", async (client) => {
        
             data2.push(...arr1)
         }
-        
         const val2 = data1[data1.length - 1]
         console.log("val2", val2);
         const val3 = data2[data2.length - 1]
         console.log("val3", val3);
-
-
         client.emit("user-data-list-update", val2)
-
         client.broadcast.emit("user-data-list-update", val3)
         if (msgData) {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
