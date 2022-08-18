@@ -157,6 +157,9 @@ io.on("connection", async (client) => {
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus
         })
         console.log("msgData", msgData)
+        client.emit("message-receive", msgData)
+
+        client.broadcast.emit("message-receive", msgData)
         // client.emit("message_chatid_receive", msgData)
         // client.broadcast.emit("message_chatid_receive", msgData)
         // user-data-list-update data 
@@ -186,8 +189,6 @@ io.on("connection", async (client) => {
 
         client.emit("user-data-list-update", val2)
         client.broadcast.emit("user-data-list-update", val3)
-        client.broadcast.emit("message-receive", msgData)
-
         if (msgData) {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
             await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
