@@ -156,6 +156,8 @@ io.on("connection", async (client) => {
         })
 
         client.broadcast.emit("message-receive", msgData)
+        client.emit("message_chatid_receive", msgData)
+        client.broadcast.emit("message_chatid_receive", msgData)
         // user-data-list-update data 
         var data1 = []
         var data2 = []
@@ -180,8 +182,7 @@ io.on("connection", async (client) => {
         console.log("val2", val2);
         const val3 = data2[data2.length - 1]
         console.log("val3", val3);
-        client.emit("message_chatid_receive", msgData)
-        client.broadcast.emit("message_chatid_receive", msgData)
+      
         client.emit("user-data-list-update", val2)
         client.broadcast.emit("user-data-list-update", val3)
         if (msgData) {
