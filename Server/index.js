@@ -56,24 +56,26 @@ io.on("connection", async (client) => {
         const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
-                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, message: data.message, time: data.time }
+                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, time: data.time }
             })
             data.push(...arr)
         }
         const userwiseList1 = await Message.find({ targetUsername: user[0].username }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
-                return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, message: data.message, time: data.time }
+                return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, time: data.time }
             })
             data.push(...arr1)
         }
-        // const val = data.filter((data) => {
-        //     return data.chatId != ""
-        // })
+        const msgUser = await Message.find().sort({ dateTime: -1 }).limit(1)
+
+        var userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
 
         const arrayUniqueByKey = [...new Map(data.map(item =>
             [item["user"], item])).values()];
-        console.log("user data is", arrayUniqueByKey);
+        arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId) }));
+
+        console.log("user data is", arrayData);
         const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
         const Groupa = GroupwiseList.map((data) => {
             return {
@@ -182,7 +184,7 @@ io.on("connection", async (client) => {
         console.log("val2", val2);
         const val3 = data2[data2.length - 1]
         console.log("val3", val3);
-      
+
         client.emit("user-data-list-update", val2)
         client.broadcast.emit("user-data-list-update", val3)
         if (msgData) {
@@ -297,7 +299,7 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-   
+
     // const array = [
     //     {
     //         maths: {
