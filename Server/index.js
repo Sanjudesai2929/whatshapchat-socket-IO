@@ -73,7 +73,7 @@ io.on("connection", async (client) => {
 
         const arrayUniqueByKey = [...new Map(data.map(item =>
             [item["user"], item])).values()];
-        arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId) }));
+         var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId) }));
 
 
         console.log("user data is", arrayData);
