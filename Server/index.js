@@ -246,7 +246,6 @@ io.on("connection", async (client) => {
         const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, chatId: data.chatId, date: fullDate })
         console.log(groupData);
         // const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
-
         const Groupa = groupData.map((data) => {
             return {
                 _id: (data._id).toString(),
@@ -255,7 +254,6 @@ io.on("connection", async (client) => {
                 adminName: data.adminName,
                 chatId: data.chatId,
                 date: data.date,
-
             }
         })
         const id = groupData.map((data) => {
@@ -276,6 +274,7 @@ io.on("connection", async (client) => {
         client.emit("create-room", groupData)
         client.emit("user-data-list-update", vale_data)
         client.broadcast.emit("user-data-list-update", vale_data)    
+        
     })
     //listens when a user is send the message in group chat   
     client.on('grp_message', async (user) => {
