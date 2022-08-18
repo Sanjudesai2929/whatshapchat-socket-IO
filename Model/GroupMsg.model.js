@@ -44,7 +44,15 @@ const groupMsgSchema=new mongoose.Schema({
     },
     extension:{
         type: String,
-    }
+    },
+    longitude :{
+        type: String,
+
+    },
+    latitude:{
+        type: String,
+
+    },
 },
 )
 

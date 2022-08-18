@@ -73,33 +73,51 @@ io.on("connection", async (client) => {
             data.push(...arr1)
         }
         const msgUser = await Message.find().sort({ dateTime: -1 }).limit(1)
-        var userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
+
+        if (msgUser[0].type == "location") {
+            var userData = new Map(msgUser.map(({ chatId }) => ([chatId, "location"])));
+        }
+        else {
+            userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
+        }
+
         var timeData = new Map(msgUser.map(({ time, chatId }) => ([chatId, time])));
         const arrayUniqueByKey = [...new Map(data.map(item =>
             [item["user"], item])).values()];
         var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId), time: timeData.get(obj.chatId) }));
         console.log("user data is", arrayData);
-        const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
-        const Groupa = GroupwiseList.map((data) => {
-            return {
-                _id: (data._id).toString(),
-                groupName: data.groupName,
-                userList: data.userList,
-                adminName: data.adminName,
-                chatId: data.chatId,
-                date: data.date
-            }
-        })
-        const id = GroupwiseList.map((data) => {
-            return data._id
-        })
-        const user1 = await GroupMsg.find({ grpid: { $in: id } })
-        const arrayUniqueByKey1 = [...new Map(user1.map(item =>
-            [item["grpid"], item])).values()];
-        var msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
-        var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
-        var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
-        vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
+        const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId} } })
+   
+    const Groupa = GroupwiseList.map((data) => {
+        return {
+            _id: (data._id).toString(),
+            groupName: data.groupName,
+            userList: data.userList,
+            adminName: data.adminName,
+            chatId: data.chatId,
+            date: data.date,
+      
+        }
+    })
+    const id = GroupwiseList.map((data) => {
+        return data._id
+    })
+    const user1 = await GroupMsg.find({ grpid: { $in: id } })
+
+    const arrayUniqueByKey1 = [...new Map(user1.map(item =>
+        [item["grpid"], item])).values()];
+    
+    if (arrayUniqueByKey1.length && arrayUniqueByKey1[0].type == "location") {
+
+        var msg = new Map(arrayUniqueByKey1.map(({  grpid }) => ([grpid, "location"])));
+    }
+    else {
+        msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
+
+    }
+    var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
+    var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
+    vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
         const list1 = [...arrayData, ...vale_data];
         console.log(list1);
         client.emit("user-wise-list", list1)
@@ -139,27 +157,27 @@ io.on("connection", async (client) => {
     //listen when user is send the message
     client.on("message", async (data) => {
         console.log("message data ", data);
-        const msgData={}
-        // const msgData = await Message.insertMany({
-        //     message: data.message, sentByUsername: data.sentByUsername, sentById: data.sentById, targetId: data.targetId, targetUsername: data.targetUsername, msgid: data.msgid, chatId: data.chatId,
-        //     date: new Date().toLocaleDateString('en-US', {
-        //         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-        //     }),
-        //     dateTime: new Date().toLocaleString('en-US', {
-        //         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-        //     }),
-        //     day: data.day,
-        //     time: new Date().toLocaleTimeString('en-US', {
-        //         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        //         hour: '2-digit', minute: '2-digit'
-        //     }),
-        //     localpath: data.localpath,
-        //     path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus
-        // })
+
+        const msgData = await Message.insertMany({
+            message: data.message, sentByUsername: data.sentByUsername, sentById: data.sentById, targetId: data.targetId, targetUsername: data.targetUsername, msgid: data.msgid, chatId: data.chatId,
+            date: new Date().toLocaleDateString('en-US', {
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            }),
+            dateTime: new Date().toLocaleString('en-US', {
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            }),
+            day: data.day,
+            time: new Date().toLocaleTimeString('en-US', {
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                hour: '2-digit', minute: '2-digit'
+            }),
+            localpath: data.localpath,
+            path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus, longitude: data.longitude, latitude: data.latitude
+        })
         console.log("msgData", msgData)
         client.broadcast.emit("message-receive", msgData)
         client.emit("testing", "hello")
-        client.broadcast.emit("testing", "hello")   
+        client.broadcast.emit("testing", "hello")
 
         // client.emit("message_chatid_receive", msgData)
         // client.broadcast.emit("message_chatid_receive", msgData)
@@ -208,11 +226,11 @@ io.on("connection", async (client) => {
     //listens when a user is disconnected f rom the server   
     client.on('disconnect', async function (username) {
         console.log(connectedId + 'is offline....');
-        client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');   
-        client.broadcast.emit("user-online-status-update",{status:"offline"})
-        client.emit("user-online-status-update",{status:"offline"})
+        client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
+        client.broadcast.emit("user-online-status-update", { status: "offline" })
+        client.emit("user-online-status-update", { status: "offline" })
 
-        await Register.update({ _id: connectedId },{$set:{status:"offline"}})
+        await Register.update({ _id: connectedId }, { $set: { status: "offline" } })
     })
 
     //listens when there's an error detected and logs the err  or on the console
@@ -255,7 +273,7 @@ io.on("connection", async (client) => {
                 hour: '2-digit', minute: '2-digit'
             }),
             localpath: user.localpath,
-            path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension
+            path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension, longitude: user.longitude, latitude: user.latitude
         })
         client.broadcast.emit("grp_message_receive", msg)
     });
@@ -304,6 +322,7 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
+  
 
     // let array = [
     //     {
@@ -331,5 +350,5 @@ server.listen(port, async () => {
     //     console.log(item.maths && item.maths.drimil - item.maths && array[i-1].maths.drimil
     //         );
     // })
-    
+
 })
