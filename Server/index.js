@@ -245,16 +245,40 @@ io.on("connection", async (client) => {
         const fullDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
         const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, chatId: data.chatId, date: fullDate })
         console.log(groupData);
-        const chat = {
-            message: "",
-            sentByUsername: "",
-            time: ""
-        }
-        const user = [...groupData, chat]
+        // const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
+
+        const Groupa = groupData.map((data) => {
+            return {
+                _id: (data._id).toString(),
+                groupName: data.groupName,
+                userList: data.userList,
+                adminName: data.adminName,
+                chatId: data.chatId,
+                date: data.date,
+
+            }
+        })
+        const id = groupData.map((data) => {
+            return data._id
+        })
+        const user1 = await GroupMsg.find({ grpid: { $in: id } })
+
+        const arrayUniqueByKey1 = [...new Map(user1.map(item =>
+            [item["grpid"], item])).values()];
+
+   
+
+            var msg = new Map(arrayUniqueByKey1.map(({ message,grpid }) => ([grpid, message])));
+      
+        var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
+        var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
+        vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
+      console.log("vale_data",vale_data);
+        // const user = [...groupData, chat]
         console.log("user", user);
         client.emit("create-room", groupData)
-        client.emit("user-data-list-update", user)
-        client.broadcast.emit("user-data-list-update", user)    
+        client.emit("user-data-list-update", vale_data)
+        client.broadcast.emit("user-data-list-update", vale_data)    
     })
     //listens when a user is send the message in group chat   
     client.on('grp_message', async (user) => {
