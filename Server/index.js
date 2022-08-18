@@ -67,11 +67,11 @@ io.on("connection", async (client) => {
             })
             data.push(...arr1)
         }
-        const val = data.filter((data) => {
-            return data.chatId != ""
-        })
+        // const val = data.filter((data) => {
+        //     return data.chatId != ""
+        // })
 
-        const arrayUniqueByKey = [...new Map(val.map(item =>
+        const arrayUniqueByKey = [...new Map(data.map(item =>
             [item["user"], item])).values()];
         console.log("user data is", arrayUniqueByKey);
         const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
@@ -159,7 +159,6 @@ io.on("connection", async (client) => {
         // user-data-list-update data 
         var data1 = []
         var data2 = []
-
         const userwiseList = await Message.find({ sentByUsername: data.sentByUsername }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
@@ -176,7 +175,6 @@ io.on("connection", async (client) => {
             console.log("arr1", arr1);
             data2.push(...arr1)
         }
-        
         console.log("data1", data2);
         const val2 = data1[data1.length - 1]
         console.log("val2", val2);
