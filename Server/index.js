@@ -46,9 +46,10 @@ io.on("connection", async (client) => {
     client.on("loginid", async (data) => {
         console.log("loginid is ", data);
         connectedId = data.loginuserid
-        
+        client.emit("user-online-status-update", { status: "online" })
+        await Register.update({ _id: connectedId }, { $set: { status: "online" } })
         const user = await Register.find({ _id: connectedId })
-        client.broadcast.emit('is_online', '🔵 <i>' + user[0].username + ' join the chat..</i>');
+        // client.broadcast.emit('is_online', '🔵 <i>' + user[0].username + ' join the chat..</i>');
         console.log(user);
         //Get the user list data
         // const userwiseList = await Message.find({$or:[{ sentByUsername: user[0].username },{ targetUsername:user[0].username}]}).select({ sentById:1,targetId:1,targetUsername: 1, chatId: 1, sentByUsername: 1 })
@@ -91,7 +92,6 @@ io.on("connection", async (client) => {
             return data._id
         })
         const user1 = await GroupMsg.find({ grpid: { $in: id } })
-
         const arrayUniqueByKey1 = [...new Map(user1.map(item =>
             [item["grpid"], item])).values()];
         var msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
@@ -156,7 +156,8 @@ io.on("connection", async (client) => {
         console.log("msgData", msgData)
         client.broadcast.emit("message-receive", msgData)
         client.emit("testing", "hello")
-        client.broadcast.emit("testing", "hello")
+        client.broadcast.emit("testing", "hello")   
+
         // client.emit("message_chatid_receive", msgData)
         // client.broadcast.emit("message_chatid_receive", msgData)
         // user-data-list-update data 
@@ -166,7 +167,7 @@ io.on("connection", async (client) => {
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
                 return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, message: data.message, time: data.time }
-            })   
+            })
             data1.push(...arr)
         }
         const userwiseList1 = await Message.find({ targetUsername: data.targetUsername }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
@@ -174,7 +175,7 @@ io.on("connection", async (client) => {
             const arr1 = userwiseList1.map((data) => {
                 return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, message: data.message, time: data.time }
             })
-       
+
             data2.push(...arr1)
         }
         const val2 = data1[data1.length - 1]
@@ -202,9 +203,11 @@ io.on("connection", async (client) => {
         client.broadcast.emit('keyboard_status', data);
     })
     //listens when a user is disconnected f rom the server   
-    client.on('disconnect', function (username) {
+    client.on('disconnect', async function (username) {
         console.log(username + 'is offline....');
-        client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
+        client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');   
+        client.emit("user-online-status-update",{status:"offline"})
+        await Register.update({ username: username },{$set:{status:"offline"}})
     })
     //listens when there's an error detected and logs the err  or on the console
     client.on('error', function (err) {
@@ -295,45 +298,33 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-
-    // const array = [
+  
+ 
+    // let array = [
     //     {
     //         maths: {
-    //             abc: 40,
-    //             pqr: 30
+    //             drimil: 10,
+    //             chirag: 10
     //         },
     //         science: {
-    //             abc: 30,
-    //             pqr: 20
+    //             drimil: 34,
+    //             chirag: 10
     //         }
     //     },
     //     {
     //         maths: {
-    //             abc: 20,
-    //             pqr: 20
+    //             drimil: 30
     //         }
     //     },
     //     {
-
     //         science: {
-    //             abc: 20,
-    //             pqr: 10
-    //         }
-    //     },
-
+    //             chirag: 30
+    //         } 
+    //     }
     // ]
     // array.map((item,i)=>{
-    //     console.log(item.maths && item.maths.abc - item.maths && array[i-1].maths.abc
+    //     console.log(item.maths && item.maths.drimil - item.maths && array[i-1].maths.drimil
     //         );
     // })
-    //  {
-    //     abc:{
-    //         maths:,
-    //         science:
-    //     },
-    //     pqr:{
-    //         maths:,
-    //         science:
-    //     }
-    //  }
+    
 })
