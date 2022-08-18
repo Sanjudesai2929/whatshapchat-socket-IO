@@ -157,7 +157,6 @@ io.on("connection", async (client) => {
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus
         })
         console.log("msgData", msgData)
-        client.emit("message-receive", msgData)
         // client.emit("message_chatid_receive", msgData)
         // client.broadcast.emit("message_chatid_receive", msgData)
         // user-data-list-update data 
@@ -168,7 +167,7 @@ io.on("connection", async (client) => {
             const arr = userwiseList.map((data) => {
                 return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, message: data.message, time: data.time }
             })
-            console.log("arr", arr);
+          
             data1.push(...arr)
         }
         const userwiseList1 = await Message.find({ targetUsername: data.targetUsername }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
@@ -176,10 +175,10 @@ io.on("connection", async (client) => {
             const arr1 = userwiseList1.map((data) => {
                 return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, message: data.message, time: data.time }
             })
-            console.log("arr1", arr1);
+       
             data2.push(...arr1)
         }
-        console.log("data1", data2);
+        
         const val2 = data1[data1.length - 1]
         console.log("val2", val2);
         const val3 = data2[data2.length - 1]
@@ -187,6 +186,8 @@ io.on("connection", async (client) => {
 
         client.emit("user-data-list-update", val2)
         client.broadcast.emit("user-data-list-update", val3)
+        client.broadcast.emit("message-receive", msgData)
+
         if (msgData) {
             client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
             await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
