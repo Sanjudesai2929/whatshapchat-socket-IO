@@ -46,7 +46,9 @@ io.on("connection", async (client) => {
     client.on("loginid", async (data) => {
         console.log("loginid is ", data);
         connectedId = data.loginuserid
+        
         const user = await Register.find({ _id: connectedId })
+        client.broadcast.emit('is_online', '🔵 <i>' + user[0].username + ' join the chat..</i>');
         console.log(user);
         //Get the user list data
         // const userwiseList = await Message.find({$or:[{ sentByUsername: user[0].username },{ targetUsername:user[0].username}]}).select({ sentById:1,targetId:1,targetUsername: 1, chatId: 1, sentByUsername: 1 })
@@ -68,10 +70,8 @@ io.on("connection", async (client) => {
             data.push(...arr1)
         }
         const msgUser = await Message.find().sort({ dateTime: -1 }).limit(1)
-
         var userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
         var timeData = new Map(msgUser.map(({ time, chatId }) => ([chatId, time])));
-
         const arrayUniqueByKey = [...new Map(data.map(item =>
             [item["user"], item])).values()];
         var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId), time: timeData.get(obj.chatId) }));
@@ -94,11 +94,9 @@ io.on("connection", async (client) => {
 
         const arrayUniqueByKey1 = [...new Map(user1.map(item =>
             [item["grpid"], item])).values()];
-
         var msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
         var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
         var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
-
         vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
         const list1 = [...arrayData, ...vale_data];
         console.log(list1);
@@ -124,7 +122,6 @@ io.on("connection", async (client) => {
         const list = [...userList];
         client.emit("user-list", list)
     })
-
     // client.on("message_chatid", async (data) => {
     //     console.log("aa", data);
     //     const res = await Message.updateOne(
@@ -157,12 +154,9 @@ io.on("connection", async (client) => {
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus
         })
         console.log("msgData", msgData)
-        
         client.broadcast.emit("message-receive", msgData)
         client.emit("testing", "hello")
-
         client.broadcast.emit("testing", "hello")
-
         // client.emit("message_chatid_receive", msgData)
         // client.broadcast.emit("message_chatid_receive", msgData)
         // user-data-list-update data 
