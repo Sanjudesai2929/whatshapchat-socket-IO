@@ -156,8 +156,8 @@ io.on("connection", async (client) => {
         })
 
         client.broadcast.emit("message-receive", msgData)
-        client.emit("message_chatid_receive", msgData)
-        client.broadcast.emit("message_chatid_receive", msgData)
+        // client.emit("message_chatid_receive", msgData)
+        // client.broadcast.emit("message_chatid_receive", msgData)
         // user-data-list-update data 
         var data1 = []
         var data2 = []
@@ -277,7 +277,6 @@ io.on("connection", async (client) => {
         await GroupMsg.deleteMany({ msgid: { $in: data.groupmsg_delete_listid } })
         client.broadcast.emit('groupmsg-delete-receive', msg1);
     })
-
     //listens when a admin  user is delete the group 
     client.on("group-chat-delete", async (data) => {
         console.log("delete group chat data is :", data);
@@ -298,6 +297,7 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
+   
     // const array = [
     //     {
     //         maths: {
@@ -310,7 +310,6 @@ server.listen(port, async () => {
     //         }
     //     },
     //     {
-
     //         maths: {
     //             abc: 20,
     //             pqr: 20
