@@ -74,7 +74,7 @@ io.on("connection", async (client) => {
 
         const arrayUniqueByKey = [...new Map(data.map(item =>
             [item["user"], item])).values()];
-         var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId),time: timeData.get(obj.chatId) }));
+        var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId), time: timeData.get(obj.chatId) }));
         console.log("user data is", arrayData);
         const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
         const Groupa = GroupwiseList.map((data) => {
@@ -156,8 +156,8 @@ io.on("connection", async (client) => {
             localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus
         })
-  console.log("msgData",msgData)
-        client.broadcast.emit("message-receive", msgData)
+        console.log("msgData", msgData)
+        client.emit("message-receive", msgData)
         // client.emit("message_chatid_receive", msgData)
         // client.broadcast.emit("message_chatid_receive", msgData)
         // user-data-list-update data 
