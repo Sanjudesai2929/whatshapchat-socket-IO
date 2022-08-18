@@ -75,6 +75,7 @@ io.on("connection", async (client) => {
             [item["user"], item])).values()];
         arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId) }));
 
+        
         console.log("user data is", arrayData);
         const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
         const Groupa = GroupwiseList.map((data) => {
