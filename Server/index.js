@@ -265,17 +265,14 @@ io.on("connection", async (client) => {
 
         const arrayUniqueByKey1 = [...new Map(user1.map(item =>
             [item["grpid"], item])).values()];
-
-   
-
             var msg = new Map(arrayUniqueByKey1.map(({ message,grpid }) => ([grpid, message])));
       
         var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
         var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
         vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
-      console.log("vale_data",vale_data);
+        console.log("vale_data",vale_data);
         // const user = [...groupData, chat]
-        console.log("user", user);
+        // console.log("user", user);
         client.emit("create-room", groupData)
         client.emit("user-data-list-update", vale_data)
         client.broadcast.emit("user-data-list-update", vale_data)    
