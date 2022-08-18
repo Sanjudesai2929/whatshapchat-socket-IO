@@ -209,6 +209,7 @@ io.on("connection", async (client) => {
         client.emit("user-online-status-update",{status:"offline"})
         await Register.update({ username: username },{$set:{status:"offline"}})
     })
+    
     //listens when there's an error detected and logs the err  or on the console
     client.on('error', function (err) {
         console.log('Error detected', client.id);
