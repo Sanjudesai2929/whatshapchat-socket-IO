@@ -56,24 +56,25 @@ io.on("connection", async (client) => {
         const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
-                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, time: data.time }
+                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId }
             })
             data.push(...arr)
         }
         const userwiseList1 = await Message.find({ targetUsername: user[0].username }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
-                return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, time: data.time }
+                return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId }
             })
             data.push(...arr1)
         }
         const msgUser = await Message.find().sort({ dateTime: -1 }).limit(1)
 
         var userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
+        var timeData = new Map(msgUser.map(({ time, chatId }) => ([chatId, time])));
 
         const arrayUniqueByKey = [...new Map(data.map(item =>
             [item["user"], item])).values()];
-         var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId) }));
+         var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId),time: timeData.get(obj.chatId) }));
 
 
         console.log("user data is", arrayData);
