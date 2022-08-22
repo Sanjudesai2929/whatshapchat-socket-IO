@@ -264,18 +264,18 @@ io.on("connection", async (client) => {
         // const arrayUniqueByKey1 = [...new Map(user1.map(item =>
         //     [item["grpid"], item])).values()];
 
-            var msg = new Map(user1.map(({ message,grpid }) => ([grpid, message])));
-      
+        var msg = new Map(user1.map(({ message, grpid }) => ([grpid, message])));
+
         var username = new Map(user1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
         var time = new Map(user1.map(({ time, grpid }) => ([grpid, time])));
         vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
-        console.log("vale_data",vale_data);
+        console.log("vale_data", vale_data);
         // const user = [...groupData, chat]
         // console.log("user", user);
         client.emit("create-room", groupData)
         client.emit("user-data-list-update", vale_data)
-        client.broadcast.emit("user-data-list-update", vale_data)    
-        
+        client.broadcast.emit("user-data-list-update", vale_data)
+
     })
     //listens when a user is send the message in group chat   
     client.on('grp_message', async (user) => {
@@ -297,19 +297,19 @@ io.on("connection", async (client) => {
             path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension, longitude: user.longitude, latitude: user.latitude
         })
 
-console.log("grp message receive",msg);
+        console.log("grp message receive", msg);
         client.broadcast.emit("grp_message_receive", msg)
         client.emit("deliver-status", { msgid: user.msgid, msgstatus: true })
         await GroupMsg.updateOne({ msgid: user.msgid }, { $set: { messagestatus: "send" } })
-        const msg_data= {
-            message:msg.message,
-            sentByUsername:msg.sentByUsername,
-            sentByUsername:msg.sentByUsername,
-            time:msg.time
+        const msg_data = {
+            message: msg[0].message,
+            sentByUsername: msg[0].sentByUsername,
+            sentByUsername: msg[0].sentByUsername,
+            time: msg[0].time
         }
-        console.log("msg_data",msg_data);
+        console.log("msg_data", msg_data);
         client.emit("user-data-list-update", msg_data)
-        client.broadcast.emit("user-data-list-update", msg_data)    
+        client.broadcast.emit("user-data-list-update", msg_data)
     });
     //listens when a user is delete the message in  chat   
     client.on("usermsg-delete", async (data) => {
