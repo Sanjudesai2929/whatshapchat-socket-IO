@@ -259,14 +259,15 @@ io.on("connection", async (client) => {
         const id = groupData.map((data) => {
             return data._id
         })
-        const user1 = await GroupMsg.find({ grpid: { $in: id } })
+        const user1 = await GroupMsg.find({ grpid: { $in: id } }).sort({ dateTime: -1 }).limit(1)
 
-        const arrayUniqueByKey1 = [...new Map(user1.map(item =>
-            [item["grpid"], item])).values()];
-            var msg = new Map(arrayUniqueByKey1.map(({ message,grpid }) => ([grpid, message])));
+        // const arrayUniqueByKey1 = [...new Map(user1.map(item =>
+        //     [item["grpid"], item])).values()];
+
+            var msg = new Map(user1.map(({ message,grpid }) => ([grpid, message])));
       
-        var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
-        var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
+        var username = new Map(user1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
+        var time = new Map(user1.map(({ time, grpid }) => ([grpid, time])));
         vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
         console.log("vale_data",vale_data);
         // const user = [...groupData, chat]
