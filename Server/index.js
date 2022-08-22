@@ -296,39 +296,19 @@ io.on("connection", async (client) => {
             localpath: user.localpath,
             path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension, longitude: user.longitude, latitude: user.latitude
         })
-        console.log("group receive message is ", msg);
+
         client.emit("deliver-status", { msgid: user.msgid, msgstatus: true })
         await GroupMsg.updateOne({ msgid: user.msgid }, { $set: { messagestatus: "send" } })
         client.broadcast.emit("grp_message_receive", msg)
-        // const Groupa = groupData.map((data) => {
-        //     return {
-        //         _id: (data._id).toString(),
-        //         groupName: data.groupName,
-        //         userList: data.userList,
-        //         adminName: data.adminName,
-        //         chatId: data.chatId,
-        //         date: data.date,
-        //     }
-        // })
-        // const id = groupData.map((data) => {
-        //     return data._id
-        // })
-        // const user1 = await GroupMsg.find({ grpid: { $in: id } }).sort({ dateTime: -1 }).limit(1)
-
-        // // const arrayUniqueByKey1 = [...new Map(user1.map(item =>
-        // //     [item["grpid"], item])).values()];
-
-        // var msg1 = new Map(user1.map(({ message,grpid }) => ([grpid, message])));
+        const msg_data= {
+            message:msg.message,
+            sentByUsername:msg.sentByUsername,
+            sentByUsername:msg.sentByUsername,
+            time:msg.time
+        }
       
-        // var username = new Map(user1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
-        // var time = new Map(user1.map(({ time, grpid }) => ([grpid, time])));
-        // vale_data = Groupa.map(obj => ({ ...obj, message: msg1.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
-        // console.log("grp_vale_data",vale_data);
-        // // const user = [...groupData, chat]
-        // // console.log("user", user);
-        // client.emit("create-room", groupData)
-        // client.emit("user-data-list-update", vale_data)
-        // client.broadcast.emit("user-data-list-update", vale_data)    
+        client.emit("user-data-list-update", msg_data)
+        client.broadcast.emit("user-data-list-update", msg_data)    
     });
     //listens when a user is delete the message in  chat   
     client.on("usermsg-delete", async (data) => {
@@ -403,5 +383,6 @@ server.listen(port, async () => {
     //     console.log(item.maths && item.maths.drimil - item.maths && array[i-1].maths.drimil
     //         );
     // })
+    
 
 })
