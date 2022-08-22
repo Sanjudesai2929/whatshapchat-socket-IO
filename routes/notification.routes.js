@@ -5,7 +5,6 @@ const router = new express.Router()
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 })
-
 const payload = {
     notification: {
         title: "Notification Title",
@@ -17,11 +16,10 @@ const payload = {
         data2: "data2 value",
     }
 }
-const options = { priority: "high", timeToLive: 60 * 60 * 24 }
+const options = { timeToLive: 60 * 60 * 24 }
 router.post("/sendnotification", async (req, res) => {
     console.log(req.body);
     const firebaseToken = req.body.token
-    
     admin.messaging().sendToDevice(firebaseToken, payload, options)
     res.json({
         "to": req.body.token,
@@ -32,8 +30,6 @@ router.post("/sendnotification", async (req, res) => {
             "icon": "Default",
         }
     })
-
-
 })
 module.exports = router
 
