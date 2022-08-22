@@ -1,6 +1,7 @@
 const express = require('express');
 const admin = require('firebase-admin');
 const serviceAccount = require("../firebase/conn.json")
+const  notification=require("../Model/notification.model") 
 const router = new express.Router()
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
@@ -16,11 +17,14 @@ const payload = {
         data2: "data2 value",
     }
 }
-
 const options = { priority: "high", timeToLive: 60 * 60 * 24 }
 router.post("/sendnotification", async (req, res) => {
     console.log(req.body);
     const firebaseToken = req.body.token
+    const data = new notification({
+        token,userId
+    })
+  await data.save()
     admin.messaging().sendToDevice(firebaseToken, payload, options)
     res.json({
         "to": req.body.token,
