@@ -305,7 +305,7 @@ io.on("connection", async (client) => {
             _id:msg[0]._id,
             message: msg[0].message,
             sentByUsername: msg[0].sentByUsername,
-            sentByUsername: msg[0].sentByUsername,
+        
             time: msg[0].time
         }
 
