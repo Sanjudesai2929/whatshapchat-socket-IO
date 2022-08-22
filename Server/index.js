@@ -82,10 +82,12 @@ io.on("connection", async (client) => {
         }
 
         var timeData = new Map(msgUser.map(({ time, chatId }) => ([chatId, time])));
+        var dateTime = new Map(msgUser.map(({ dateTime, chatId }) => ([chatId, dateTime])));
+
         const arrayUniqueByKey = [...new Map(data.map(item =>
             [item["user"], item])).values()];
-        var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId), time: timeData.get(obj.chatId) }));
-        console.log("user data is", arrayData);
+        var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId), time: timeData.get(obj.chatId), dateTime: dateTime.get(obj.chatId) }));
+
         const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
 
         const Groupa = GroupwiseList.map((data) => {
@@ -109,19 +111,26 @@ io.on("connection", async (client) => {
 
         if (arrayUniqueByKey1.length && arrayUniqueByKey1[0].type == "location") {
 
-            var msg = new Map(arrayUniqueByKey1.map(({ grpid }) => ([grpid, "location"])));
-        }
-        else {
-            msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
+                var msg = new Map(arrayUniqueByKey1.map(({ grpid }) => ([grpid, "location"])));
+            }
+            else {
+                msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
 
-        }
-        var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
-        var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
-        vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
-        const list1 = [...arrayData, ...vale_data];
-        console.log(list1);
-        client.emit("user-wise-list", list1)
-    })
+            }
+            var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
+            var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
+            var dateTime = new Map(arrayUniqueByKey1.map(({ dateTime, grpid }) => ([grpid, dateTime])));
+
+            vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), dateTime: dateTime.get(obj._id) }));
+
+            const list1 = [...arrayData, ...vale_data];
+            const data11 = list1.sort(
+                (objA, objB) => Number(objB.dateTime) - Number(objA.dateTime),
+            );
+            console.log(data11);
+
+            client.emit("user-wise-list", data11)
+        })
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
         client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
@@ -244,7 +253,7 @@ io.on("connection", async (client) => {
         const date = new Date()
         const fullDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
         const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, chatId: data.chatId, date: fullDate })
-        console.log(groupData);
+        console.log(groupData[0]);
         // const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
         const Groupa = groupData.map((data) => {
             return {
@@ -265,14 +274,13 @@ io.on("connection", async (client) => {
         //     [item["grpid"], item])).values()];
 
         var msg = new Map(user1.map(({ message, grpid }) => ([grpid, message])));
-
         var username = new Map(user1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
         var time = new Map(user1.map(({ time, grpid }) => ([grpid, time])));
         vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
         console.log("vale_data", vale_data);
         // const user = [...groupData, chat]
         // console.log("user", user);
-        client.emit("create-room", groupData)
+        client.emit("create-room", groupData[0])
         client.emit("user-data-list-update", vale_data)
         client.broadcast.emit("user-data-list-update", vale_data)
 
@@ -294,7 +302,7 @@ io.on("connection", async (client) => {
                 hour: '2-digit', minute: '2-digit'
             }),
             localpath: user.localpath,
-            path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension, longitude: user.longitude, latitude: user.latitude,messagestatus:user.messagestatus
+            path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension, longitude: user.longitude, latitude: user.latitude, messagestatus: user.messagestatus
         })
 
         console.log("grp message receive", msg);
@@ -302,7 +310,7 @@ io.on("connection", async (client) => {
         client.emit("deliver-status", { msgid: user.msgid, msgstatus: true })
         await GroupMsg.updateOne({ msgid: user.msgid }, { $set: { messagestatus: "send" } })
         const msg_data = {
-            _id:msg[0].grpid,
+            _id: msg[0].grpid,
             message: msg[0].message,
             sentByUsername: msg[0].sentByUsername,
             time: msg[0].time
@@ -356,6 +364,77 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
+    // var data = []
+    // const userwiseList = await Message.find({ sentByUsername: "demouser" }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
+    // if (userwiseList) {
+    //     const arr = userwiseList.map((data) => {
+    //         return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId }
+    //     })
+    //     data.push(...arr)
+    // }
+    // const userwiseList1 = await Message.find({ targetUsername: "demouser" }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
+    // if (userwiseList1) {
+    //     const arr1 = userwiseList1.map((data) => {
+    //         return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId }
+    //     })
+    //     data.push(...arr1)
+    // }
+    // const msgUser = await Message.find().sort({ dateTime: -1 }).limit(1)
+
+    // if (msgUser.length && msgUser[0].type == "location") {
+    //     var userData = new Map(msgUser.map(({ chatId }) => ([chatId, "location"])));
+    // }
+    // else {
+    //     userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
+    // }
+
+    // var timeData = new Map(msgUser.map(({ time, chatId }) => ([chatId, time])));
+    // var dateTime = new Map(msgUser.map(({ dateTime, chatId }) => ([chatId, dateTime])));
+
+    // const arrayUniqueByKey = [...new Map(data.map(item =>
+    //     [item["user"], item])).values()];
+    // var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId), time: timeData.get(obj.chatId),dateTime: dateTime.get(obj.chatId) }));
+
+    // const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: "62e0d9b8d8618bb4c4ae4eb6" } } })
+
+    // const Groupa = GroupwiseList.map((data) => {
+    //     return {
+    //         _id: (data._id).toString(),
+    //         groupName: data.groupName,
+    //         userList: data.userList,
+    //         adminName: data.adminName,
+    //         chatId: data.chatId,
+    //         date: data.date,
+
+    //     }
+    // })
+    // const id = GroupwiseList.map((data) => {
+    //     return data._id
+    // })
+    // const user1 = await GroupMsg.find({ grpid: { $in: id } })
+
+    // const arrayUniqueByKey1 = [...new Map(user1.map(item =>
+    //     [item["grpid"], item])).values()];
+
+    // if (arrayUniqueByKey1.length && arrayUniqueByKey1[0].type == "location") {
+
+    //     var msg = new Map(arrayUniqueByKey1.map(({ grpid }) => ([grpid, "location"])));
+    // }
+    // else {
+    //     msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
+
+    // }
+    // var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
+    // var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
+    // var dateTime = new Map(arrayUniqueByKey1.map(({ dateTime, grpid }) => ([grpid, dateTime])));
+
+    // vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), dateTime: dateTime.get(obj._id) }));
+    // const list1 = [...arrayData, ...vale_data];
+    // const data11 = list1.sort(
+    //     (objA, objB) => Number(objB.dateTime) - Number(objA.dateTime),
+    //   );
+    // console.log(data11);
+
     // let array = [
     //     {
     //         maths: {
