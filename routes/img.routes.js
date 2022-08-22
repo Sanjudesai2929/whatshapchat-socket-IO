@@ -21,6 +21,7 @@ router.post("/addimg" ,(req, res) => {
         //  const data = fs.readFileSync(req.file.path, 'base64')
         //  console.log(data);
  
+        
         res.json({
             status: true,
             message: "Image upload successfully",
