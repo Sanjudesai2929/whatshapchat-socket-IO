@@ -326,11 +326,33 @@ io.on("connection", async (client) => {
         const msg1 = await Message.find({ msgid: { $in: data.msg_delete_listid } })
         await Message.deleteMany({ msgid: { $in: data.msg_delete_listid } })
         console.log("delete", msg1);
-       const data1 =await Message.find({sentById:msg1[0].sentById}).sort({ dateTime: -1 }).limit(1)
-       console.log("delete last msg is:",data1);
+        const data1=[]
+        const data2=[]
+        const userwiseList = await Message.find({ sentByUsername: msg1[0].sentByUsername }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
+        if (userwiseList) {
+            const arr = userwiseList.map((data) => {
+                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, message: data.message, time: data.time }
+            })
+            data1.push(...arr)
+        }
+        const userwiseList1 = await Message.find({ targetUsername: msg1[0].targetUsername }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
+        if (userwiseList1) {
+            const arr1 = userwiseList1.map((data) => {
+                return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, message: data.message, time: data.time }
+            })
+
+            data2.push(...arr1)
+        }
+        const val2 = data1[data1.length - 1]
+        console.log("After delete last msg", val2);
+        const val3 = data2[data2.length - 1]
+        console.log("After delete  broadcast last msg", val3);
+    //    const data1 =await Message.find({sentById:msg1[0].sentById}).sort({ dateTime: -1 }).limit(1)
+    //    console.log("delete last msg is:",data1);
+    
         client.broadcast.emit('usermsg-delete-receive', msg1);
-        client.emit("user-data-list-update", data1)
-        client.broadcast.emit("user-data-list-update", data1)
+        client.emit("user-data-list-update", val2)
+        client.broadcast.emit("user-data-list-update", val3)
     })
     //listens when a user is delete the entire chat
     client.on("chat-delete", async (data) => {
