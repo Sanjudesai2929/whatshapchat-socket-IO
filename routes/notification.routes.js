@@ -21,6 +21,7 @@ router.post("/sendnotification", async (req, res) => {
             data2: "data2 value",
         }
     }
+    
     const options = { priority: "high", timeToLive: 60 * 60 * 24 }
     firebase.messaging().sendToDevice(firebaseToken, payload, options)
     res.json({
@@ -32,7 +33,7 @@ router.post("/sendnotification", async (req, res) => {
             "icon": "Default",
         }
     })
-    
+
 })
 module.exports = router
 
