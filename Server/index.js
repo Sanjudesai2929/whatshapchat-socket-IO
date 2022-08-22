@@ -277,12 +277,12 @@ io.on("connection", async (client) => {
         var username = new Map(user1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
         var time = new Map(user1.map(({ time, grpid }) => ([grpid, time])));
         vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
-        console.log("vale_data", vale_data);
+        console.log("vale_data", vale_data[0]);
         // const user = [...groupData, chat]
         // console.log("user", user);
         client.emit("create-room", groupData[0])
-        client.emit("user-data-list-update", vale_data)
-        client.broadcast.emit("user-data-list-update", vale_data)
+        client.emit("user-data-list-update", vale_data[0])
+        client.broadcast.emit("user-data-list-update", vale_data[0])
 
     })
     //listens when a user is send the message in group chat   
