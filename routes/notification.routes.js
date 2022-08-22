@@ -5,7 +5,8 @@ const router = new express.Router()
 
 
 router.post("/sendnotification", async (req, res) => {
-    const firebaseToken = req.token
+    console.log(req.body);
+    const firebaseToken = req.body.token
     firebase.initializeApp({
         credential: firebase.credential.cert(serviceAccount)
     })
@@ -23,22 +24,16 @@ router.post("/sendnotification", async (req, res) => {
     const options = { priority: "high", timeToLive: 60 * 60 * 24 }
     firebase.messaging().sendToDevice(firebaseToken, payload, options)
     res.json({
-        "to": req.token,
+        "to": req.body.token,
         "notification":
         {
             "body": "Notification Body",
             "title": "Notification Title",
             "icon": "Default",
-
         }
     })
 })
 module.exports = router
-
-
-
-
-
 
 // https://fcm.googleapis.com/fcm/send
 
@@ -51,7 +46,7 @@ module.exports = router
 //         "title":"Hello",
 //         "icon":"Default",
 //         "image":"https://demowebapp.thebattlemania.com\/uploads\/game_image\/thumb\/253x90_202112101244521676102492__Ludo-King-baner.jpg"
-//     }
+//      }
 // }
 
 // multiple : 
