@@ -17,7 +17,7 @@ const GroupMsg = require("../Model/GroupMsg.model");
 const { ifError } = require('assert');
 const GProfileRouter = require('../routes/Gprofile.routes')
 const location = require('../routes/location.routes');
-
+const notification = require('../routes/notification.routes')
 env.config()
 const port = process.env.PORT
 var server = http.createServer(app)
@@ -36,6 +36,7 @@ app.use("/", ProfileRouter)
 app.use("/", GProfileRouter)
 // app.use("/", location)
 app.use("/", AdminChangeRouter)
+app.use("/", notification)
 
 
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
@@ -169,7 +170,6 @@ io.on("connection", async (client) => {
     //listen when user is send the message
     client.on("message", async (data) => {
         console.log("message data ", data);
-
         const msgData = await Message.insertMany({
             message: data.message, sentByUsername: data.sentByUsername, sentById: data.sentById, targetId: data.targetId, targetUsername: data.targetUsername, msgid: data.msgid, chatId: data.chatId,
             date: new Date().toLocaleDateString('en-US', {
@@ -190,7 +190,6 @@ io.on("connection", async (client) => {
         client.broadcast.emit("message-receive", msgData)
         client.emit("testing", "hello")
         client.broadcast.emit("testing", "hello")
-
         // client.emit("message_chatid_receive", msgData)
         // client.broadcast.emit("message_chatid_receive", msgData)
         // user-data-list-update data 
@@ -208,7 +207,6 @@ io.on("connection", async (client) => {
             const arr1 = userwiseList1.map((data) => {
                 return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, message: data.message, time: data.time }
             })
-
             data2.push(...arr1)
         }
         const val2 = data1[data1.length - 1]
@@ -360,10 +358,8 @@ io.on("connection", async (client) => {
         const msg2 = await Message.find({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
         console.log("delete chat  :", { chatId: data.chat_delete_id });
         await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
-
         client.broadcast.emit('chat-delete-receive', { chatId: data.chat_delete_id });
     })
-    
     //listens when a user is delete the group message in group chat 
     client.on("groupmsg-delete", async (data) => {
         console.log("delete group msg is :", data);
@@ -371,7 +367,6 @@ io.on("connection", async (client) => {
         await GroupMsg.deleteMany({ msgid: { $in: data.groupmsg_delete_listid } })
         client.broadcast.emit('groupmsg-delete-receive', msg1);
     })
-
     //listens when a admin  user is delete the group 
     client.on("group-chat-delete", async (data) => {
         console.log("delete group chat data is :", data);
@@ -382,7 +377,6 @@ io.on("connection", async (client) => {
         await GroupMsg.deleteMany({ grpid: msg._id })
         client.broadcast.emit('group-chat-delete-receive', { chatId: data.group_chat_id });
     })
-
     //listens when a admin  user is search any user
     client.on("live-search", async (data) => {
         console.log(data);
