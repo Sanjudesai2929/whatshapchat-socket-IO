@@ -16,7 +16,8 @@ const payload = {
         data2: "data2 value",
     }
 }
-const options = { timeToLive: 60 * 60 * 24 }
+
+const options = { priority: "high", timeToLive: 60 * 60 * 24 }
 router.post("/sendnotification", async (req, res) => {
     console.log(req.body);
     const firebaseToken = req.body.token
