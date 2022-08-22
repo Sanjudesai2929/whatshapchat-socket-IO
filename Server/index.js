@@ -294,7 +294,7 @@ io.on("connection", async (client) => {
                 hour: '2-digit', minute: '2-digit'
             }),
             localpath: user.localpath,
-            path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension, longitude: user.longitude, latitude: user.latitude
+            path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension, longitude: user.longitude, latitude: user.latitude,messagestatus:user.messagestatus
         })
 
         console.log("grp message receive", msg);
@@ -307,6 +307,7 @@ io.on("connection", async (client) => {
             sentByUsername: msg[0].sentByUsername,
             time: msg[0].time
         }
+        
         console.log("msg_data", msg_data);
         client.emit("user-data-list-update", msg_data)
         client.broadcast.emit("user-data-list-update", msg_data)
