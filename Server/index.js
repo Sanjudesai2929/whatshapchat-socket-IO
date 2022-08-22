@@ -296,8 +296,8 @@ io.on("connection", async (client) => {
             localpath: user.localpath,
             path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension, longitude: user.longitude, latitude: user.latitude
         })
-        
 
+console.log("grp message receive",msg);
         client.broadcast.emit("grp_message_receive", msg)
         client.emit("deliver-status", { msgid: user.msgid, msgstatus: true })
         await GroupMsg.updateOne({ msgid: user.msgid }, { $set: { messagestatus: "send" } })
@@ -307,6 +307,7 @@ io.on("connection", async (client) => {
             sentByUsername:msg.sentByUsername,
             time:msg.time
         }
+        console.log("msg_data",msg_data);
         client.emit("user-data-list-update", msg_data)
         client.broadcast.emit("user-data-list-update", msg_data)    
     });
@@ -355,8 +356,6 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-
-
     // let array = [
     //     {
     //         maths: {
@@ -383,6 +382,4 @@ server.listen(port, async () => {
     //     console.log(item.maths && item.maths.drimil - item.maths && array[i-1].maths.drimil
     //         );
     // })
-
-
 })
