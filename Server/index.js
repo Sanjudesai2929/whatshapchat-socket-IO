@@ -349,7 +349,6 @@ io.on("connection", async (client) => {
         console.log("After delete  broadcast last msg", val3);
     //    const data1 =await Message.find({sentById:msg1[0].sentById}).sort({ dateTime: -1 }).limit(1)
     //    console.log("delete last msg is:",data1);
-    
         client.broadcast.emit('usermsg-delete-receive', msg1);
         client.emit("user-data-list-update", val2)
         client.broadcast.emit("user-data-list-update", val3)
@@ -362,9 +361,9 @@ io.on("connection", async (client) => {
         console.log("delete chat  :", { chatId: data.chat_delete_id });
         await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
 
-
         client.broadcast.emit('chat-delete-receive', { chatId: data.chat_delete_id });
     })
+    
     //listens when a user is delete the group message in group chat 
     client.on("groupmsg-delete", async (data) => {
         console.log("delete group msg is :", data);
