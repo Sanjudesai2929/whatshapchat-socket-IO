@@ -83,10 +83,12 @@ io.on("connection", async (client) => {
 
         var timeData = new Map(msgUser.map(({ time, chatId }) => ([chatId, time])));
         var dateTime = new Map(msgUser.map(({ dateTime, chatId }) => ([chatId, dateTime])));
+        var messagestatus = new Map(msgUser.map(({ messagestatus, chatId }) => ([chatId, messagestatus])));
+
 
         const arrayUniqueByKey = [...new Map(data.map(item =>
             [item["user"], item])).values()];
-        var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId), time: timeData.get(obj.chatId), dateTime: dateTime.get(obj.chatId) }));
+        var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId), time: timeData.get(obj.chatId), dateTime: dateTime.get(obj.chatId) ,messagestatus: messagestatus.get(obj.chatId)}));
 
         const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
 
@@ -120,8 +122,9 @@ io.on("connection", async (client) => {
             var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
             var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
             var dateTime = new Map(arrayUniqueByKey1.map(({ dateTime, grpid }) => ([grpid, dateTime])));
+            var messagestatus = new Map(arrayUniqueByKey1.map(({ messagestatus, grpid }) => ([grpid, messagestatus])));
 
-            vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), dateTime: dateTime.get(obj._id) }));
+            vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), dateTime: dateTime.get(obj._id),messagestatus: messagestatus.get(obj._id) }));
 
             const list1 = [...arrayData, ...vale_data];
             const data11 = list1.sort(
@@ -232,6 +235,7 @@ io.on("connection", async (client) => {
         console.log(data);
         client.broadcast.emit('keyboard_status', data);
     })
+    
     //listens when a user is disconnected f rom the server   
     client.on('disconnect', async function (username) {
         console.log(connectedId + 'is offline....');
@@ -283,7 +287,6 @@ io.on("connection", async (client) => {
         client.emit("create-room", groupData[0])
         client.emit("user-data-list-update", vale_data[0])
         client.broadcast.emit("user-data-list-update", vale_data[0])
-
     })
     //listens when a user is send the message in group chat   
     client.on('grp_message', async (user) => {
@@ -304,7 +307,6 @@ io.on("connection", async (client) => {
             localpath: user.localpath,
             path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension, longitude: user.longitude, latitude: user.latitude, messagestatus: user.messagestatus
         })
-
         console.log("grp message receive", msg);
         client.broadcast.emit("grp_message_receive", msg)
         client.emit("deliver-status", { msgid: user.msgid, msgstatus: true })
@@ -344,6 +346,7 @@ io.on("connection", async (client) => {
         await GroupMsg.deleteMany({ msgid: { $in: data.groupmsg_delete_listid } })
         client.broadcast.emit('groupmsg-delete-receive', msg1);
     })
+
     //listens when a admin  user is delete the group 
     client.on("group-chat-delete", async (data) => {
         console.log("delete group chat data is :", data);
@@ -354,6 +357,7 @@ io.on("connection", async (client) => {
         await GroupMsg.deleteMany({ grpid: msg._id })
         client.broadcast.emit('group-chat-delete-receive', { chatId: data.group_chat_id });
     })
+
     //listens when a admin  user is search any user
     client.on("live-search", async (data) => {
         console.log(data);
