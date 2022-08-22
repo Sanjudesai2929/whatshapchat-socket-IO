@@ -53,6 +53,10 @@ const groupMsgSchema=new mongoose.Schema({
         type: String,
 
     },
+    messagestatus:{
+        type: String,
+
+    }
 },
 )
 
