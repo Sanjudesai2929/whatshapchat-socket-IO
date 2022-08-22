@@ -302,13 +302,11 @@ io.on("connection", async (client) => {
         client.emit("deliver-status", { msgid: user.msgid, msgstatus: true })
         await GroupMsg.updateOne({ msgid: user.msgid }, { $set: { messagestatus: "send" } })
         const msg_data = {
-            _id:msg[0]._id,
+            _id:msg[0].grpid,
             message: msg[0].message,
             sentByUsername: msg[0].sentByUsername,
-        
             time: msg[0].time
         }
-
         console.log("msg_data", msg_data);
         client.emit("user-data-list-update", msg_data)
         client.broadcast.emit("user-data-list-update", msg_data)
