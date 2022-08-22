@@ -1,29 +1,28 @@
 const express = require('express');
-const firebase = require('firebase-admin');
+const admin = require('firebase-admin');
 const serviceAccount = require("../firebase/conn.json")
 const router = new express.Router()
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+})
 
-
+const payload = {
+    notification: {
+        title: "Notification Title",
+        body: "Notification Body",
+        click_action: "Send Notification"
+    },
+    data: {
+        data1: "data1 value",
+        data2: "data2 value",
+    }
+}
+const options = { priority: "high", timeToLive: 60 * 60 * 24 }
 router.post("/sendnotification", async (req, res) => {
     console.log(req.body);
     const firebaseToken = req.body.token
-    firebase.initializeApp({
-        credential: firebase.credential.cert(serviceAccount)
-    })
-    const payload = {
-        notification: {
-            title: "Notification Title",
-            body: "Notification Body",
-            click_action: "Send Notification"
-        },
-        data: {
-            data1: "data1 value",
-            data2: "data2 value",
-        }
-    }
     
-    const options = { priority: "high", timeToLive: 60 * 60 * 24 }
-    firebase.messaging().sendToDevice(firebaseToken, payload, options)
+    admin.messaging().sendToDevice(firebaseToken, payload, options)
     res.json({
         "to": req.body.token,
         "notification":
@@ -33,6 +32,7 @@ router.post("/sendnotification", async (req, res) => {
             "icon": "Default",
         }
     })
+
 
 })
 module.exports = router
