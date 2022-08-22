@@ -235,14 +235,13 @@ io.on("connection", async (client) => {
         console.log(data);
         client.broadcast.emit('keyboard_status', data);
     })
-    
+
     //listens when a user is disconnected f rom the server   
     client.on('disconnect', async function (username) {
         console.log(connectedId + 'is offline....');
         client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
         client.broadcast.emit("user-online-status-update", { status: "offline" })
         client.emit("user-online-status-update", { status: "offline" })
-
         await Register.update({ _id: connectedId }, { $set: { status: "offline" } })
     })
 
@@ -327,8 +326,11 @@ io.on("connection", async (client) => {
         const msg1 = await Message.find({ msgid: { $in: data.msg_delete_listid } })
         await Message.deleteMany({ msgid: { $in: data.msg_delete_listid } })
         console.log("delete", msg1);
-        // const msg = await Message.find({ $nor: [{ msgid: data.msg_delete_listid }] })
+       const data1 =await Message.find({sentById:msg1[0].sentById}).sort({ dateTime: -1 }).limit(1)
+       console.log("delete last msg is:",data1);
         client.broadcast.emit('usermsg-delete-receive', msg1);
+        client.emit("user-data-list-update", data1)
+        client.broadcast.emit("user-data-list-update", data1)
     })
     //listens when a user is delete the entire chat
     client.on("chat-delete", async (data) => {
@@ -337,6 +339,8 @@ io.on("connection", async (client) => {
         const msg2 = await Message.find({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
         console.log("delete chat  :", { chatId: data.chat_delete_id });
         await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
+
+
         client.broadcast.emit('chat-delete-receive', { chatId: data.chat_delete_id });
     })
     //listens when a user is delete the group message in group chat 
