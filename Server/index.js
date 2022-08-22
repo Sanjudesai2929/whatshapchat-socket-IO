@@ -297,16 +297,15 @@ io.on("connection", async (client) => {
             path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension, longitude: user.longitude, latitude: user.latitude
         })
 
+        client.broadcast.emit("grp_message_receive", msg)
         client.emit("deliver-status", { msgid: user.msgid, msgstatus: true })
         await GroupMsg.updateOne({ msgid: user.msgid }, { $set: { messagestatus: "send" } })
-        client.broadcast.emit("grp_message_receive", msg)
         const msg_data= {
             message:msg.message,
             sentByUsername:msg.sentByUsername,
             sentByUsername:msg.sentByUsername,
             time:msg.time
         }
-      
         client.emit("user-data-list-update", msg_data)
         client.broadcast.emit("user-data-list-update", msg_data)    
     });
@@ -383,6 +382,6 @@ server.listen(port, async () => {
     //     console.log(item.maths && item.maths.drimil - item.maths && array[i-1].maths.drimil
     //         );
     // })
-    
+
 
 })
