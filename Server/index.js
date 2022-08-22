@@ -297,8 +297,8 @@ io.on("connection", async (client) => {
             path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension, longitude: user.longitude, latitude: user.latitude
         })
         console.log("group receive message is ", msg);
-        client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
-        await GroupMsg.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
+        client.emit("deliver-status", { msgid: user.msgid, msgstatus: true })
+        await GroupMsg.updateOne({ msgid: user.msgid }, { $set: { messagestatus: "send" } })
         client.broadcast.emit("grp_message_receive", msg)
         // const Groupa = groupData.map((data) => {
         //     return {
