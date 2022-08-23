@@ -17,6 +17,10 @@ const groupSchema=new mongoose.Schema({
         type:String,
 
     },
+    totalUser:{
+        type:String,
+
+    },
     date:{
         type:String,
     }
