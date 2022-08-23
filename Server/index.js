@@ -245,7 +245,7 @@ io.on("connection", async (client) => {
     client.on("create-room", async (data) => {
         console.log("create room data is", data);
         const date = new Date()
-        const counter=0
+        let counter=0
         for (let i = 0; i < data.member_list.length; i++) {
             counter++;
         }
