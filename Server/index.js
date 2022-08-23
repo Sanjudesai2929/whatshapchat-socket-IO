@@ -14,7 +14,6 @@ const imgRouter = require("../routes/img.routes")
 const ProfileRouter = require("../routes/profile.routes")
 const AdminChangeRouter = require("../routes/adminChange.routes")
 const GroupMsg = require("../Model/GroupMsg.model");
-const { ifError } = require('assert');
 const GProfileRouter = require('../routes/Gprofile.routes')
 const location = require('../routes/location.routes');
 const notification = require('../routes/notification.routes')
@@ -72,7 +71,7 @@ io.on("connection", async (client) => {
             })
             data.push(...arr1)
         }
-        
+
         const msgUser = await Message.find().sort({ dateTime: -1 }).limit(1)
         if (msgUser.length && msgUser[0].type == "location") {
             var userData = new Map(msgUser.map(({ chatId }) => ([chatId, "location"])));
@@ -114,6 +113,7 @@ io.on("connection", async (client) => {
                 msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
 
             }
+            
             var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
             var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
             var dateTime = new Map(arrayUniqueByKey1.map(({ dateTime, grpid }) => ([grpid, dateTime])));
