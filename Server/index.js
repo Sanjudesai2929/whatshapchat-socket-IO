@@ -318,6 +318,7 @@ io.on("connection", async (client) => {
             time: msg[0].time,
             cuadminstatus:groupmsga[0].adminName.includes(connectedIdUser)
         }
+        
         console.log("msg_data", msg_data);
         client.emit("user-data-list-update", msg_data)
         client.broadcast.emit("user-data-list-update", msg_data)
