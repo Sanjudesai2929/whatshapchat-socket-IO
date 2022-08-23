@@ -95,7 +95,7 @@ io.on("connection", async (client) => {
                 adminName: data.adminName,
                 chatId: data.chatId,
                 date: data.date,
-                totalUser:totalUser
+                totalUser:data.totalUser
             }
         })
         const id = GroupwiseList.map((data) => {
@@ -261,7 +261,7 @@ io.on("connection", async (client) => {
                 adminName: data.adminName,
                 chatId: data.chatId,
                 date: data.date,
-                totalUser:totalUser
+                totalUser:data.totalUser
 
             }
         })
