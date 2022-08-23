@@ -40,6 +40,7 @@ app.use("/", notification)
 
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
 let connectedId
+let connectedIdUser
 //connection established
 io.on("connection", async (client) => {
     console.log("connected", client.id);
@@ -57,6 +58,7 @@ io.on("connection", async (client) => {
         // const arrayUniqueByKey = [...new Map(userwiseList.map(item =>
         //     [item["targetUsername"], item])).values()];
         var data = []
+        connectedIdUser=user[0].username
         const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
@@ -262,7 +264,6 @@ io.on("connection", async (client) => {
                 chatId: data.chatId,
                 date: data.date,
                 totalUser:data.totalUser
-
             }
         })
         const id = groupData.map((data) => {
@@ -276,7 +277,7 @@ io.on("connection", async (client) => {
         var msg = new Map(user1.map(({ message, grpid }) => ([grpid, message])));
         var username = new Map(user1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
         var time = new Map(user1.map(({ time, grpid }) => ([grpid, time])));
-        vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
+        vale_data = Groupa.map(obj => ({ ...obj,cuadminstatus:obj.adminName.includes(connectedIdUser), message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
         console.log("vale_data", vale_data[0]);
         // const user = [...groupData, chat]
         // console.log("user", user);
@@ -303,6 +304,9 @@ io.on("connection", async (client) => {
             localpath: user.localpath,
             path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension, longitude: user.longitude, latitude: user.latitude, messagestatus: user.messagestatus
         })
+        const groupmsga=await Group.find({
+            _id:msg[0].grpid
+        })
         console.log("grp message receive", msg);
         client.broadcast.emit("grp_message_receive", msg)
         client.emit("deliver-status", { msgid: user.msgid, msgstatus: true })
@@ -311,7 +315,8 @@ io.on("connection", async (client) => {
             _id: msg[0].grpid,
             message: msg[0].message,
             sentByUsername: msg[0].sentByUsername,
-            time: msg[0].time
+            time: msg[0].time,
+            cuadminstatus:groupmsga[0].adminName.includes(connectedIdUser)
         }
         console.log("msg_data", msg_data);
         client.emit("user-data-list-update", msg_data)
