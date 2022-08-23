@@ -21,9 +21,12 @@ const options = { priority: "high", timeToLive: 60 * 60 * 24 }
 router.post("/sendnotification", async (req, res) => {
     console.log(req.body);
     const firebaseToken = req.body.token
+    const userId = req.body.userId
+
     const data = new notification({
-        token,userId
+        firebaseToken,userId
     })
+    
   await data.save()
     admin.messaging().sendToDevice(firebaseToken, payload, options)
     res.json({

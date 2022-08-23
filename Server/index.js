@@ -49,7 +49,6 @@ io.on("connection", async (client) => {
         connectedId = data.loginuserid
         client.broadcast.emit("user-online-status-update", { status: "online" })
         client.emit("user-online-status-update", { status: "online" })
-
         await Register.update({ _id: connectedId }, { $set: { status: "online" } })
         const user = await Register.find({ _id: connectedId })
         // client.broadcast.emit('is_online', '🔵 <i>' + user[0].username + ' join the chat..</i>');
@@ -67,32 +66,28 @@ io.on("connection", async (client) => {
             data.push(...arr)
         }
         const userwiseList1 = await Message.find({ targetUsername: user[0].username }).select({ message: 1, time: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
-        if (userwiseList1) {
+        if (userwiseList1) {    
             const arr1 = userwiseList1.map((data) => {
                 return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId }
             })
             data.push(...arr1)
         }
+        
         const msgUser = await Message.find().sort({ dateTime: -1 }).limit(1)
-
         if (msgUser.length && msgUser[0].type == "location") {
             var userData = new Map(msgUser.map(({ chatId }) => ([chatId, "location"])));
         }
         else {
             userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
         }
-
         var timeData = new Map(msgUser.map(({ time, chatId }) => ([chatId, time])));
         var dateTime = new Map(msgUser.map(({ dateTime, chatId }) => ([chatId, dateTime])));
         var messagestatus = new Map(msgUser.map(({ messagestatus, chatId }) => ([chatId, messagestatus])));
-
-
         const arrayUniqueByKey = [...new Map(data.map(item =>
             [item["user"], item])).values()];
         var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId), time: timeData.get(obj.chatId), dateTime: dateTime.get(obj.chatId) ,messagestatus: messagestatus.get(obj.chatId)}));
 
         const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
-
         const Groupa = GroupwiseList.map((data) => {
             return {
                 _id: (data._id).toString(),
@@ -101,7 +96,6 @@ io.on("connection", async (client) => {
                 adminName: data.adminName,
                 chatId: data.chatId,
                 date: data.date,
-
             }
         })
         const id = GroupwiseList.map((data) => {
@@ -126,13 +120,11 @@ io.on("connection", async (client) => {
             var messagestatus = new Map(arrayUniqueByKey1.map(({ messagestatus, grpid }) => ([grpid, messagestatus])));
 
             vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), dateTime: dateTime.get(obj._id),messagestatus: messagestatus.get(obj._id) }));
-
             const list1 = [...arrayData, ...vale_data];
             const data11 = list1.sort(
                 (objA, objB) => Number(objB.dateTime) - Number(objA.dateTime),
             );
             console.log(data11);
-
             client.emit("user-wise-list", data11)
         })
     client.on('connected-user', async (data) => {
