@@ -120,7 +120,7 @@ io.on("connection", async (client) => {
         var dateTime = new Map(arrayUniqueByKey1.map(({ dateTime, grpid }) => ([grpid, dateTime])));
         var messagestatus = new Map(arrayUniqueByKey1.map(({ messagestatus, grpid }) => ([grpid, messagestatus])));
 
-        vale_data = Groupa.map(obj => ({ ...obj, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), dateTime: dateTime.get(obj._id), messagestatus: messagestatus.get(obj._id) }));
+        vale_data = Groupa.map(obj => ({ ...obj,cuadminstatus:obj.adminName.includes(user[0].username) && true, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), dateTime: dateTime.get(obj._id), messagestatus: messagestatus.get(obj._id) }));
         const list1 = [...arrayData, ...vale_data];
         const data11 = list1.sort(
             (objA, objB) => Number(objB.dateTime) - Number(objA.dateTime),
