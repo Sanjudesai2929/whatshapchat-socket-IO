@@ -307,6 +307,7 @@ io.on("connection", async (client) => {
         const groupmsga=await Group.find({
             _id:msg[0].grpid
         })
+
         
         console.log("grp message receive", msg);
         client.broadcast.emit("grp_message_receive", msg)
