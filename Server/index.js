@@ -308,7 +308,6 @@ io.on("connection", async (client) => {
             _id:msg[0].grpid
         })
         
-
         console.log("grp message receive", msg);
         client.broadcast.emit("grp_message_receive", msg)
         client.emit("deliver-status", { msgid: user.msgid, msgstatus: true })
