@@ -18,6 +18,7 @@ const GProfileRouter = require('../routes/Gprofile.routes')
 const location = require('../routes/location.routes');
 const notification = require('../routes/notification.routes')
 env.config()
+
 const port = process.env.PORT
 var server = http.createServer(app)
 require("../db/db.js")
