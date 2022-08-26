@@ -4,8 +4,9 @@ const bcrypt = require("bcrypt")
 const router = require("./register.routes")
 const loginRouter = new express.Router()
 router.post("/login", async (req, res) => {
-    const { username, password } = req.body
+    const { username, password,deviceid } = req.body
     console.log(username);
+    await Register.updateMany({username},{$push:{deviceid}})
     var userData = await Register.findOne({ username  })
     console.log(userData);
     if (userData) {

@@ -31,6 +31,9 @@ const userSchema = new mongoose.Schema({
   },
   status:{
     type: String,
+  },
+  deviceid:{
+    type:Array
   }
 });
 
