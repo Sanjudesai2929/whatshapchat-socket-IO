@@ -52,7 +52,8 @@ io.on("connection", async (client) => {
         client.emit("user-online-status-update", { status: "online" })
         await Register.update({ _id: connectedId }, { $set: { status: "online" } })
         const user = await Register.find({ _id: connectedId })
-        client.emit("deviceVerification",user[0].deviceid)
+        console.log("verification id is :",user[0]['deviceid']);
+        client.emit("deviceVerification",user[0]['deviceid'])
         // client.broadcast.emit('is_online', '🔵 <i>' + user[0].username + ' join the chat..</i>');
         console.log(user);
         //Get the user list data
