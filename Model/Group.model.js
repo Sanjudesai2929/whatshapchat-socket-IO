@@ -16,7 +16,6 @@ const groupSchema=new mongoose.Schema({
     },
     chatId:{
         type:String,
-
     },
     totalUser:{
         type:String,

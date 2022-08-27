@@ -27,7 +27,6 @@ router.post("/adminchange", async (req, res) => {
 
         })
     }
-
 })
 
 router.post("/adminremove", async (req, res) => {
@@ -48,6 +47,5 @@ router.post("/adminremove", async (req, res) => {
             message: "admin not remove successfully",
         })
     }
-
 })
 module.exports = router
