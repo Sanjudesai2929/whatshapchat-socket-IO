@@ -282,6 +282,25 @@ io.on("connection", async (client) => {
         const groupData = await Group.find({ _id: data.id })
         client.emit("grp_data", groupData[0].userList)
     })
+    client.on("adminChange", async(data) => {
+        console.log("ADMIN CHANGE:", data);
+        const data1 = await Group.find({ chatId })
+        await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': true } })
+        data1.adminName != member_name ? await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $push: { adminName: member_name } }) : console.log("aa");
+        const group = await Group.find({ chatId })
+   
+        client.broadcast.emit('adminChange', group);
+    })
+    client.on("adminRemove", async(data) => {
+        console.log("ADMIN Remove:", data);
+        const data1 = await Group.find({ chatId })
+       await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': false } })
+        await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $pull: { adminName: member_name } })
+        const group = await Group.find({ chatId })
+  
+        client.broadcast.emit('adminRemove', group);
+
+    })
     //listens when a user is send the message in group chat   
     client.on('grp_message', async (user) => {
         console.log("group message is ", user);
@@ -363,19 +382,7 @@ io.on("connection", async (client) => {
         await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
         client.broadcast.emit('chat-delete-receive', { chatId: data.chat_delete_id });
     })
-    client.on("adminChange", async(data) => {
-        console.log("ADMIN CHANGE:", data);
-        const data1 = await Group.find({ chatId })
-        await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': true } })
-        data1.adminName != member_name ? await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $push: { adminName: member_name } }) : console.log("aa");
-
-    })
-    client.on("adminRemove", async(data) => {
-        console.log("ADMIN Remove:", data);
-        const data1 = await Group.find({ chatId })
-       await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': false } })
-        await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $pull: { adminName: member_name } })
-    })
+   
     //listens when a user is delete the group message in group chat 
     client.on("groupmsg-delete", async (data) => {
         console.log("delete group msg is :", data);
