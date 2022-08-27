@@ -88,7 +88,6 @@ io.on("connection", async (client) => {
         const arrayUniqueByKey = [...new Map(data.map(item =>
             [item["user"], item])).values()];
         var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId), time: timeData.get(obj.chatId), dateTime: dateTime.get(obj.chatId), messagestatus: messagestatus.get(obj.chatId) }));
-
         const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
         const Groupa = GroupwiseList.map((data) => {
             return {
@@ -105,25 +104,26 @@ io.on("connection", async (client) => {
             return data._id
         })
         const user1 = await GroupMsg.find({ grpid: { $in: id } })
-
+    
         const arrayUniqueByKey1 = [...new Map(user1.map(item =>
             [item["grpid"], item])).values()];
-
+    
         if (arrayUniqueByKey1.length && arrayUniqueByKey1[0].type == "location") {
-
+    
             var msg = new Map(arrayUniqueByKey1.map(({ grpid }) => ([grpid, "location"])));
         }
         else {
             msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
-
+    
         }
-
         var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
+        var sentById = new Map(arrayUniqueByKey1.map(({ sentById, grpid }) => ([grpid, sentById])));
+    
         var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
         var dateTime = new Map(arrayUniqueByKey1.map(({ dateTime, grpid }) => ([grpid, dateTime])));
         var messagestatus = new Map(arrayUniqueByKey1.map(({ messagestatus, grpid }) => ([grpid, messagestatus])));
-
-        vale_data = Groupa.map(obj => ({ ...obj,cuadminstatus:obj.adminName.includes(user[0].username) && true, message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), dateTime: dateTime.get(obj._id), messagestatus: messagestatus.get(obj._id) }));
+        vale_data = Groupa.map(obj => ({ ...obj,cuadminstatus:obj.adminName.includes(user[0].username) && true, message: msg.get(obj._id),sentById: sentById.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), dateTime: dateTime.get(obj._id), messagestatus: messagestatus.get(obj._id) }));
+     
         const list1 = [...arrayData, ...vale_data];
         const data11 = list1.sort(
             (objA, objB) => Number(objB.dateTime) - Number(objA.dateTime),
@@ -144,7 +144,6 @@ io.on("connection", async (client) => {
         // console.log(connectMsg);
         client.emit('connected-group-user', connectMsg);
     });
-    
     client.on("user-list-request", async (data) => {
         console.log("user-list-request", data);
         //Get the all user list data
@@ -231,14 +230,6 @@ io.on("connection", async (client) => {
         client.broadcast.emit('keyboard_status', data);
     })
 
-    //listens when a user is disconnected f rom the server   
-    client.on('disconnect', async function (username) {
-        console.log(connectedId + 'is offline....');
-        client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
-        client.broadcast.emit("user-online-status-update", { status: "offline" })
-        client.emit("user-online-status-update", { status: "offline" })
-        await Register.update({ _id: connectedId }, { $set: { status: "offline" } })
-    })
 
     //listens when there's an error detected and logs the err  or on the console
     client.on('error', function (err) {
@@ -286,6 +277,11 @@ io.on("connection", async (client) => {
         client.emit("create-room", groupData[0])
         client.emit("user-data-list-update", vale_data[0])
         client.broadcast.emit("user-data-list-update", vale_data[0])
+    })
+    client.on("grp_data",async(data)=>{
+        console.log("grp_data", data);
+        // const groupData = await Group.find({_id:data})
+        // client.emit("grp_data",groupData[0].userList)
     })
     //listens when a user is send the message in group chat   
     client.on('grp_message', async (user) => {
@@ -392,39 +388,18 @@ io.on("connection", async (client) => {
         console.log(user);
         client.emit('live-search-response', user);
     })
+        //listens when a user is disconnected f rom the server   
+        client.on('disconnect', async function (username) {
+            console.log(connectedId + 'is offline....');
+            client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
+            client.broadcast.emit("user-online-status-update", { status: "offline" })
+            client.emit("user-online-status-update", { status: "offline" })
+            await Register.update({ _id: connectedId }, { $set: { status: "offline" } })
+        })
+    
 })
 server.listen(port, async () => {
     console.log("server started");
+  
 
-    //         let counter = 0;
-    //     for (let i = 0; i < vale_data[0].userList.length; i++) {
-    //     counter++;
-    //     }
-    // console.log(counter);
-    // let array = [
-    //     {
-    //         maths: {
-    //             drimil: 10,
-    //             chirag: 10
-    //         },
-    //         science: {
-    //             drimil: 34,
-    //             chirag: 10
-    //         }
-    //     },
-    //     {
-    //         maths: {
-    //             drimil: 30
-    //         }
-    //     },
-    //     {
-    //         science: {
-    //             chirag: 30
-    //         } 
-    //     }
-    // ]
-    // array.map((item,i)=>{
-    //     console.log(item.maths && item.maths.drimil - item.maths && array[i-1].maths.drimil
-    //         );
-    // })
 })
