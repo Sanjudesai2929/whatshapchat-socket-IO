@@ -117,6 +117,7 @@ io.on("connection", async (client) => {
         else {
             msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
         }
+        
         var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
         var sentById = new Map(arrayUniqueByKey1.map(({ sentById, grpid }) => ([grpid, sentById])));
 
