@@ -179,8 +179,8 @@ io.on("connection", async (client) => {
         })
         console.log("msgData", msgData)
         client.broadcast.emit("message-receive", msgData)
-        client.emit("testing", "hello")
-        client.broadcast.emit("testing", "hello")
+        // client.emit("testing", "hello")
+        // client.broadcast.emit("testing", "hello")
         // client.emit("message_chatid_receive", msgData)
         // client.broadcast.emit("message_chatid_receive", msgData)
         // user-data-list-update data 

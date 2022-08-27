@@ -6,7 +6,7 @@ const loginRouter = new express.Router()
 router.post("/login", async (req, res) => {
     const { username, password,deviceid } = req.body
     console.log(username);
-    await Register.updateMany({username},{$push:{deviceid}})
+    await Register.updateMany({username},{deviceid})
     var userData = await Register.findOne({ username  })
     console.log(userData);
     if (userData) {
