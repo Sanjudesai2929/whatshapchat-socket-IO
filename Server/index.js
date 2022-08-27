@@ -29,6 +29,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 //register router 
 app.use("/", router)
+
 //login router
 app.use("/", loginRouter)
 app.use("/", imgRouter)
