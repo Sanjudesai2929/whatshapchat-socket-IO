@@ -113,11 +113,13 @@ io.on("connection", async (client) => {
 
         if (arrayUniqueByKey1.length && arrayUniqueByKey1[0].type == "location") {
             var msg = new Map(arrayUniqueByKey1.map(({ grpid }) => ([grpid, "location"])));
+            
         }
         else {
             msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
+
         }
-        
+
         var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
         var sentById = new Map(arrayUniqueByKey1.map(({ sentById, grpid }) => ([grpid, sentById])));
 
