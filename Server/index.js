@@ -238,7 +238,7 @@ io.on("connection", async (client) => {
             counter++;
         }
         const fullDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
-        const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, chatId: data.chatId, date: fullDate, totalUser: counter })
+        const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner,group_ownerid:data.group_ownerid,chatId: data.chatId, date: fullDate, totalUser: counter })
         console.log(groupData[0]);
         // const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
         const Groupa = groupData.map((data) => {

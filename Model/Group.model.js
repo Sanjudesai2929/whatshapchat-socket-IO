@@ -23,7 +23,13 @@ const groupSchema=new mongoose.Schema({
     },
     date:{
         type:String,
+    },
+    group_ownerid:{
+        type:String,
     }
+
+
+
 },
 )
 

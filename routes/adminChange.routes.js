@@ -15,8 +15,7 @@ router.post("/adminchange", async (req, res) => {
         data1.adminName != member_name ? await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $push: { adminName: member_name } }) : console.log("aa");
         res.json({
             status: true,
-            message: "admin add successfully",
-          
+            message: "admin add successfully",   
         })
     }
     catch (err) {
