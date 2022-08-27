@@ -53,7 +53,6 @@ io.on("connection", async (client) => {
         client.emit("deviceVerification",user[0].deviceid)
         // client.broadcast.emit('is_online', '🔵 <i>' + user[0].username + ' join the chat..</i>');
         console.log(user);
-        
         //Get the user list data
         // const userwiseList = await Message.find({$or:[{ sentByUsername: user[0].username },{ targetUsername:user[0].username}]}).select({ sentById:1,targetId:1,targetUsername: 1, chatId: 1, sentByUsername: 1 })
         // const arrayUniqueByKey = [...new Map(userwiseList.map(item =>
