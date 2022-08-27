@@ -54,6 +54,7 @@ io.on("connection", async (client) => {
         const user = await Register.find({ _id: connectedId })
         console.log("verification id is :",user[0]['deviceid']);
         client.emit("deviceVerification",user[0]['deviceid'])
+        
         // client.broadcast.emit('is_online', '🔵 <i>' + user[0].username + ' join the chat..</i>');
         console.log(user);
         //Get the user list data
