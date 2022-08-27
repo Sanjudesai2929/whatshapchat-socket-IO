@@ -40,6 +40,7 @@ app.use("/", notification)
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
 let connectedId
 let connectedIdUser
+
 //connection established
 io.on("connection", async (client) => {
     console.log("connected", client.id);
