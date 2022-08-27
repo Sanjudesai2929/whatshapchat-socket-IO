@@ -91,7 +91,7 @@ io.on("connection", async (client) => {
             return {
                 _id: (data._id).toString(),
                 groupName: data.groupName,
-                userList: data.userList,
+                // userList: data.userList,
                 adminName: data.adminName,
                 chatId: data.chatId,
                 date: data.date,
