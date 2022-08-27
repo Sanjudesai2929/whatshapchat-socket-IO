@@ -37,8 +37,6 @@ app.use("/", GProfileRouter)
 // app.use("/", location)
 app.use("/", AdminChangeRouter)
 app.use("/", notification)
-
-
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
 let connectedId
 let connectedIdUser
@@ -104,17 +102,14 @@ io.on("connection", async (client) => {
             return data._id
         })
         const user1 = await GroupMsg.find({ grpid: { $in: id } })
-    
         const arrayUniqueByKey1 = [...new Map(user1.map(item =>
             [item["grpid"], item])).values()];
     
         if (arrayUniqueByKey1.length && arrayUniqueByKey1[0].type == "location") {
-    
             var msg = new Map(arrayUniqueByKey1.map(({ grpid }) => ([grpid, "location"])));
         }
         else {
             msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
-    
         }
         var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
         var sentById = new Map(arrayUniqueByKey1.map(({ sentById, grpid }) => ([grpid, sentById])));
@@ -123,7 +118,6 @@ io.on("connection", async (client) => {
         var dateTime = new Map(arrayUniqueByKey1.map(({ dateTime, grpid }) => ([grpid, dateTime])));
         var messagestatus = new Map(arrayUniqueByKey1.map(({ messagestatus, grpid }) => ([grpid, messagestatus])));
         vale_data = Groupa.map(obj => ({ ...obj,cuadminstatus:obj.adminName.includes(user[0].username) && true, message: msg.get(obj._id),sentById: sentById.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), dateTime: dateTime.get(obj._id), messagestatus: messagestatus.get(obj._id) }));
-     
         const list1 = [...arrayData, ...vale_data];
         const data11 = list1.sort(
             (objA, objB) => Number(objB.dateTime) - Number(objA.dateTime),
@@ -280,8 +274,8 @@ io.on("connection", async (client) => {
     })
     client.on("grp_data",async(data)=>{
         console.log("grp_data", data);
-        // const groupData = await Group.find({_id:data})
-        // client.emit("grp_data",groupData[0].userList)
+        const groupData = await Group.find({_id:data.id})
+        client.emit("grp_data",groupData[0].userList)
     })
     //listens when a user is send the message in group chat   
     client.on('grp_message', async (user) => {
