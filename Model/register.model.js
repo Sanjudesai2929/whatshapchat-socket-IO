@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
   deviceid:{
-    type:Array
+    type:String
   }
 });
 
