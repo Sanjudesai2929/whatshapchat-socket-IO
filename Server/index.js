@@ -96,7 +96,6 @@ io.on("connection", async (client) => {
                 // userList: data.userList,
                 chatId: data.chatId,
                 adminName: data.adminName,
-
                 date: data.date,
                 totalUser: data.totalUser,
                 group_ownerid: data.group_ownerid,
@@ -187,6 +186,7 @@ io.on("connection", async (client) => {
             localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus, longitude: data.longitude, latitude: data.latitude
         })
+        
         console.log("msgData", msgData)
         client.broadcast.emit("message-receive", msgData)
         // client.emit("testing", "hello")
