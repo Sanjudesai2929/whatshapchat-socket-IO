@@ -279,9 +279,9 @@ io.on("connection", async (client) => {
     })
     client.on("grp_data", async (data) => {
         console.log("grp_data", data);
-        const groupData = await Group.find({ _id: data.id },{ userList: 1 ,group_ownerid:1})
+        const groupData = await Group.find({ _id: data.id })
         
-        client.emit("grp_data", groupData[0])
+        client.emit("grp_data", groupData[0].userList)
     })
     client.on("adminChange", async (data) => {
         console.log("ADMIN CHANGE:", data);
