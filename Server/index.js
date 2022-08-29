@@ -18,7 +18,6 @@ const GProfileRouter = require('../routes/Gprofile.routes')
 const location = require('../routes/location.routes');
 const notification = require('../routes/notification.routes')
 env.config()
-
 const port = process.env.PORT
 var server = http.createServer(app)
 require("../db/db.js")
@@ -100,7 +99,6 @@ io.on("connection", async (client) => {
                 date: data.date,
                 totalUser: data.totalUser,
                 group_ownerid: data.group_ownerid
-
             }
         })
         const id = GroupwiseList.map((data) => {
@@ -112,7 +110,6 @@ io.on("connection", async (client) => {
 
         if (arrayUniqueByKey1.length && arrayUniqueByKey1[0].type == "location") {
             var msg = new Map(arrayUniqueByKey1.map(({ grpid }) => ([grpid, "location"])));
-
         }
         else {
             msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
@@ -138,12 +135,14 @@ io.on("connection", async (client) => {
         console.log("connectMsg", connectMsg);
         client.emit('connected-user', connectMsg);
     });
+
     client.on('connected-group-user', async (data) => {
         console.log("connected group user is ", data);
         const connectMsg = await GroupMsg.find({ grpid: data.grpid }).sort({ date: 1 }).select({ "dateTime": 0 })
         // console.log(connectMsg);
         client.emit('connected-group-user', connectMsg);
     });
+
     client.on("user-list-request", async (data) => {
         console.log("user-list-request", data);
         //Get the all user list data
@@ -230,7 +229,6 @@ io.on("connection", async (client) => {
         client.broadcast.emit('keyboard_status', data);
     })
 
-
     //listens when there's an error detected and logs the err  or on the console
     client.on('error', function (err) {
         console.log('Error detected', client.id);
@@ -279,25 +277,26 @@ io.on("connection", async (client) => {
     })
     client.on("grp_data", async (data) => {
         console.log("grp_data", data);
-        const groupData = await Group.find({ _id: data.id })
-        client.emit("grp_data", groupData[0].userList)
+        const groupData = await Group.find({ _id: data.id },{ userList: 1 ,group_ownerid:1})
+        
+        client.emit("grp_data", groupData[0])
     })
-    client.on("adminChange", async(data) => {
+    client.on("adminChange", async (data) => {
         console.log("ADMIN CHANGE:", data);
         const data1 = await Group.find({ chatId })
         await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': true } })
         data1.adminName != member_name ? await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $push: { adminName: member_name } }) : console.log("aa");
         const group = await Group.find({ chatId })
-   
+
         client.broadcast.emit('adminChange', group);
     })
-    client.on("adminRemove", async(data) => {
+    client.on("adminRemove", async (data) => {
         console.log("ADMIN Remove:", data);
         const data1 = await Group.find({ chatId })
-       await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': false } })
+        await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': false } })
         await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $pull: { adminName: member_name } })
         const group = await Group.find({ chatId })
-  
+
         client.broadcast.emit('adminRemove', group);
 
     })
@@ -360,7 +359,6 @@ io.on("connection", async (client) => {
             const arr1 = userwiseList1.map((data) => {
                 return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, message: data.message, time: data.time }
             })
-
             data2.push(...arr1)
         }
         const val2 = data1[data1.length - 1]
@@ -382,7 +380,7 @@ io.on("connection", async (client) => {
         await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
         client.broadcast.emit('chat-delete-receive', { chatId: data.chat_delete_id });
     })
-   
+
     //listens when a user is delete the group message in group chat 
     client.on("groupmsg-delete", async (data) => {
         console.log("delete group msg is :", data);
@@ -407,7 +405,7 @@ io.on("connection", async (client) => {
         console.log(user);
         client.emit('live-search-response', user);
     })
-    //listens when a user is disconnected f rom the server   
+    //listens when a user is disconnected from the server   
     client.on('disconnect', async function (username) {
         console.log(connectedId + 'is offline....');
         client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
@@ -415,23 +413,17 @@ io.on("connection", async (client) => {
         client.emit("user-online-status-update", { status: "offline" })
         await Register.update({ _id: connectedId }, { $set: { status: "offline" } })
     })
-
 })
 server.listen(port, async () => {
     console.log("server started");
-    // const groupData = await Group.find({ _id: "6309fd806ef0290aef62f716" })
-    // // console.log(groupData[0]);
-    // const user1 = await Register.find()
+    const groupData = await Group.find({ _id: "630c4c9390af4bdee327db2a" }, { userList: 1 ,group_ownerid:1})
+    // console.log(groupData);
+    const user1 = await Register.find()
+    // console.log(user1);
     // var msg = new Map(user1.map(({ bio, _id }) => ([_id, bio])));
-    // // console.log(msg);
-    // // var mergedList = .map(groupData.userList[0], function(item){
-    // //     return _.extend(item, _.findWhere(user1, { _id: item.member_id }));
-    // // });
-    // // const vale_data = groupData[0].userList.map(obj => ({ ...obj, bio: msg.get(obj.member_id) }));
-    // const data=groupData[0].userList
-    // // console.log(data);
-    // const vale_data = groupData.map(obj => ({...obj.userList, bio: msg.get(obj.member_id)}));
-
+    // console.log(msg);
+    // const vale_data = groupData[0].userList.map(obj => ({ ...obj, bio: msg.get(obj.member_id) }));
+    //  console.log(groupData[0]);
+    // const vale_data = groupData.map(obj => ({...obj, bio: "aa"}));
     // console.log(vale_data);
-
 })
