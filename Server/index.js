@@ -124,9 +124,9 @@ io.on("connection", async (client) => {
         vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(user[0].username) && true, message: msg.get(obj._id), sentById: sentById.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), datetime:dateTime.get(obj._id)?dateTime.get(obj._id): aa.get(obj._id), messagestatus: messagestatus.get(obj._id) }));
 
         const list1 = [...arrayData, ...vale_data];
-        // const data11 = list1.sort(
-        //     (objA, objB) => Number(objB.datetime) - Number(objA.datetime),
-        // );
+        const data11 = list1.sort(
+            (objA, objB) => Number(objB.datetime) - Number(objA.datetime),
+        );
         client.emit("user-wise-list", list1)
     })
     client.on('connected-user', async (data) => {
