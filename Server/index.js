@@ -82,11 +82,13 @@ io.on("connection", async (client) => {
             userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
         }
         var timeData = new Map(msgUser.map(({ time, chatId }) => ([chatId, time])));
+        var sortingdatetime = new Map(msgUser.map(({ sortingdatetime, chatId }) => ([chatId, sortingdatetime])));
+
         var dateTime = new Map(msgUser.map(({ dateTime, chatId }) => ([chatId, dateTime])));
         var messagestatus = new Map(msgUser.map(({ messagestatus, chatId }) => ([chatId, messagestatus])));
         const arrayUniqueByKey = [...new Map(data.map(item =>
             [item["user"], item])).values()];
-        var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId), time: timeData.get(obj.chatId), datetime: dateTime.get(obj.chatId), messagestatus: messagestatus.get(obj.chatId) }));
+        var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId), time: timeData.get(obj.chatId), sortingdatetime: sortingdatetime.get(obj.chatId), datetime: dateTime.get(obj.chatId), messagestatus: messagestatus.get(obj.chatId) }));
         const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
         const Groupa = GroupwiseList.map((data) => {
             return {
@@ -127,6 +129,7 @@ io.on("connection", async (client) => {
         const data11 = list1.sort(
             (objA, objB) => Number(objB.datetime) - Number(objA.datetime),
         );
+        console.log(data11);
         client.emit("user-wise-list", data11)
     })
     client.on('connected-user', async (data) => {
@@ -179,7 +182,7 @@ io.on("connection", async (client) => {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                 hour: '2-digit', minute: '2-digit'
             }),
-            localpath: data.localpath,
+            localpath: data.localpath,sortingdatetime:data.sortingdatetime,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus, longitude: data.longitude, latitude: data.latitude
         })
         console.log("msgData", msgData)
