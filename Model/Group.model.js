@@ -1,39 +1,37 @@
 const mongoose = require('mongoose');
-const groupSchema=new mongoose.Schema({
-    groupName:{
-        type:String
+const groupSchema = new mongoose.Schema({
+    groupName: {
+        type: String
     },
-    userList:[
+    userList: [
         {
-            member_id:String,
-            member_name:String,
-            adminstatus:Boolean,
-            bio:String
+            member_id: String,
+            member_name: String,
+            adminstatus: Boolean,
+            bio: String
         }
     ],
-    adminName:{
-        type:Array,
+    adminName: {
+        type: Array,
     },
-    chatId:{
-        type:String,
+    chatId: {
+        type: String,
     },
-    totalUser:{
-        type:String,
+    totalUser: {
+        type: String,
 
     },
-    date:{
-        type:String,
+    date: {
+        type: String,
     },
-    group_ownerid:{
-        type:String,
+    group_ownerid: {
+        type: String,
     },
-dateTime:{
-    type:Date
-}
-
-
+    dateTime: {
+        type: Date
+    }
 },
 )
 
-const Group = new  mongoose.model("group",groupSchema)
-module.exports= Group
+const Group = new mongoose.model("group", groupSchema)
+module.exports = Group

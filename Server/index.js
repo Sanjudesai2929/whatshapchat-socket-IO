@@ -127,7 +127,7 @@ io.on("connection", async (client) => {
         // const data11 = list1.sort(
         //     (objA, objB) => Number(objB.datetime) - Number(objA.datetime),
         // );
-        client.emit("user-wise-list", data11)
+        client.emit("user-wise-list", list1)
     })
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
