@@ -137,6 +137,7 @@ io.on("connection", async (client) => {
         client.emit('connected-user', connectMsg);
     });
 
+    
     client.on('connected-group-user', async (data) => {
         console.log("connected group user is ", data);
         const connectMsg = await GroupMsg.find({ grpid: data.grpid }).sort({ date: 1 }).select({ "dateTime": 0 })
