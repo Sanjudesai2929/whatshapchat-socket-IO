@@ -127,7 +127,7 @@ io.on("connection", async (client) => {
         const data11 = list1.sort(
             (objA, objB) => Number(objB.datetime) - Number(objA.datetime),
         );
-        client.emit("user-wise-list", list1)
+        client.emit("user-wise-list", data11)
     })
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
@@ -137,7 +137,6 @@ io.on("connection", async (client) => {
         client.emit('connected-user', connectMsg);
     });
 
-    
     client.on('connected-group-user', async (data) => {
         console.log("connected group user is ", data);
         const connectMsg = await GroupMsg.find({ grpid: data.grpid }).sort({ date: 1 }).select({ "dateTime": 0 })
