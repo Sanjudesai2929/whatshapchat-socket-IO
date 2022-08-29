@@ -95,6 +95,8 @@ io.on("connection", async (client) => {
                 groupName: data.groupName,
                 // userList: data.userList,
                 chatId: data.chatId,
+            adminName: data.adminName,
+
                 date: data.date,
                 totalUser: data.totalUser,
                 group_ownerid: data.group_ownerid,
@@ -121,9 +123,8 @@ io.on("connection", async (client) => {
         var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
         var dateTime = new Map(arrayUniqueByKey1.map(({ dateTime, grpid }) => ([grpid, dateTime])));
         var aa = new Map(GroupwiseList.map(({ dateTime, _id }) => ([(_id).toString(), dateTime])));
-    
         var messagestatus = new Map(arrayUniqueByKey1.map(({ messagestatus, grpid }) => ([grpid, messagestatus])));
-        vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(user[0].username) && true, sortingdatetime: sortingdatetime.get(obj._id),message: msg.get(obj._id), sentById: sentById.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), datetime:dateTime.get(obj._id)?dateTime.get(obj._id): aa.get(obj._id), messagestatus: messagestatus.get(obj._id) }));
+        vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(user[0].username) && true, sortingdatetime: sortingdatetime.get(obj._id), messagestatus: messagestatus.get(obj._id) ,message: msg.get(obj._id), sentById: sentById.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), datetime:dateTime.get(obj._id)?dateTime.get(obj._id): aa.get(obj._id)}));
 
         const list1 = [...arrayData, ...vale_data];
         const data11 = list1.sort(
@@ -423,5 +424,5 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-
+   
 })
