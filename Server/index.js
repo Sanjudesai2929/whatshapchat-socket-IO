@@ -95,12 +95,12 @@ io.on("connection", async (client) => {
                 groupName: data.groupName,
                 // userList: data.userList,
                 chatId: data.chatId,
-            adminName: data.adminName,
+                adminName: data.adminName,
 
                 date: data.date,
                 totalUser: data.totalUser,
                 group_ownerid: data.group_ownerid,
-            
+
             }
         })
         const id = GroupwiseList.map((data) => {
@@ -119,12 +119,12 @@ io.on("connection", async (client) => {
         var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
         var sentById = new Map(arrayUniqueByKey1.map(({ sentById, grpid }) => ([grpid, sentById])));
         var sortingdatetime = new Map(arrayUniqueByKey1.map(({ sortingdatetime, grpid }) => ([grpid, sortingdatetime])));
-    
+
         var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
         var dateTime = new Map(arrayUniqueByKey1.map(({ dateTime, grpid }) => ([grpid, dateTime])));
         var aa = new Map(GroupwiseList.map(({ dateTime, _id }) => ([(_id).toString(), dateTime])));
         var messagestatus = new Map(arrayUniqueByKey1.map(({ messagestatus, grpid }) => ([grpid, messagestatus])));
-        vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(user[0].username) && true, sortingdatetime: sortingdatetime.get(obj._id), messagestatus: messagestatus.get(obj._id) ,message: msg.get(obj._id), sentById: sentById.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), datetime:dateTime.get(obj._id)?dateTime.get(obj._id): aa.get(obj._id)}));
+        vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(user[0].username) && true, sortingdatetime: sortingdatetime.get(obj._id), messagestatus: messagestatus.get(obj._id), message: msg.get(obj._id), sentById: sentById.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), datetime: dateTime.get(obj._id) ? dateTime.get(obj._id) : aa.get(obj._id) }));
 
         const list1 = [...arrayData, ...vale_data];
         const data11 = list1.sort(
@@ -132,7 +132,7 @@ io.on("connection", async (client) => {
         );
         console.log(data11);
         client.emit("user-wise-list", data11)
-        
+
     })
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
@@ -249,9 +249,11 @@ io.on("connection", async (client) => {
             counter++;
         }
         const fullDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
-        const groupData = await Group.insertMany({ groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, group_ownerid: data.group_ownerid, chatId: data.chatId, date: fullDate, totalUser: counter,  dateTime: new Date().toLocaleString('en-US', {
-            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-        }), })
+        const groupData = await Group.insertMany({
+            groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, group_ownerid: data.group_ownerid, chatId: data.chatId, date: fullDate, totalUser: counter, dateTime: new Date().toLocaleString('en-US', {
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            }),
+        })
         console.log(groupData[0]);
         // const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
         const Groupa = groupData.map((data) => {
@@ -286,20 +288,21 @@ io.on("connection", async (client) => {
     client.on("grp_data", async (data) => {
         console.log("grp_data", data);
         const groupData = await Group.find({ _id: data.id })
-        
+
         client.emit("grp_data", groupData[0].userList)
     })
     client.on("adminChange", async (data) => {
         console.log("ADMIN CHANGE:", data);
-        // const data1 = await Group.find({ chatId })
-        // await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': true } })
-        // data1.adminName != member_name ? await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $push: { adminName: member_name } }) : console.log("aa");
-        // const group = await Group.find({ chatId })
+        // const data1 = await Group.find({ chatId:data.chatId })
+        // await Group.updateMany({ chatId:data.chatId, 'userList.member_id': data.member_id }, { $set: { 'userList.$.adminstatus': true } })
+        // data1.adminName != member_name ? await Group.updateMany({ chatId:data.chatId, 'userList.member_id': data.member_id }, { $push: { adminName: data.member_name } }) : console.log("aa");
+        // const group = await Group.find({ chatId:data.chatId })
 
         // client.broadcast.emit('adminChange', group);
     })
     client.on("adminRemove", async (data) => {
         console.log("ADMIN Remove:", data);
+        const {chatId,member_id,member_name}=data
         // const data1 = await Group.find({ chatId })
         // await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': false } })
         // await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $pull: { adminName: member_name } })
@@ -319,7 +322,7 @@ io.on("connection", async (client) => {
             dateTime: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
-            day: user.day,sortingdatetime:user.sortingdatetime,
+            day: user.day, sortingdatetime: user.sortingdatetime,
             time: new Date().toLocaleTimeString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                 hour: '2-digit', minute: '2-digit'
@@ -413,6 +416,10 @@ io.on("connection", async (client) => {
         console.log(user);
         client.emit('live-search-response', user);
     })
+    client.on("remove-from-group", async(data) => {
+        console.log("remove-from-group", data);
+          await Group.updateMany({ chatId:data.chatId}, { $pull: { userList:{member_id: data.member_id} } })
+    })
     //listens when a user is disconnected from the server   
     client.on('disconnect', async function (username) {
         console.log(connectedId + 'is offline....');
@@ -424,5 +431,6 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-   
+    // await Group.updateMany({ chatId:"81de6e60-2792-11ed-8317-d36f258c7a98"}, { $pull: { userList:{member_id: "62fa3d1891300e449e9f0b45"} } })
+
 })
