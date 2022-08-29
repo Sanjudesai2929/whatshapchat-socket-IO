@@ -319,7 +319,7 @@ io.on("connection", async (client) => {
             dateTime: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
-            day: user.day,sortingdatetime:data.sortingdatetime,
+            day: user.day,sortingdatetime:user.sortingdatetime,
             time: new Date().toLocaleTimeString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                 hour: '2-digit', minute: '2-digit'
