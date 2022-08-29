@@ -26,8 +26,10 @@ const groupSchema=new mongoose.Schema({
     },
     group_ownerid:{
         type:String,
-    }
-
+    },
+dateTime:{
+    type:Date
+}
 
 
 },
