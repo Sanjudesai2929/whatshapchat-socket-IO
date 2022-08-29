@@ -293,23 +293,20 @@ io.on("connection", async (client) => {
     })
     client.on("adminChange", async (data) => {
         console.log("ADMIN CHANGE:", data);
-        const data1 = await Group.find({ chatId:data.chatId })
-        await Group.updateMany({ chatId:data.chatId, 'userList.member_id': data.member_id }, { $set: { 'userList.$.adminstatus': true } })
-        data1.adminName != data.member_name ? await Group.updateMany({ chatId:data.chatId, 'userList.member_id': data.member_id }, { $push: { adminName: data.member_name } }) : console.log("aa");
-        const group = await Group.find({ chatId:data.chatId })
-
+        const data1 = await Group.find({ _id:data.chatId })
+        await Group.updateMany({ _id:data.chatId, 'userList.member_id': data.member_id }, { $set: { 'userList.$.adminstatus': true } })
+        data1.adminName != data.member_name ? await Group.updateMany({ _id:data.chatId, 'userList.member_id': data.member_id }, { $push: { adminName: data.member_name } }) : console.log("aa");
+        const group = await Group.find({ _id:data.chatId })
         client.broadcast.emit('adminChange', group);
     })
     client.on("adminRemove", async (data) => {
         console.log("ADMIN Remove:", data);
         const {chatId,member_id,member_name}=data
-        const data1 = await Group.find({ chatId })
-        await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': false } })
-        await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $pull: { adminName: member_name } })
-        const group = await Group.find({ chatId })
-
+        const data1 = await Group.find({ _id:chatId })
+        await Group.updateMany({ _id:chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': false } })
+        await Group.updateMany({ _id:chatId, 'userList.member_id': member_id }, { $pull: { adminName: member_name } })
+        const group = await Group.find({ _id:chatId })
         client.broadcast.emit('adminRemove', group);
-
     })
     //listens when a user is send the message in group chat   
     client.on('grp_message', async (user) => {
@@ -418,7 +415,7 @@ io.on("connection", async (client) => {
     })
     client.on("remove-from-group", async(data) => {
         console.log("remove-from-group", data);
-          await Group.updateMany({ chatId:data.chatId}, { $pull: { userList:{member_id: data.member_id} } })
+          await Group.updateMany({ _id:data.chatId}, { $pull: { userList:{member_id: data.member_id} } })
     })
     //listens when a user is disconnected from the server   
     client.on('disconnect', async function (username) {
@@ -431,6 +428,5 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-    // await Group.updateMany({ chatId:"81de6e60-2792-11ed-8317-d36f258c7a98"}, { $pull: { userList:{member_id: "62fa3d1891300e449e9f0b45"} } })
 
 })
