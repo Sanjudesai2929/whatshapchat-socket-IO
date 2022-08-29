@@ -295,7 +295,7 @@ io.on("connection", async (client) => {
         console.log("ADMIN CHANGE:", data);
         const data1 = await Group.find({ chatId:data.chatId })
         await Group.updateMany({ chatId:data.chatId, 'userList.member_id': data.member_id }, { $set: { 'userList.$.adminstatus': true } })
-        data1.adminName != member_name ? await Group.updateMany({ chatId:data.chatId, 'userList.member_id': data.member_id }, { $push: { adminName: data.member_name } }) : console.log("aa");
+        data1.adminName != data.member_name ? await Group.updateMany({ chatId:data.chatId, 'userList.member_id': data.member_id }, { $push: { adminName: data.member_name } }) : console.log("aa");
         const group = await Group.find({ chatId:data.chatId })
 
         client.broadcast.emit('adminChange', group);
