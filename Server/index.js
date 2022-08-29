@@ -131,6 +131,7 @@ io.on("connection", async (client) => {
         );
         console.log(data11);
         client.emit("user-wise-list", data11)
+        
     })
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
