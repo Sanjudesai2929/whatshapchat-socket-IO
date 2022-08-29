@@ -186,7 +186,7 @@ io.on("connection", async (client) => {
             localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus, longitude: data.longitude, latitude: data.latitude
         })
-        
+
         console.log("msgData", msgData)
         client.broadcast.emit("message-receive", msgData)
         // client.emit("testing", "hello")
@@ -293,22 +293,22 @@ io.on("connection", async (client) => {
     })
     client.on("adminChange", async (data) => {
         console.log("ADMIN CHANGE:", data);
-        // const data1 = await Group.find({ chatId:data.chatId })
-        // await Group.updateMany({ chatId:data.chatId, 'userList.member_id': data.member_id }, { $set: { 'userList.$.adminstatus': true } })
-        // data1.adminName != member_name ? await Group.updateMany({ chatId:data.chatId, 'userList.member_id': data.member_id }, { $push: { adminName: data.member_name } }) : console.log("aa");
-        // const group = await Group.find({ chatId:data.chatId })
+        const data1 = await Group.find({ chatId:data.chatId })
+        await Group.updateMany({ chatId:data.chatId, 'userList.member_id': data.member_id }, { $set: { 'userList.$.adminstatus': true } })
+        data1.adminName != member_name ? await Group.updateMany({ chatId:data.chatId, 'userList.member_id': data.member_id }, { $push: { adminName: data.member_name } }) : console.log("aa");
+        const group = await Group.find({ chatId:data.chatId })
 
-        // client.broadcast.emit('adminChange', group);
+        client.broadcast.emit('adminChange', group);
     })
     client.on("adminRemove", async (data) => {
         console.log("ADMIN Remove:", data);
         const {chatId,member_id,member_name}=data
-        // const data1 = await Group.find({ chatId })
-        // await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': false } })
-        // await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $pull: { adminName: member_name } })
-        // const group = await Group.find({ chatId })
+        const data1 = await Group.find({ chatId })
+        await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': false } })
+        await Group.updateMany({ chatId, 'userList.member_id': member_id }, { $pull: { adminName: member_name } })
+        const group = await Group.find({ chatId })
 
-        // client.broadcast.emit('adminRemove', group);
+        client.broadcast.emit('adminRemove', group);
 
     })
     //listens when a user is send the message in group chat   
