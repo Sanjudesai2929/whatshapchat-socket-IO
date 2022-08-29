@@ -56,6 +56,9 @@ const groupMsgSchema=new mongoose.Schema({
     messagestatus:{
         type: String,
 
+    },
+    sortingdatetime:{
+        type:String
     }
 },
 )

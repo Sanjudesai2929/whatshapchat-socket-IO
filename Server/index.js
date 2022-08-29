@@ -82,24 +82,23 @@ io.on("connection", async (client) => {
             userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
         }
         var timeData = new Map(msgUser.map(({ time, chatId }) => ([chatId, time])));
-        var sortingdatetime = new Map(msgUser.map(({ sortingdatetime, chatId }) => ([chatId, sortingdatetime])));
 
         var dateTime = new Map(msgUser.map(({ dateTime, chatId }) => ([chatId, dateTime])));
         var messagestatus = new Map(msgUser.map(({ messagestatus, chatId }) => ([chatId, messagestatus])));
         const arrayUniqueByKey = [...new Map(data.map(item =>
             [item["user"], item])).values()];
-        var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId), time: timeData.get(obj.chatId), sortingdatetime: sortingdatetime.get(obj.chatId), datetime: dateTime.get(obj.chatId), messagestatus: messagestatus.get(obj.chatId) }));
+        var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId), time: timeData.get(obj.chatId), datetime: dateTime.get(obj.chatId), messagestatus: messagestatus.get(obj.chatId) }));
         const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
         const Groupa = GroupwiseList.map((data) => {
             return {
                 _id: (data._id).toString(),
                 groupName: data.groupName,
                 // userList: data.userList,
-                adminName: data.adminName,
                 chatId: data.chatId,
                 date: data.date,
                 totalUser: data.totalUser,
-                group_ownerid: data.group_ownerid
+                group_ownerid: data.group_ownerid,
+            
             }
         })
         const id = GroupwiseList.map((data) => {
@@ -117,13 +116,14 @@ io.on("connection", async (client) => {
         }
         var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
         var sentById = new Map(arrayUniqueByKey1.map(({ sentById, grpid }) => ([grpid, sentById])));
+        var sortingdatetime = new Map(arrayUniqueByKey1.map(({ sortingdatetime, grpid }) => ([grpid, sortingdatetime])));
     
         var time = new Map(arrayUniqueByKey1.map(({ time, grpid }) => ([grpid, time])));
         var dateTime = new Map(arrayUniqueByKey1.map(({ dateTime, grpid }) => ([grpid, dateTime])));
         var aa = new Map(GroupwiseList.map(({ dateTime, _id }) => ([(_id).toString(), dateTime])));
     
         var messagestatus = new Map(arrayUniqueByKey1.map(({ messagestatus, grpid }) => ([grpid, messagestatus])));
-        vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(user[0].username) && true, message: msg.get(obj._id), sentById: sentById.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), datetime:dateTime.get(obj._id)?dateTime.get(obj._id): aa.get(obj._id), messagestatus: messagestatus.get(obj._id) }));
+        vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(user[0].username) && true, sortingdatetime: sortingdatetime.get(obj._id),message: msg.get(obj._id), sentById: sentById.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), datetime:dateTime.get(obj._id)?dateTime.get(obj._id): aa.get(obj._id), messagestatus: messagestatus.get(obj._id) }));
 
         const list1 = [...arrayData, ...vale_data];
         const data11 = list1.sort(
@@ -182,7 +182,7 @@ io.on("connection", async (client) => {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                 hour: '2-digit', minute: '2-digit'
             }),
-            localpath: data.localpath,sortingdatetime:data.sortingdatetime,
+            localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus, longitude: data.longitude, latitude: data.latitude
         })
         console.log("msgData", msgData)
@@ -317,7 +317,7 @@ io.on("connection", async (client) => {
             dateTime: new Date().toLocaleString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
-            day: user.day,
+            day: user.day,sortingdatetime:data.sortingdatetime,
             time: new Date().toLocaleTimeString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                 hour: '2-digit', minute: '2-digit'
