@@ -82,7 +82,6 @@ io.on("connection", async (client) => {
             userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
         }
         var timeData = new Map(msgUser.map(({ time, chatId }) => ([chatId, time])));
-
         var dateTime = new Map(msgUser.map(({ dateTime, chatId }) => ([chatId, dateTime])));
         var messagestatus = new Map(msgUser.map(({ messagestatus, chatId }) => ([chatId, messagestatus])));
         const arrayUniqueByKey = [...new Map(data.map(item =>
@@ -99,7 +98,6 @@ io.on("connection", async (client) => {
                 date: data.date,
                 totalUser: data.totalUser,
                 group_ownerid: data.group_ownerid,
-
             }
         })
         const id = GroupwiseList.map((data) => {
@@ -124,7 +122,6 @@ io.on("connection", async (client) => {
         var aa = new Map(GroupwiseList.map(({ dateTime, _id }) => ([(_id).toString(), dateTime])));
         var messagestatus = new Map(arrayUniqueByKey1.map(({ messagestatus, grpid }) => ([grpid, messagestatus])));
         vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(user[0].username) && true, sortingdatetime: sortingdatetime.get(obj._id), messagestatus: messagestatus.get(obj._id), message: msg.get(obj._id), sentById: sentById.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), datetime: dateTime.get(obj._id) ? dateTime.get(obj._id) : aa.get(obj._id) }));
-
         const list1 = [...arrayData, ...vale_data];
         const data11 = list1.sort(
             (objA, objB) => Number(objB.datetime) - Number(objA.datetime),
@@ -388,7 +385,6 @@ io.on("connection", async (client) => {
         await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
         client.broadcast.emit('chat-delete-receive', { chatId: data.chat_delete_id });
     })
-
     //listens when a user is delete the group message in group chat 
     client.on("groupmsg-delete", async (data) => {
         console.log("delete group msg is :", data);
