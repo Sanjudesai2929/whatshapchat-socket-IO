@@ -128,10 +128,9 @@ io.on("connection", async (client) => {
         const list1 = [...arrayData, ...vale_data];
         const data11 = list1.sort(
             (objA, objB) => Number(objB.datetime) - Number(objA.datetime),
-        );sortingdatetime
+        );
         console.log(data11);
         client.emit("user-wise-list", data11)
-
     })
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
