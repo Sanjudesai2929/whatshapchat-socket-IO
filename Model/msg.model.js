@@ -66,7 +66,9 @@ const MsgSchema = new mongoose.Schema({
         type: String,
 
     },
-
+    sortingdatetime:{
+        type:String
+    }
     
 },
 )

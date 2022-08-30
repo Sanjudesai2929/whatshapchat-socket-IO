@@ -29,6 +29,9 @@ const groupSchema = new mongoose.Schema({
     },
     dateTime: {
         type: Date
+    },
+    sortingdatetime:{
+        type:String
     }
 },
 )
