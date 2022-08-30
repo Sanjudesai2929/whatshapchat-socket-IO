@@ -276,7 +276,7 @@ io.on("connection", async (client) => {
         var msg = new Map(user1.map(({ message, grpid }) => ([grpid, message])));
         var sortingdate = new Map(user1.map(({ sortingdatetime, grpid }) => ([grpid, sortingdatetime])));
         var sorting = new Map(groupData.map(({ sortingdatetime, _id }) => ([sortingdatetime, _id])));
-
+        console.log("sorting",sorting);
         var username = new Map(user1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
         var time = new Map(user1.map(({ time, grpid }) => ([grpid, time])));
         vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(connectedIdUser), sortingdatetime: sortingdate.get(obj._id)?sortingdate.get(obj._id):sorting.get(obj._id),message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
@@ -449,4 +449,5 @@ server.listen(port, async () => {
 // groupData[0].userList.map((data)=>{
 //     console.log(data.member_id);
 // })
+
 })
