@@ -412,6 +412,9 @@ io.on("connection", async (client) => {
     client.on("remove-from-group", async(data) => {
         console.log("remove-from-group", data);
           await Group.updateMany({ _id:data.chatId}, { $pull: { userList:{member_id: data.member_id} } })
+          const AfterDelete=await Group.find({ _id:data.chatId})
+        client.broadcast.emit("remove-from-group-receive", AfterDelete)
+
     })
     //listens when a user is disconnected from the server   
     client.on('disconnect', async function (username) {
@@ -424,5 +427,5 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-
+ 
 })
