@@ -285,24 +285,23 @@ io.on("connection", async (client) => {
     client.on("grp_data", async (data) => {
         console.log("grp_data", data);
         const groupData = await Group.find({ _id: data.id })
-
         client.emit("grp_data", groupData[0].userList)
     })
     client.on("adminChange", async (data) => {
         console.log("ADMIN CHANGE:", data);
-        const data1 = await Group.find({ _id:data.chatId })
-        await Group.updateMany({ _id:data.chatId, 'userList.member_id': data.member_id }, { $set: { 'userList.$.adminstatus': true } })
-        data1.adminName != data.member_name ? await Group.updateMany({ _id:data.chatId, 'userList.member_id': data.member_id }, { $push: { adminName: data.member_name } }) : console.log("aa");
-        const group = await Group.find({ _id:data.chatId })
+        const data1 = await Group.find({ _id: data.chatId })
+        await Group.updateMany({ _id: data.chatId, 'userList.member_id': data.member_id }, { $set: { 'userList.$.adminstatus': true } })
+        data1.adminName != data.member_name ? await Group.updateMany({ _id: data.chatId, 'userList.member_id': data.member_id }, { $push: { adminName: data.member_name } }) : console.log("aa");
+        const group = await Group.find({ _id: data.chatId })
         client.broadcast.emit('adminChange', group);
     })
     client.on("adminRemove", async (data) => {
         console.log("ADMIN Remove:", data);
-        const {chatId,member_id,member_name}=data
-        const data1 = await Group.find({ _id:chatId })
-        await Group.updateMany({ _id:chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': false } })
-        await Group.updateMany({ _id:chatId, 'userList.member_id': member_id }, { $pull: { adminName: member_name } })
-        const group = await Group.find({ _id:chatId })
+        const { chatId, member_id, member_name } = data
+        const data1 = await Group.find({ _id: chatId })
+        await Group.updateMany({ _id: chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': false } })
+        await Group.updateMany({ _id: chatId, 'userList.member_id': member_id }, { $pull: { adminName: member_name } })
+        const group = await Group.find({ _id: chatId })
         client.broadcast.emit('adminRemove', group);
     })
     //listens when a user is send the message in group chat   
@@ -400,6 +399,12 @@ io.on("connection", async (client) => {
         const msg1 = await GroupMsg.find({ grpid: msg._id })
         await Group.deleteMany({ chatId: data.group_chat_id })
         await GroupMsg.deleteMany({ grpid: msg._id })
+        groupData[0].userList.map((data)=>{
+            client.to(data.member_id).emit('group-chat-delete-receive', { chatId: data.group_chat_id })
+            console.log(data.member_id);
+        })
+        
+        client.emit('group-chat-delete-receive', { chatId: data.group_chat_id });
         client.broadcast.emit('group-chat-delete-receive', { chatId: data.group_chat_id });
     })
     //listens when a admin  user is search any user
@@ -409,12 +414,17 @@ io.on("connection", async (client) => {
         console.log(user);
         client.emit('live-search-response', user);
     })
-    client.on("remove-from-group", async(data) => {
+    client.on("remove-from-group", async (data) => {
         console.log("remove-from-group", data);
-          await Group.updateMany({ _id:data.chatId}, { $pull: { userList:{member_id: data.member_id} } })
-          const AfterDelete=await Group.find({ _id:data.chatId})
+        await Group.updateMany({ _id: data.chatId }, { $pull: { userList: { member_id: data.member_id } } })
+        const AfterDelete = await Group.find({ _id: data.chatId })
         client.broadcast.emit("remove-from-group-receive", AfterDelete)
-
+    })
+    client.on("group-name-update", async (data) => {
+        console.log("remove-from-group", data);
+        await Group.updateMany({ _id: data.chatId }, { groupName:data.groupName })
+        const AfterUpdate = await Group.find({ _id: data.chatId })
+        client.broadcast.emit("group-name-update-receive", AfterUpdate)
     })
     //listens when a user is disconnected from the server   
     client.on('disconnect', async function (username) {
@@ -427,5 +437,9 @@ io.on("connection", async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
- 
+//     const groupData = await Group.find({ _id: "630d990cca4d2a7e84ed6641" })
+// console.log(groupData[0].userList);
+// groupData[0].userList.map((data)=>{
+//     console.log(data.member_id);
+// })
 })
