@@ -275,7 +275,7 @@ io.on("connection", async (client) => {
         //     [item["grpid"], item])).values()];
         var msg = new Map(user1.map(({ message, grpid }) => ([grpid, message])));
         var sortingdate = new Map(user1.map(({ sortingdatetime, grpid }) => ([grpid, sortingdatetime])));
-        var sorting = new Map(groupData.map(({ sortingdatetime, _id }) => ([_id,sortingdatetime])));
+        var sorting = new Map(groupData.map(({ sortingdatetime, _id }) => ([(_id.toString()),sortingdatetime])));
         console.log("sorting", sorting);
         var username = new Map(user1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
         var time = new Map(user1.map(({ time, grpid }) => ([grpid, time])));
@@ -449,37 +449,5 @@ server.listen(port, async () => {
     // groupData[0].userList.map((data)=>{
     //     console.log(data.member_id);
     // })
-    // const date = new Date()
-
-    // const fullDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
-    // const groupData = await Group.find({ _id: "630da5d0feb2edfa31f31acb"})
-    // // console.log(groupData[0]);
-    // // const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
-    // const Groupa = groupData.map((data) => {
-    //     return {
-    //         _id: (data._id).toString(),
-    //         groupName: data.groupName,
-    //         userList: data.userList,
-    //         adminName: data.adminName,
-    //         chatId: data.chatId,
-    //         date: data.date,
-    //         totalUser: data.totalUser,
-    //         group_ownerid: data.group_ownerid,
-    //     }
-    // })
-    // const id = groupData.map((data) => {
-    //     return data._id
-    // })
-    // const user1 = await GroupMsg.find({ grpid: { $in: id } }).sort({ dateTime: -1 }).limit(1)
-    // // const arrayUniqueByKey1 = [...new Map(user1.map(item =>
-    // //     [item["grpid"], item])).values()];
-    // var msg = new Map(user1.map(({ message, grpid }) => ([grpid, message])));
-    // var sortingdate = new Map(user1.map(({ sortingdatetime, grpid }) => ([grpid, sortingdatetime])));
-    // var sorting = new Map(groupData.map(({ sortingdatetime, _id }) => ([_id,sortingdatetime])));
-    // // console.log("sorting", sorting);
-    // var username = new Map(user1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
-    // var time = new Map(user1.map(({ grpid,time  }) => ([grpid, time])));
-    // vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(connectedIdUser), sortingdatetime: sortingdate.get(obj._id) ? sortingdate.get(obj._id) : sorting.get(obj._id), message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
-    // console.log("vale_data", vale_data[0]);
-
+    
 })
