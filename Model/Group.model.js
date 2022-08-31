@@ -20,9 +20,7 @@ const groupSchema = new mongoose.Schema({
     totalUser: {
         type: String,
     },
-    date: {
-        type: String,
-    },
+  
     group_ownerid: {
         type: String,
     },
