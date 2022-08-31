@@ -263,6 +263,7 @@ io.on("connection", async (client) => {
         const group = await Group.find({ _id: data.chatId })
         client.broadcast.emit('adminChange', group);
     })
+    
     client.on("adminRemove", async (data) => {
         console.log("ADMIN Remove:", data);
         const { chatId, member_id, member_name } = data
