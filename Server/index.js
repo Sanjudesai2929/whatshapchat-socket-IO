@@ -17,6 +17,9 @@ const GroupMsg = require("../Model/GroupMsg.model");
 const GProfileRouter = require('../routes/Gprofile.routes')
 const location = require('../routes/location.routes');
 const notification = require('../routes/notification.routes')
+
+
+
 env.config()
 const port = process.env.PORT
 var server = http.createServer(app)
@@ -37,10 +40,11 @@ app.use("/", GProfileRouter)
 app.use("/", AdminChangeRouter)
 app.use("/", notification)
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
+// LOCAL VARIABLE
 let connectedId
 let connectedIdUser
 
-//connection established
+//CONNECTION ESTABLISHED
 io.on(process.env.CONNECTION, async (client) => {
     console.log("connected", client.id);
     client.on(process.env.LOGINID, async (data) => {
@@ -51,7 +55,7 @@ io.on(process.env.CONNECTION, async (client) => {
         await Register.update({ _id: connectedId }, { $set: { status: "online" } })
         const user = await Register.find({ _id: connectedId })
         console.log("verification id is :", user[0]['deviceid']);
-        client.emit("deviceVerification", user[0]['deviceid'])
+        client.emit(process.env.DEVICE_VERIFICATION, user[0]['deviceid'])
         // client.broadcast.emit('is_online', '🔵 <i>' + user[0].username + ' join the chat..</i>');
         console.log(user);
         //Get the user list data
@@ -236,7 +240,7 @@ io.on(process.env.CONNECTION, async (client) => {
         //     [item["grpid"], item])).values()];
         var msg = new Map(user1.map(({ message, grpid }) => ([grpid, message])));
         var datetime = new Map(user1.map(({ datetime, grpid }) => ([grpid, datetime])));
-        console.log("sorting", sorting);
+      
         var username = new Map(user1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
         vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(connectedIdUser), datetime: datetime.get(obj._id), message: msg.get(obj._id), sentByUsername: username.get(obj._id) }));
         console.log("vale_data", vale_data[0]);
