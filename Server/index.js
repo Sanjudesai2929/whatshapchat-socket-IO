@@ -41,13 +41,13 @@ let connectedId
 let connectedIdUser
 
 //connection established
-io.on("connection", async (client) => {
+io.on(process.env.CONNECTION, async (client) => {
     console.log("connected", client.id);
-    client.on("loginid", async (data) => {
+    client.on(process.env.LOGINID, async (data) => {
         console.log("loginid is ", data);
         connectedId = data.loginuserid
-        client.broadcast.emit("user-online-status-update", { status: "online" })
-        client.emit("user-online-status-update", { status: "online" })
+        client.broadcast.emit(process.env.STATUS_UPDATE, { status: "online" })
+        client.emit(process.env.STATUS_UPDATE, { status: "online" })
         await Register.update({ _id: connectedId }, { $set: { status: "online" } })
         const user = await Register.find({ _id: connectedId })
         console.log("verification id is :", user[0]['deviceid']);
@@ -151,11 +151,7 @@ io.on("connection", async (client) => {
         console.log("message data ", data);
         const msgData = await Message.insertMany({
             message: data.message, sentByUsername: data.sentByUsername, sentById: data.sentById, targetId: data.targetId, targetUsername: data.targetUsername, msgid: data.msgid, chatId: data.chatId,
-          
             datetime: Date.parse(new Date()),
-
-   
-          
             localpath: data.localpath, 
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus, longitude: data.longitude, latitude: data.latitude
         })
