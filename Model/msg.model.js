@@ -25,7 +25,8 @@ const MsgSchema = new mongoose.Schema({
         type: String,
     },
     dateTime:{
-        type:Date
+        type:String,
+      
     },
     time: {
         type: String,
@@ -68,9 +69,11 @@ const MsgSchema = new mongoose.Schema({
     },
     sortingdatetime:{
         type:String
-    }
+    },
+    
     
 },
+
 )
 
 const Message = new mongoose.model("message", MsgSchema)

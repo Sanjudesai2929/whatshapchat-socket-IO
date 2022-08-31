@@ -159,9 +159,8 @@ io.on("connection", async (client) => {
             date: new Date().toLocaleDateString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
-            dateTime: new Date().toLocaleString('en-US', {
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-            }),
+            dateTime: Date.parse(new Date()),
+           
             day: data.day,
             time: new Date().toLocaleTimeString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -229,9 +228,8 @@ io.on("connection", async (client) => {
         }
         const fullDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
         const groupData = await Group.insertMany({
-            groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, group_ownerid: data.group_ownerid, chatId: data.chatId, sortingdatetime: data.sortingdatetime, date: fullDate, totalUser: counter, dateTime: new Date().toLocaleString('en-US', {
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-            }),
+            groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, group_ownerid: data.group_ownerid, chatId: data.chatId, sortingdatetime: data.sortingdatetime, date: fullDate, totalUser: counter, dateTime: Date.parse(new Date())
+            ,
         })
         console.log(groupData[0]);
         // const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
@@ -299,9 +297,7 @@ io.on("connection", async (client) => {
             date: new Date().toLocaleDateString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
-            dateTime: new Date().toLocaleString('en-US', {
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-            }),
+            dateTime:Date.parse(new Date()),
             day: user.day, sortingdatetime: user.sortingdatetime,
             time: new Date().toLocaleTimeString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -430,4 +426,11 @@ server.listen(port, async () => {
     // })
 // const date =new Date()
 // console.log(date);
+// function epoch (date) {
+//     return Date.parse(date)
+//   }
+//   const dateToday = new Date() // Mon Jun 08 2020 16:47:55 GMT+0800 (China Standard Time)
+// const timestamp = Date.parse(new Date())
+// console.log(timestamp);
+// await Message.insertMany({sentByUsername:"sdd",dateTime:timestamp})
 })
