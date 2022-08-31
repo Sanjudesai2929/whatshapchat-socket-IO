@@ -96,7 +96,7 @@ io.on("connection", async (client) => {
                 // userList: data.userList,
                 chatId: data.chatId,
                 adminName: data.adminName,
-                date: data.date,
+                // date: data.date,
                 totalUser: data.totalUser,
                 group_ownerid: data.group_ownerid,
             }
@@ -121,7 +121,9 @@ io.on("connection", async (client) => {
         var aa = new Map(GroupwiseList.map(({ dateTime, _id }) => ([(_id).toString(), dateTime])));
         var sorting = new Map(GroupwiseList.map(({ sortingdatetime, _id }) => ([(_id).toString(), sortingdatetime])));
         var messagestatus = new Map(arrayUniqueByKey1.map(({ messagestatus, grpid }) => ([grpid, messagestatus])));
-        vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(user[0].username) && true, sortingdatetime: sortingdatetime.get(obj._id) ? sortingdatetime.get(obj._id) : sorting.get(obj._id), messagestatus: messagestatus.get(obj._id), message: msg.get(obj._id), sentById: sentById.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), datetime: dateTime.get(obj._id) ? dateTime.get(obj._id) : aa.get(obj._id) }));
+        // vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(user[0].username) && true, sortingdatetime: sortingdatetime.get(obj._id) ? sortingdatetime.get(obj._id) : sorting.get(obj._id), messagestatus: messagestatus.get(obj._id), message: msg.get(obj._id), sentById: sentById.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), datetime: dateTime.get(obj._id) ? dateTime.get(obj._id) : aa.get(obj._id) }));
+        vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(user[0].username) && true, messagestatus: messagestatus.get(obj._id), message: msg.get(obj._id), sentById: sentById.get(obj._id), sentByUsername: username.get(obj._id)}));
+       
         const list1 = [...arrayData, ...vale_data];
         const data11 = list1.sort(
             (objA, objB) => Number(objB.datetime) - Number(objA.datetime),
@@ -160,7 +162,7 @@ io.on("connection", async (client) => {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
             dateTime: Date.parse(new Date()),
-           
+
             day: data.day,
             time: new Date().toLocaleTimeString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -178,14 +180,14 @@ io.on("connection", async (client) => {
         const userwiseList = await Message.find({ sentByUsername: data.sentByUsername })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
-                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, message: data.message,dateTime: data.dateTime, time: data.time, sortingdatetime: data.sortingdatetime }
+                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, message: data.message, dateTime: data.dateTime, time: data.time, sortingdatetime: data.sortingdatetime }
             })
             data1.push(...arr)
         }
         const userwiseList1 = await Message.find({ targetUsername: data.targetUsername })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
-                return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, message: data.message,dateTime: data.dateTime, time: data.time, sortingdatetime: data.sortingdatetime }
+                return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, message: data.message, dateTime: data.dateTime, time: data.time, sortingdatetime: data.sortingdatetime }
             })
             data2.push(...arr1)
         }
@@ -259,7 +261,7 @@ io.on("connection", async (client) => {
         console.log("sorting", sorting);
         var username = new Map(user1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
         var time = new Map(user1.map(({ time, grpid }) => ([grpid, time])));
-        vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(connectedIdUser),dateTime: dateTime.get(obj._id), sortingdatetime: sortingdate.get(obj._id) ? sortingdate.get(obj._id) : sorting.get(obj._id), message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
+        vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(connectedIdUser), dateTime: dateTime.get(obj._id), sortingdatetime: sortingdate.get(obj._id) ? sortingdate.get(obj._id) : sorting.get(obj._id), message: msg.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id) }));
         console.log("vale_data", vale_data[0]);
         // const user = [...groupData, chat]
         // console.log("user", user);
@@ -297,7 +299,7 @@ io.on("connection", async (client) => {
             date: new Date().toLocaleDateString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }),
-            dateTime:Date.parse(new Date()),
+            dateTime: Date.parse(new Date()),
             day: user.day, sortingdatetime: user.sortingdatetime,
             time: new Date().toLocaleTimeString('en-US', {
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -337,14 +339,14 @@ io.on("connection", async (client) => {
         const userwiseList = await Message.find({ sentByUsername: msg1[0].sentByUsername })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
-                return { user: data.targetUsername, _id: data.targetId,dateTime:data.dateTime, chatId: data.chatId, message: data.message, time: data.time, sortingdatetime: data.sortingdatetime }
+                return { user: data.targetUsername, _id: data.targetId, dateTime: data.dateTime, chatId: data.chatId, message: data.message, time: data.time, sortingdatetime: data.sortingdatetime }
             })
             data1.push(...arr)
         }
         const userwiseList1 = await Message.find({ targetUsername: msg1[0].targetUsername })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
-                return { user: data.sentByUsername, _id: data.sentById, dateTime:data.dateTime,chatId: data.chatId, message: data.message, time: data.time, sortingdatetime: data.sortingdatetime }
+                return { user: data.sentByUsername, _id: data.sentById, dateTime: data.dateTime, chatId: data.chatId, message: data.message, time: data.time, sortingdatetime: data.sortingdatetime }
             })
             data2.push(...arr1)
         }
@@ -424,13 +426,6 @@ server.listen(port, async () => {
     // groupData[0].userList.map((data)=>{
     //     console.log(data.member_id);
     // })
-// const date =new Date()
-// console.log(date);
-// function epoch (date) {
-//     return Date.parse(date)
-//   }
-//   const dateToday = new Date() // Mon Jun 08 2020 16:47:55 GMT+0800 (China Standard Time)
-// const timestamp = Date.parse(new Date())
-// console.log(timestamp);
-// await Message.insertMany({sentByUsername:"sdd",dateTime:timestamp})
+
+
 })
