@@ -26,7 +26,7 @@ const groupSchema = new mongoose.Schema({
     group_ownerid: {
         type: String,
     },
-    dateTime: {
+    datetime: {
         type: String
     },
     sortingdatetime:{

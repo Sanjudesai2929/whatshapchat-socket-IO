@@ -15,18 +15,12 @@ const groupMsgSchema=new mongoose.Schema({
     sentById:{
         type:String,
     },
-    date: {
-        type: String,
-    },
-    dateTime:{
+    
+    datetime:{
         type:String
     },
-    day:{
-        type:String,
-    },
-    time:{
-        type:String,
-    },
+  
+ 
     type:{
         type: String,  
     },
@@ -57,9 +51,7 @@ const groupMsgSchema=new mongoose.Schema({
         type: String,
 
     },
-    sortingdatetime:{
-        type:String
-    }
+   
 },
 )
 

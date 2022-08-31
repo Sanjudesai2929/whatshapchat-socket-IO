@@ -18,19 +18,12 @@ const MsgSchema = new mongoose.Schema({
     targetUsername: {
         type: String,
     },
-    day:{
-        type: String,
-    },
-    date: {
-        type: String,
-    },
-    dateTime:{
+    
+    datetime:{
         type:String,
       
     },
-    time: {
-        type: String,
-    },
+   
     type:{
         type: String,      
     },
@@ -67,9 +60,7 @@ const MsgSchema = new mongoose.Schema({
         type: String,
 
     },
-    sortingdatetime:{
-        type:String
-    },
+  
     
     
 },
