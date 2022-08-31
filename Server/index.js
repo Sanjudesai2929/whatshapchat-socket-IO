@@ -78,7 +78,7 @@ io.on(process.env.CONNECTION, async (client) => {
             })
             data.push(...arr1)
         }
-        const msgUser = await Message.find().sort({ datetime: -1 })
+        const msgUser = await Message.find().sort({ datetime: 1 })
         if (msgUser.length && msgUser[0].type == "location") {
             var userData = new Map(msgUser.map(({ chatId }) => ([chatId, "location"])));
         }
@@ -418,7 +418,7 @@ server.listen(port, async () => {
 //         data.push(...arr1)
 //     }
 //     // console.log(data);
-//     const msgUser = await Message.find().sort({ datetime: -1 })
+//     const msgUser = await Message.find().sort({ datetime: 1 })
 //     // console.log(msgUser);
 //     if (msgUser.length && msgUser[0].type == "location") {
 //         var userData = new Map(msgUser.map(({ chatId }) => ([chatId, "location"])));
