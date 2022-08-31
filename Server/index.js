@@ -127,7 +127,7 @@ io.on("connection", async (client) => {
     client.on('connected-user', async (data) => {
         console.log("connected user is ", data);
         client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
-        const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).limit(500).sort({ da })
+        const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).limit(500).sort({ dateTime : -1 })
         console.log("connectMsg", connectMsg);
         client.emit('connected-user', connectMsg);
     });
@@ -263,7 +263,7 @@ io.on("connection", async (client) => {
         const group = await Group.find({ _id: data.chatId })
         client.broadcast.emit('adminChange', group);
     })
-    
+
     client.on("adminRemove", async (data) => {
         console.log("ADMIN Remove:", data);
         const { chatId, member_id, member_name } = data
