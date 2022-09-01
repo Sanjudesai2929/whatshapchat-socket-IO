@@ -17,7 +17,6 @@ const GroupMsg = require("../Model/GroupMsg.model");
 const GProfileRouter = require('../routes/Gprofile.routes')
 const location = require('../routes/location.routes');
 const notification = require('../routes/notification.routes')
-
 env.config()
 const port = process.env.PORT
 var server = http.createServer(app)
@@ -353,9 +352,10 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("delete group chat data is :", data);
         const msg = await Group.find({ chatId: data.group_chat_id })
         console.log("delete chat", msg);
-        const msg1 = await GroupMsg.find({ grpid: msg._id })
         await Group.deleteMany({ chatId: data.group_chat_id })
         await GroupMsg.deleteMany({ grpid: msg._id })
+        const groupData = await Group.find({ chatId: data.group_chat_id })
+
         groupData[0].userList.map((data) => {
             client.to(data.member_id).emit('group-chat-delete-receive', { chatId: data.group_chat_id })
             console.log(data.member_id);
@@ -413,7 +413,6 @@ io.on(process.env.CONNECTION, async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-//     const AfterDelete = await Group.find({ _id: "631035a9d45cad7e29c9ccbc" })
-// console.log(AfterDelete);
+
 
 })
