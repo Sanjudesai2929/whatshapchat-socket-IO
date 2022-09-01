@@ -205,7 +205,6 @@ io.on(process.env.CONNECTION, async (client) => {
     //listens when a user is create the room   
     client.on(process.env.CREATE_ROOM, async (data) => {
         console.log("create room data is", data);
-
         let counter = 0
         for (let i = 0; i < data.member_list.length; i++) {
             counter++;
@@ -346,7 +345,7 @@ io.on(process.env.CONNECTION, async (client) => {
         await GroupMsg.deleteMany({ msgid: { $in: data.groupmsg_delete_listid } })
         client.broadcast.emit('groupmsg-delete-receive', msg1);
     })
-    
+
     //listens when a admin  user is delete the group 
     client.on("group-chat-delete", async (data) => {
         console.log("delete group chat data is :", data);
@@ -396,7 +395,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.broadcast.emit("add-from-group-receive", data)
     })
     client.on("group-name-update", async (data) => {
-        console.log("remove-from-group", data);
+        console.log("group-name-update :", data);
         await Group.updateMany({ _id: data.chatId }, { groupName: data.groupName })
         const AfterUpdate = await Group.find({ _id: data.chatId })
         client.broadcast.emit("group-name-update-receive", AfterUpdate)
