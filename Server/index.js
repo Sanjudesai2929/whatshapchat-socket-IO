@@ -355,11 +355,11 @@ io.on(process.env.CONNECTION, async (client) => {
         await Group.deleteMany({ chatId: data.group_chat_id })
         await GroupMsg.deleteMany({ grpid: msg._id })
         const groupData = await Group.find({ chatId: data.group_chat_id })
-
-        groupData[0].userList.map((data) => {
-            client.to(data.member_id).emit('group-chat-delete-receive', { chatId: data.group_chat_id })
-            console.log(data.member_id);
-        })
+console.log("group data",groupData);
+        // groupData[0].userList.map((data) => {
+        //     client.to(data.member_id).emit('group-chat-delete-receive', { chatId: data.group_chat_id })
+        //     console.log(data.member_id);
+        // })
         client.emit('group-chat-delete-receive', { chatId: data.group_chat_id });
         client.broadcast.emit('group-chat-delete-receive', { chatId: data.group_chat_id });
     })
