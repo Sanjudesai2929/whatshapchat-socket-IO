@@ -50,8 +50,8 @@ io.on(process.env.CONNECTION, async (client) => {
         client.emit(process.env.STATUS_UPDATE, { status: "online" })
         await Register.update({ _id: connectedId }, { $set: { status: "online" } })
         const user = await Register.find({ _id: connectedId })
-        console.log("verification id is :", { _id: connectedId ,user:user[0].username});
-        client.to(connectedId).emit(process.env.DEVICE_VERIFICATION, { _id: connectedId ,deviceid:user[0]['deviceid']})
+        console.log("verification id is :", { _id: connectedId, user: user[0].username });
+        client.to(connectedId).emit(process.env.DEVICE_VERIFICATION, { _id: connectedId, deviceid: user[0]['deviceid'] })
         // client.broadcast.emit('is_online', '🔵 <i>' + user[0].username + ' join the chat..</i>');
         console.log(user);
         //Get the user list data
@@ -65,7 +65,7 @@ io.on(process.env.CONNECTION, async (client) => {
             const arr = userwiseList.map((data) => {
                 return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, }
             })
-            data.push(...arr) 
+            data.push(...arr)
         }
         const userwiseList1 = await Message.find({ targetUsername: user[0].username }).select({ message: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
@@ -355,13 +355,13 @@ io.on(process.env.CONNECTION, async (client) => {
         await Group.deleteMany({ chatId: data.group_chat_id })
         await GroupMsg.deleteMany({ grpid: msg._id })
         const groupData = await Group.find({ chatId: data.group_chat_id })
-console.log("group data",groupData);
+        console.log("group data", groupData);
         // groupData[0].userList.map((data) => {
         //     client.to(data.member_id).emit('group-chat-delete-receive', { chatId: data.group_chat_id })
         //     console.log(data.member_id);
         // })
-        client.emit('group-chat-delete-receive', { chatId: data.group_chat_id });
-        client.broadcast.emit('group-chat-delete-receive', { chatId: data.group_chat_id });
+        client.emit('group-chat-delete-receive', data);
+        client.broadcast.emit('group-chat-delete-receive', data);
     })
     //listens when a admin  user is search any user
     client.on("live-search", async (data) => {
@@ -372,27 +372,27 @@ console.log("group data",groupData);
     })
     client.on("remove-from-group", async (data) => {
         console.log("remove-from-group", data);
-        
+
         await Group.updateMany({ _id: data.chatId }, { $pull: { userList: { member_id: data.member_id } } })
         const AfterDelete = await Group.find({ _id: data.chatId })
         let counter = 0
         for (let i = 0; i < AfterDelete[0].userList.length; i++) {
             counter++;
         }
-        await Group.updateMany({ _id: data.chatId }, { totalUser:counter })
+        await Group.updateMany({ _id: data.chatId }, { totalUser: counter })
 
         client.emit("remove-from-group-receive", data)
         client.broadcast.emit("remove-from-group-receive", data)
     })
     client.on("add-from-group", async (data) => {
         console.log("add-from-group", data);
-        await Group.updateMany({ _id: data.chatId }, { $push: { userList: { member_id: data.member_id ,member_name: data.member_name,adminstatus:false} } })
+        await Group.updateMany({ _id: data.chatId }, { $push: { userList: { member_id: data.member_id, member_name: data.member_name, adminstatus: false } } })
         const AfterAdd = await Group.find({ _id: data.chatId })
         let counter = 0
         for (let i = 0; i < AfterAdd[0].userList.length; i++) {
             counter++;
         }
-        await Group.updateMany({ _id: data.chatId }, { totalUser:counter })
+        await Group.updateMany({ _id: data.chatId }, { totalUser: counter })
         client.emit("add-from-group-receive", data)
         client.broadcast.emit("add-from-group-receive", data)
     })
