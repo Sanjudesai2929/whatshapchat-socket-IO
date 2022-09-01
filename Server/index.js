@@ -157,6 +157,13 @@ io.on(process.env.CONNECTION, async (client) => {
         })
         console.log("msgData", msgData)
         client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
+        if (msgData) {
+            client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: true })
+            await Message.updateOne({ msgid: data.msgid}, { $set: { messagestatus: "send" } })
+        }
+        else {
+            client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: false })
+        }
         var data1 = []
         var data2 = []
         const userwiseList = await Message.find({ sentByUsername: data.sentByUsername })
@@ -173,19 +180,13 @@ io.on(process.env.CONNECTION, async (client) => {
             })
             data2.push(...arr1)
         }
+    
         const val2 = data1[data1.length - 1]
         console.log("val2", val2);
         const val3 = data2[data2.length - 1]
         console.log("val3", val3);
         client.emit(process.env.USER_DATA_LIST_UPDATE, val2)
         client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, val3)
-        if (msgData) {
-            client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: true })
-            await Message.updateOne({ msgid: data.msgid}, { $set: { messagestatus: "send" } })
-        }
-        else {
-            client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: false })
-        }
     });
     //listens when a user seen the msg   
     client.on(process.env.DELIVER_DBL_CLICK, async (data) => {
@@ -286,12 +287,13 @@ io.on(process.env.CONNECTION, async (client) => {
         client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         client.emit(process.env.DELIEVER_STATUS, { msgid: user.msgid, msgstatus: true })
         await GroupMsg.updateOne({ msgid: user.msgid }, { $set: { messagestatus: "send" } })
+        const msg1=await GroupMsg.find({ msgid: user.msgid })
         const msg_data = {
-            _id: msg[0].grpid,
-            message: msg[0].message,
-            sentByUsername: msg[0].sentByUsername,
-            datetime: msg[0].datetime,
-            messagestatus: msg[0].messagestatus,
+            _id: msg1[0].grpid,
+            message: msg1[0].message,
+            sentByUsername: msg1[0].sentByUsername,
+            datetime: msg1[0].datetime,
+            messagestatus: msg1[0].messagestatus,
             cuadminstatus: groupmsga[0].adminName.includes(connectedIdUser)
         }
         console.log("msg_data", msg_data);
