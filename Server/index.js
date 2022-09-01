@@ -242,7 +242,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.emit(process.env.CREATE_ROOM, groupData[0])
         client.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
         vale_data[0].userList.map((data) => {
-            client.to(data.member_id).emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
+            client.broadcast.to(data.member_id).emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
             console.log(data.member_id);
         })
         // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
