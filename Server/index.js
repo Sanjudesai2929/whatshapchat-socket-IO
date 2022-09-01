@@ -41,7 +41,6 @@ app.use("/upload", express.static(path.join(__dirname, "../upload")))
 // LOCAL VARIABLE
 let connectedId
 let connectedIdUser
-
 //CONNECTION ESTABLISHED
 io.on(process.env.CONNECTION, async (client) => {
     console.log("connected", client.id);
@@ -157,7 +156,6 @@ io.on(process.env.CONNECTION, async (client) => {
             localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus, longitude: data.longitude, latitude: data.latitude
         })
-
         console.log("msgData", msgData)
         client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
         var data1 = []
@@ -280,7 +278,6 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("group message is ", user);
         const msg = await GroupMsg.insertMany({
             message: user.message, sentByUsername: user.sentByUsername, sentById: user.sentById, grpid: user.grpid, msgid: user.msgid,
-
             datetime: Date.parse(new Date()),
             localpath: user.localpath,
             path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension, longitude: user.longitude, latitude: user.latitude, messagestatus: user.messagestatus
@@ -375,8 +372,15 @@ io.on(process.env.CONNECTION, async (client) => {
     })
     client.on("remove-from-group", async (data) => {
         console.log("remove-from-group", data);
+        
         await Group.updateMany({ _id: data.chatId }, { $pull: { userList: { member_id: data.member_id } } })
         const AfterDelete = await Group.find({ _id: data.chatId })
+        let counter = 0
+        for (let i = 0; i < AfterDelete[0].member_list.length; i++) {
+            counter++;
+        }
+        await Group.updateMany({ _id: data.chatId }, { totalUser:counter })
+
         client.emit("remove-from-group-receive", data)
         client.broadcast.emit("remove-from-group-receive", data)
     })
@@ -384,6 +388,11 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("add-from-group", data);
         await Group.updateMany({ _id: data.chatId }, { $push: { userList: { member_id: data.member_id ,member_name: data.member_name,adminstatus:false} } })
         const AfterAdd = await Group.find({ _id: data.chatId })
+        let counter = 0
+        for (let i = 0; i < AfterAdd[0].member_list.length; i++) {
+            counter++;
+        }
+        await Group.updateMany({ _id: data.chatId }, { totalUser:counter })
         client.emit("add-from-group-receive", data)
         client.broadcast.emit("add-from-group-receive", data)
     })
@@ -394,7 +403,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.broadcast.emit("group-name-update-receive", AfterUpdate)
     })
     //listens when a user is disconnected from the server   
-    client.on('disconnect', async function (username) {
+    client.on(process.env.DISCONNECT, async function (username) {
         console.log(connectedId + 'is offline....');
         client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
         client.broadcast.emit("user-online-status-update", { status: "offline" })
@@ -404,5 +413,7 @@ io.on(process.env.CONNECTION, async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
+//     const AfterDelete = await Group.find({ _id: "631035a9d45cad7e29c9ccbc" })
+// console.log(AfterDelete);
 
 })
