@@ -53,7 +53,7 @@ io.on(process.env.CONNECTION, async (client) => {
         await Register.update({ _id: connectedId }, { $set: { status: "online" } })
         const user = await Register.find({ _id: connectedId })
         console.log("verification id is :", { _id: connectedId ,user:user[0].username});
-        client.emit(process.env.DEVICE_VERIFICATION, { _id: connectedId ,deviceid:user[0]['deviceid']})
+        client.to(connectedId).emit(process.env.DEVICE_VERIFICATION, { _id: connectedId ,deviceid:user[0]['deviceid']})
         // client.broadcast.emit('is_online', '🔵 <i>' + user[0].username + ' join the chat..</i>');
         console.log(user);
         //Get the user list data
@@ -67,8 +67,7 @@ io.on(process.env.CONNECTION, async (client) => {
             const arr = userwiseList.map((data) => {
                 return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, }
             })
-            data.push(...arr)
-            
+            data.push(...arr) 
         }
         const userwiseList1 = await Message.find({ targetUsername: user[0].username }).select({ message: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
@@ -139,15 +138,15 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("connected group user is ", data);
         const connectMsg = await GroupMsg.find({ grpid: data.grpid }).sort({ datetime: 1 })
         // console.log(connectMsg);
-        client.emit('connected-group-user', connectMsg);
+        client.emit(process.env.CONNECTED_GROUP_USER, connectMsg);
     });
 
-    client.on("user-list-request", async (data) => {
+    client.on(process.env.USER_LIST_REQUEST, async (data) => {
         console.log("user-list-request", data);
         //Get the all user list data
         const userList = await Register.find().select({ "username": 1, "_id": 1 })
         const list = [...userList];
-        client.emit("user-list", list)
+        client.emit(process.env.USER_LIST, list)
     })
     //listen when user is send the message
     client.on("message", async (data) => {
