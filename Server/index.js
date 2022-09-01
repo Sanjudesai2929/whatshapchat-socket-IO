@@ -62,6 +62,7 @@ io.on(process.env.CONNECTION, async (client) => {
         connectedIdUser = user[0].username
         const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ message: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
+            
             const arr = userwiseList.map((data) => {
                 return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId}
             })
@@ -119,7 +120,7 @@ io.on(process.env.CONNECTION, async (client) => {
         vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(user[0].username) && true, datetime: datetime.get(obj._id) ? datetime.get(obj._id) : aa.get(obj._id), messagestatus: messagestatus.get(obj._id), message: msg.get(obj._id), sentById: sentById.get(obj._id), sentByUsername: username.get(obj._id) }));
         const list1 = [...arrayData, ...vale_data];
         const data11 = list1.sort(
-            (objA, objB) => Number(objB.datetime) - Number(objA.datetime),
+            (objA, objB) => Number(objB.datetime) - Number(objA.datetime)
         );
         console.log(data11);
         client.emit(process.env.USER_WISE_LIST, data11)
@@ -400,6 +401,7 @@ io.on(process.env.CONNECTION, async (client) => {
         const AfterUpdate = await Group.find({ _id: data.chatId })
         client.broadcast.emit("group-name-update-receive", AfterUpdate)
     })
+
     //listens when a user is disconnected from the server   
     client.on(process.env.DISCONNECT, async function (username) {
         console.log(connectedId + 'is offline....');
