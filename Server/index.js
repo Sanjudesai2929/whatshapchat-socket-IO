@@ -68,6 +68,7 @@ io.on(process.env.CONNECTION, async (client) => {
                 return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, }
             })
             data.push(...arr)
+            
         }
         const userwiseList1 = await Message.find({ targetUsername: user[0].username }).select({ message: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
