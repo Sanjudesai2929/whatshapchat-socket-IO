@@ -17,8 +17,6 @@ const GroupMsg = require("../Model/GroupMsg.model");
 const GProfileRouter = require('../routes/Gprofile.routes')
 const location = require('../routes/location.routes');
 const notification = require('../routes/notification.routes')
-// const {User} =require("../SocketFile/User")
-
 
 env.config()
 const port = process.env.PORT
@@ -126,17 +124,17 @@ io.on(process.env.CONNECTION, async (client) => {
             (objA, objB) => Number(objB.datetime) - Number(objA.datetime),
         );
         console.log(data11);
-        client.emit("user-wise-list", data11)
+        client.emit(process.env.USER_WISE_LIST, data11)
     })
-    client.on('connected-user', async (data) => {
+    client.on(process.env.CONNECTED_USER, async (data) => {
         console.log("connected user is ", data);
-        client.broadcast.emit('is_online', '🔵 <i>' + data.current_user + ' join the chat..</i>');
+        client.broadcast.emit(process.env.IS_ONLINE, '🔵 <i>' + data.current_user + ' join the chat..</i>');
         const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).limit(500).sort({ datetime: 1 })
         console.log("connectMsg", connectMsg);
-        client.emit('connected-user', connectMsg);
+        client.emit(process.env.CONNECTED_USER, connectMsg);
     });
 
-    client.on('connected-group-user', async (data) => {
+    client.on(process.env.CONNECTED_GROUP_USER, async (data) => {
         console.log("connected group user is ", data);
         const connectMsg = await GroupMsg.find({ grpid: data.grpid }).sort({ datetime: 1 })
         // console.log(connectMsg);
@@ -253,7 +251,12 @@ io.on(process.env.CONNECTION, async (client) => {
     client.on("grp_data", async (data) => {
         console.log("grp_data", data);
         const groupData = await Group.find({ _id: data.id })
-        client.emit("grp_data", groupData[0].userList)
+        // console.log(groupData[0].userList);
+        const register = await Register.find()
+        var datetime = new Map(register.map(({ bio, _id }) => ([(_id).toString(), bio])));
+        var arrayData = groupData[0].userList.map(obj => Object.assign(obj, { bio: datetime.get(obj.member_id) ? datetime.get(obj.member_id) : " " }));
+        console.log("arrayData", arrayData);
+        client.emit("grp_data", arrayData)
     })
     client.on("adminChange", async (data) => {
         console.log("ADMIN CHANGE:", data);
@@ -263,7 +266,6 @@ io.on(process.env.CONNECTION, async (client) => {
         const group = await Group.find({ _id: data.chatId })
         client.broadcast.emit('adminChange', group);
     })
-
     client.on("adminRemove", async (data) => {
         console.log("ADMIN Remove:", data);
         const { chatId, member_id, member_name } = data
@@ -280,8 +282,6 @@ io.on(process.env.CONNECTION, async (client) => {
             message: user.message, sentByUsername: user.sentByUsername, sentById: user.sentById, grpid: user.grpid, msgid: user.msgid,
 
             datetime: Date.parse(new Date()),
-
-
             localpath: user.localpath,
             path: user.path, type: user.type, filename: user.filename, filesize: user.filesize, extension: user.extension, longitude: user.longitude, latitude: user.latitude, messagestatus: user.messagestatus
         })
@@ -396,77 +396,4 @@ io.on(process.env.CONNECTION, async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-    // const groupData = await Group.find({ _id: "630d990cca4d2a7e84ed6641" })
-    // console.log(groupData[0].userList);
-    // groupData[0].userList.map((data)=>{
-    //     console.log(data.member_id);
-    // })
-//     var data = []
-//     connectedIdUser = "dp"
-//     const userwiseList = await Message.find({ sentByUsername: "dp" })
-//     if (userwiseList) {
-//         const arr = userwiseList.map((data) => {
-//             return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, }
-//         })
-//         data.push(...arr)
-//     }
-//     const userwiseList1 = await Message.find({ targetUsername: "dp" })
-//     if (userwiseList1) {
-//         const arr1 = userwiseList1.map((data) => {
-//             return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, }
-//         })
-//         data.push(...arr1)
-//     }
-//     // console.log(data);
-//     const msgUser = await Message.find().sort({ datetime: 1 })
-//     // console.log(msgUser);
-//     if (msgUser.length && msgUser[0].type == "location") {
-//         var userData = new Map(msgUser.map(({ chatId }) => ([chatId, "location"])));
-//     }
-//     else {
-//         userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
-//     }
-//     var datetime = new Map(msgUser.map(({ datetime, chatId }) => ([chatId, datetime])));
-//     var messagestatus = new Map(msgUser.map(({ messagestatus, chatId }) => ([chatId, messagestatus])));
-//     const arrayUniqueByKey = [...new Map(data.map(item =>
-//         [item["user"], item])).values()];
-//         // console.log(arrayUniqueByKey);
-//     var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId), datetime: datetime.get(obj.chatId), messagestatus: messagestatus.get(obj.chatId) }));
-//   console.log(arrayData);
-//     const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: "62e21603490f4ca9ce052a1b" } } })
-//     const Groupa = GroupwiseList.map((data) => {
-//         return {
-//             _id: (data._id).toString(),
-//             groupName: data.groupName,
-//             // userList: data.userList,
-//             chatId: data.chatId,
-//             adminName: data.adminName,
-//             totalUser: data.totalUser,
-//             group_ownerid: data.group_ownerid,
-//         }
-//     })
-//     const id = GroupwiseList.map((data) => {
-//         return data._id
-//     })
-//     const user1 = await GroupMsg.find({ grpid: { $in: id } })
-//     const arrayUniqueByKey1 = [...new Map(user1.map(item =>
-//         [item["grpid"], item])).values()];
-//     if (arrayUniqueByKey1.length && arrayUniqueByKey1[0].type == "location") {
-//         var msg = new Map(arrayUniqueByKey1.map(({ grpid }) => ([grpid, "location"])));
-//     }
-//     else {
-//         msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
-//     }
-//     var username = new Map(arrayUniqueByKey1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
-//     var sentById = new Map(arrayUniqueByKey1.map(({ sentById, grpid }) => ([grpid, sentById])));
-//     var datetime = new Map(arrayUniqueByKey1.map(({ datetime, grpid }) => ([grpid, datetime])));
-//     var aa = new Map(GroupwiseList.map(({ datetime, _id }) => ([(_id).toString(), datetime])));
-//     var messagestatus = new Map(arrayUniqueByKey1.map(({ messagestatus, grpid }) => ([grpid, messagestatus])));
-//     // vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes("dp") && true, sortingdatetime: sortingdatetime.get(obj._id) ? sortingdatetime.get(obj._id) : sorting.get(obj._id), messagestatus: messagestatus.get(obj._id), message: msg.get(obj._id), sentById: sentById.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), datetime: datetime.get(obj._id) ? datetime.get(obj._id) : aa.get(obj._id) }));
-//     vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes("dp") && true, datetime: datetime.get(obj._id) ? datetime.get(obj._id) : aa.get(obj._id), messagestatus: messagestatus.get(obj._id), message: msg.get(obj._id), sentById: sentById.get(obj._id), sentByUsername: username.get(obj._id) }));
-//     const list1 = [...arrayData, ...vale_data];
-//     const data11 = list1.sort(
-//         (objA, objB) => Number(objB.datetime) - Number(objA.datetime),
-//     );
-//     // console.log(data11);
 })
