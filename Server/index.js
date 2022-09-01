@@ -51,7 +51,7 @@ io.on(process.env.CONNECTION, async (client) => {
         await Register.update({ _id: connectedId }, { $set: { status: "online" } })
         const user = await Register.find({ _id: connectedId })
         console.log("verification id is :", { _id: connectedId, user: user[0].username });
-        client.to(connectedId).emit(process.env.DEVICE_VERIFICATION, { _id: connectedId, deviceid: user[0]['deviceid']})
+        client.to(connectedId).emit(process.env.DEVICE_VERIFICATION, { _id: connectedId, deviceid: user[0]['deviceid'] })
         // client.broadcast.emit('is_online', '🔵 <i>' + user[0].username + ' join the chat..</i>');
         console.log(user);
         //Get the user list data
@@ -63,7 +63,7 @@ io.on(process.env.CONNECTION, async (client) => {
         const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ message: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
-                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId}
+                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId }
             })
             data.push(...arr)
         }
@@ -159,7 +159,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
         if (msgData) {
             client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: true })
-            await Message.updateOne({ msgid: data.msgid}, { $set: { messagestatus: "send" } })
+            await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
         }
         else {
             client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: false })
@@ -169,18 +169,18 @@ io.on(process.env.CONNECTION, async (client) => {
         const userwiseList = await Message.find({ sentByUsername: data.sentByUsername })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
-                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, message: data.message, datetime: data.datetime,messagestatus: data.messagestatus }
+                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus }
             })
             data1.push(...arr)
         }
         const userwiseList1 = await Message.find({ targetUsername: data.targetUsername })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
-                return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus}
+                return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus }
             })
             data2.push(...arr1)
         }
-    
+
         const val2 = data1[data1.length - 1]
         console.log("val2", val2);
         const val3 = data2[data2.length - 1]
@@ -241,7 +241,11 @@ io.on(process.env.CONNECTION, async (client) => {
         // console.log("user", user);
         client.emit(process.env.CREATE_ROOM, groupData[0])
         client.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
-        client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
+        vale_data[0].userList.map((data) => {
+            client.to(data.member_id).emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
+            console.log(data.member_id);
+        })
+        // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
     })
     client.on(process.env.GRP_DATA, async (data) => {
         console.log("grp_data", data);
@@ -287,7 +291,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         client.emit(process.env.DELIEVER_STATUS, { msgid: user.msgid, msgstatus: true })
         await GroupMsg.updateOne({ msgid: user.msgid }, { $set: { messagestatus: "send" } })
-        const msg1=await GroupMsg.find({ msgid: user.msgid })
+        const msg1 = await GroupMsg.find({ msgid: user.msgid })
         const msg_data = {
             _id: msg1[0].grpid,
             message: msg1[0].message,
@@ -311,14 +315,14 @@ io.on(process.env.CONNECTION, async (client) => {
         const userwiseList = await Message.find({ sentByUsername: msg1[0].sentByUsername })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
-                return { user: data.targetUsername, _id: data.targetId, datetime: data.datetime, chatId: data.chatId, message: data.message,messagestatus: data.messagestatus }
+                return { user: data.targetUsername, _id: data.targetId, datetime: data.datetime, chatId: data.chatId, message: data.message, messagestatus: data.messagestatus }
             })
             data1.push(...arr)
         }
         const userwiseList1 = await Message.find({ targetUsername: msg1[0].targetUsername })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
-                return { user: data.sentByUsername, _id: data.sentById, datetime: data.datetime, chatId: data.chatId, message: data.message,messagestatus: data.messagestatus }
+                return { user: data.sentByUsername, _id: data.sentById, datetime: data.datetime, chatId: data.chatId, message: data.message, messagestatus: data.messagestatus }
             })
             data2.push(...arr1)
         }
@@ -353,7 +357,7 @@ io.on(process.env.CONNECTION, async (client) => {
     client.on("group-chat-delete", async (data) => {
         console.log("delete group chat data is :", data);
         const msg = await Group.find({ chatId: data.group_chat_id })
-        console.log("delete chat", msg);    
+        console.log("delete chat", msg);
         await Group.deleteMany({ chatId: data.group_chat_id })
         await GroupMsg.deleteMany({ grpid: msg._id })
         const groupData = await Group.find({ chatId: data.group_chat_id })
