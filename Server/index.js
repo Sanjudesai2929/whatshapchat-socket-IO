@@ -52,7 +52,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.emit(process.env.STATUS_UPDATE, { status: "online" })
         await Register.update({ _id: connectedId }, { $set: { status: "online" } })
         const user = await Register.find({ _id: connectedId })
-        console.log("verification id is :", { _id: connectedId ,deviceid:user[0]['deviceid']});
+        console.log("verification id is :", { _id: connectedId ,user:user[0].username});
         client.emit(process.env.DEVICE_VERIFICATION, { _id: connectedId ,deviceid:user[0]['deviceid']})
         // client.broadcast.emit('is_online', '🔵 <i>' + user[0].username + ' join the chat..</i>');
         console.log(user);
@@ -69,7 +69,6 @@ io.on(process.env.CONNECTION, async (client) => {
             })
             data.push(...arr)
         }
-
         const userwiseList1 = await Message.find({ targetUsername: user[0].username }).select({ message: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
