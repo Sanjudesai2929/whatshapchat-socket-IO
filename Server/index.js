@@ -381,7 +381,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.broadcast.emit("remove-from-group-receive", data)
     })
     client.on("add-from-group", async (data) => {
-        console.log("remove-from-group", data);
+        console.log("add-from-group", data);
         await Group.updateMany({ _id: data.chatId }, { $push: { userList: { member_id: data.member_id ,member_name: data.member_name,adminstatus:false} } })
         const AfterAdd = await Group.find({ _id: data.chatId })
         client.emit("add-from-group-receive", data)
