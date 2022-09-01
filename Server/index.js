@@ -396,7 +396,7 @@ io.on(process.env.CONNECTION, async (client) => {
     client.on("group-name-update", async (data) => {
         console.log("group-name-update :", data);
         await Group.updateMany({ chatId: data.chatId }, { groupName: data.groupName })
-        const AfterUpdate = await Group.find({ _id: data.chatId })
+        const AfterUpdate = await Group.find({ chatId: data.chatId })
         client.broadcast.emit("group-name-update-receive", AfterUpdate)
     })
 
