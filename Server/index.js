@@ -350,11 +350,11 @@ io.on(process.env.CONNECTION, async (client) => {
     //listens when a admin  user is delete the group 
     client.on("group-chat-delete", async (data) => {
         console.log("delete group chat data is :", data);
-        const msg = await Group.find({ chatId: data.group_chat_id })
+        const msg = await Group.find({ _id: data.group_chat_id })
         console.log("delete chat", msg);
-        await Group.deleteMany({ chatId: data.group_chat_id })
+        await Group.deleteMany({ _id: data.group_chat_id })
         await GroupMsg.deleteMany({ grpid: msg._id })
-        const groupData = await Group.find({ chatId: data.group_chat_id })
+        const groupData = await Group.find({ _id: data.group_chat_id })
         console.log("group data", groupData);
         // groupData[0].userList.map((data) => {
         //     client.to(data.member_id).emit('group-chat-delete-receive', { chatId: data.group_chat_id })
@@ -413,6 +413,4 @@ io.on(process.env.CONNECTION, async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-
-
 })
