@@ -51,7 +51,7 @@ io.on(process.env.CONNECTION, async (client) => {
         await Register.update({ _id: connectedId }, { $set: { status: "online" } })
         const user = await Register.find({ _id: connectedId })
         console.log("verification id is :", { _id: connectedId, user: user[0].username });
-        client.to(connectedId).emit(process.env.DEVICE_VERIFICATION, { _id: connectedId, deviceid: user[0]['deviceid'] })
+        client.to(connectedId).emit(process.env.DEVICE_VERIFICATION, { _id: connectedId, deviceid: user[0]['deviceid']})
         // client.broadcast.emit('is_online', '🔵 <i>' + user[0].username + ' join the chat..</i>');
         console.log(user);
         //Get the user list data
@@ -63,7 +63,7 @@ io.on(process.env.CONNECTION, async (client) => {
         const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ message: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
-                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, }
+                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId}
             })
             data.push(...arr)
         }
@@ -181,7 +181,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, val3)
         if (msgData) {
             client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: true })
-            await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
+            await Message.updateOne({ msgid: data.msgid}, { $set: { messagestatus: "send" } })
         }
         else {
             client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: false })
@@ -210,7 +210,6 @@ io.on(process.env.CONNECTION, async (client) => {
         for (let i = 0; i < data.member_list.length; i++) {
             counter++;
         }
-
         const groupData = await Group.insertMany({
             groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, group_ownerid: data.group_ownerid, chatId: data.chatId, totalUser: counter, datetime: Date.parse(new Date()),
         })
@@ -336,7 +335,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("delete chat data is :", data);
         const msg1 = await Message.find({ chatId: data.chat_delete_id })
         const msg2 = await Message.find({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
-        console.log("delete chat  :", { chatId: data.chat_delete_id });
+        console.log("delete chat:", { chatId: data.chat_delete_id });
         await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
         client.broadcast.emit('chat-delete-receive', { chatId: data.chat_delete_id });
     })
@@ -347,11 +346,12 @@ io.on(process.env.CONNECTION, async (client) => {
         await GroupMsg.deleteMany({ msgid: { $in: data.groupmsg_delete_listid } })
         client.broadcast.emit('groupmsg-delete-receive', msg1);
     })
+    
     //listens when a admin  user is delete the group 
     client.on("group-chat-delete", async (data) => {
         console.log("delete group chat data is :", data);
         const msg = await Group.find({ _id: data.group_chat_id })
-        console.log("delete chat", msg);
+        console.log("delete chat", msg);    
         await Group.deleteMany({ _id: data.group_chat_id })
         await GroupMsg.deleteMany({ grpid: msg._id })
         const groupData = await Group.find({ _id: data.group_chat_id })
@@ -372,7 +372,6 @@ io.on(process.env.CONNECTION, async (client) => {
     })
     client.on("remove-from-group", async (data) => {
         console.log("remove-from-group", data);
-
         await Group.updateMany({ _id: data.chatId }, { $pull: { userList: { member_id: data.member_id } } })
         const AfterDelete = await Group.find({ _id: data.chatId })
         let counter = 0
