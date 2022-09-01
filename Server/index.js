@@ -149,7 +149,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.emit(process.env.USER_LIST, list)
     })
     //listen when user is send the message
-    client.on("message", async (data) => {
+    client.on(process.env.MESSAGE, async (data) => {
         console.log("message data ", data);
         const msgData = await Message.insertMany({
             message: data.message, sentByUsername: data.sentByUsername, sentById: data.sentById, targetId: data.targetId, targetUsername: data.targetUsername, msgid: data.msgid, chatId: data.chatId,
@@ -159,7 +159,7 @@ io.on(process.env.CONNECTION, async (client) => {
         })
 
         console.log("msgData", msgData)
-        client.broadcast.emit("message-receive", msgData)
+        client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
         var data1 = []
         var data2 = []
         const userwiseList = await Message.find({ sentByUsername: data.sentByUsername })
@@ -180,33 +180,33 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("val2", val2);
         const val3 = data2[data2.length - 1]
         console.log("val3", val3);
-        client.emit("user-data-list-update", val2)
-        client.broadcast.emit("user-data-list-update", val3)
+        client.emit(process.env.USER_DATA_LIST_UPDATE, val2)
+        client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, val3)
         if (msgData) {
-            client.emit("deliver-status", { msgid: data.msgid, msgstatus: true })
+            client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: true })
             await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
         }
         else {
-            client.emit("deliver-status", { msgid: data.msgid, msgstatus: false })
+            client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: false })
         }
     });
     //listens when a user seen the msg   
-    client.on("deliver-dbl-click", async (data) => {
+    client.on(process.env.DELIVER_DBL_CLICK, async (data) => {
         console.log(data);
         await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "seen" } })
     })
     //listens when a user is open keyboard   
-    client.on('keyboard', function name(data) {
+    client.on(process.env.KEYBOARD, function name(data) {
         console.log(data);
-        client.broadcast.emit('keyboard_status', data);
+        client.broadcast.emit(process.env.KEYBOARD_STATUS, data);
     })
     //listens when there's an error detected and logs the err  or on the console
-    client.on('error', function (err) {
+    client.on(process.env.ERROR, function (err) {
         console.log('Error detected', client.id);
         console.log(err);
     })
     //listens when a user is create the room   
-    client.on("create-room", async (data) => {
+    client.on(process.env.CREATE_ROOM, async (data) => {
         console.log("create room data is", data);
 
         let counter = 0
@@ -238,17 +238,16 @@ io.on(process.env.CONNECTION, async (client) => {
         //     [item["grpid"], item])).values()];
         var msg = new Map(user1.map(({ message, grpid }) => ([grpid, message])));
         var datetime = new Map(user1.map(({ datetime, grpid }) => ([grpid, datetime])));
-
         var username = new Map(user1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
         vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(connectedIdUser), datetime: datetime.get(obj._id), message: msg.get(obj._id), sentByUsername: username.get(obj._id) }));
         console.log("vale_data", vale_data[0]);
         // const user = [...groupData, chat]
         // console.log("user", user);
-        client.emit("create-room", groupData[0])
-        client.emit("user-data-list-update", vale_data[0])
-        client.broadcast.emit("user-data-list-update", vale_data[0])
+        client.emit(process.env.CREATE_ROOM, groupData[0])
+        client.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
+        client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
     })
-    client.on("grp_data", async (data) => {
+    client.on(process.env.GRP_DATA, async (data) => {
         console.log("grp_data", data);
         const groupData = await Group.find({ _id: data.id })
         // console.log(groupData[0].userList);
@@ -256,28 +255,28 @@ io.on(process.env.CONNECTION, async (client) => {
         var datetime = new Map(register.map(({ bio, _id }) => ([(_id).toString(), bio])));
         var arrayData = groupData[0].userList.map(obj => Object.assign(obj, { bio: datetime.get(obj.member_id) ? datetime.get(obj.member_id) : " " }));
         console.log("arrayData", arrayData);
-        client.emit("grp_data", arrayData)
+        client.emit(process.env.GRP_DATA, arrayData)
     })
-    client.on("adminChange", async (data) => {
+    client.on(process.env.ADMINCHANGE, async (data) => {
         console.log("ADMIN CHANGE:", data);
         const data1 = await Group.find({ _id: data.chatId })
         await Group.updateMany({ _id: data.chatId, 'userList.member_id': data.member_id }, { $set: { 'userList.$.adminstatus': true } })
         data1.adminName != data.member_name ? await Group.updateMany({ _id: data.chatId, 'userList.member_id': data.member_id }, { $push: { adminName: data.member_name } }) : console.log("aa");
         const group = await Group.find({ _id: data.chatId })
-        client.broadcast.emit('adminChange', group);
+        client.broadcast.emit(process.env.ADMINCHANGE, group);
     })
 
-    client.on("adminRemove", async (data) => {
+    client.on(process.env.ADMINREMOVE, async (data) => {
         console.log("ADMIN Remove:", data);
         const { chatId, member_id, member_name } = data
         const data1 = await Group.find({ _id: chatId })
         await Group.updateMany({ _id: chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': false } })
         await Group.updateMany({ _id: chatId, 'userList.member_id': member_id }, { $pull: { adminName: member_name } })
         const group = await Group.find({ _id: chatId })
-        client.broadcast.emit('adminRemove', group);
+        client.broadcast.emit(process.env.ADMINREMOVE, group);
     })
     //listens when a user is send the message in group chat   
-    client.on('grp_message', async (user) => {
+    client.on(process.env.GRP_MESSAGE, async (user) => {
         console.log("group message is ", user);
         const msg = await GroupMsg.insertMany({
             message: user.message, sentByUsername: user.sentByUsername, sentById: user.sentById, grpid: user.grpid, msgid: user.msgid,
@@ -290,8 +289,8 @@ io.on(process.env.CONNECTION, async (client) => {
             _id: msg[0].grpid
         })
         console.log("grp message receive", msg);
-        client.broadcast.emit("grp_message_receive", msg)
-        client.emit("deliver-status", { msgid: user.msgid, msgstatus: true })
+        client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+        client.emit(process.env.DELIEVER_STATUS, { msgid: user.msgid, msgstatus: true })
         await GroupMsg.updateOne({ msgid: user.msgid }, { $set: { messagestatus: "send" } })
         const msg_data = {
             _id: msg[0].grpid,
@@ -301,11 +300,11 @@ io.on(process.env.CONNECTION, async (client) => {
             cuadminstatus: groupmsga[0].adminName.includes(connectedIdUser)
         }
         console.log("msg_data", msg_data);
-        client.emit("user-data-list-update", msg_data)
-        client.broadcast.emit("user-data-list-update", msg_data)
+        client.emit(process.env.USER_DATA_LIST_UPDATE, msg_data)
+        client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, msg_data)
     });
     //listens when a user is delete the message in  chat   
-    client.on("usermsg-delete", async (data) => {
+    client.on(process.env.USERMSG_DELETE, async (data) => {
         console.log("delete msg data is :", data);
         const msg1 = await Message.find({ msgid: { $in: data.msg_delete_listid } })
         await Message.deleteMany({ msgid: { $in: data.msg_delete_listid } })
@@ -332,9 +331,9 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("After delete  broadcast last msg", val3);
         //    const data1 =await Message.find({sentById:msg1[0].sentById}).sort({ datetime: -1 }).limit(1)
         //    console.log("delete last msg is:",data1);
-        client.broadcast.emit('usermsg-delete-receive', msg1);
-        client.emit("user-data-list-update", val2)
-        client.broadcast.emit("user-data-list-update", val3)
+        client.broadcast.emit(process.env.USERMSG_DELETE_RECEIVE, msg1);
+        client.emit(process.env.USER_DATA_LIST_UPDATE, val2)
+        client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, val3)
     })
     //listens when a user is delete the entire chat
     client.on("chat-delete", async (data) => {
@@ -378,6 +377,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("remove-from-group", data);
         await Group.updateMany({ _id: data.chatId }, { $pull: { userList: { member_id: data.member_id } } })
         const AfterDelete = await Group.find({ _id: data.chatId })
+        client.emit("remove-from-group-receive", AfterDelete)
         client.broadcast.emit("remove-from-group-receive", AfterDelete)
     })
     client.on("group-name-update", async (data) => {
