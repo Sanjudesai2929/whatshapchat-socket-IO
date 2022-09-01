@@ -83,6 +83,7 @@ io.on(process.env.CONNECTION, async (client) => {
         else {
             userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
         }
+        
         var datetime = new Map(msgUser.map(({ datetime, chatId }) => ([chatId, datetime])));
         var messagestatus = new Map(msgUser.map(({ messagestatus, chatId }) => ([chatId, messagestatus])));
         const arrayUniqueByKey = [...new Map(data.map(item =>
@@ -266,7 +267,7 @@ io.on(process.env.CONNECTION, async (client) => {
         const group = await Group.find({ _id: data.chatId })
         client.broadcast.emit('adminChange', group);
     })
-    
+
     client.on("adminRemove", async (data) => {
         console.log("ADMIN Remove:", data);
         const { chatId, member_id, member_name } = data
