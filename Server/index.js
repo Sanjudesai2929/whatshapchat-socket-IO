@@ -62,7 +62,6 @@ io.on(process.env.CONNECTION, async (client) => {
         connectedIdUser = user[0].username
         const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ message: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
-
             const arr = userwiseList.map((data) => {
                 return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId}
             })
@@ -379,7 +378,6 @@ io.on(process.env.CONNECTION, async (client) => {
             counter++;
         }
         await Group.updateMany({ _id: data.chatId }, { totalUser: counter })
-
         client.emit("remove-from-group-receive", data)
         client.broadcast.emit("remove-from-group-receive", data)
     })
@@ -397,7 +395,7 @@ io.on(process.env.CONNECTION, async (client) => {
     })
     client.on("group-name-update", async (data) => {
         console.log("group-name-update :", data);
-        await Group.updateMany({ _id: data.chatId }, { groupName: data.groupName })
+        await Group.updateMany({ chatId: data.chatId }, { groupName: data.groupName })
         const AfterUpdate = await Group.find({ _id: data.chatId })
         client.broadcast.emit("group-name-update-receive", AfterUpdate)
     })
