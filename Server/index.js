@@ -376,7 +376,7 @@ io.on(process.env.CONNECTION, async (client) => {
         await Group.updateMany({ _id: data.chatId }, { $pull: { userList: { member_id: data.member_id } } })
         const AfterDelete = await Group.find({ _id: data.chatId })
         let counter = 0
-        for (let i = 0; i < AfterDelete[0].member_list.length; i++) {
+        for (let i = 0; i < AfterDelete[0].userList.length; i++) {
             counter++;
         }
         await Group.updateMany({ _id: data.chatId }, { totalUser:counter })
@@ -389,7 +389,7 @@ io.on(process.env.CONNECTION, async (client) => {
         await Group.updateMany({ _id: data.chatId }, { $push: { userList: { member_id: data.member_id ,member_name: data.member_name,adminstatus:false} } })
         const AfterAdd = await Group.find({ _id: data.chatId })
         let counter = 0
-        for (let i = 0; i < AfterAdd[0].member_list.length; i++) {
+        for (let i = 0; i < AfterAdd[0].userList.length; i++) {
             counter++;
         }
         await Group.updateMany({ _id: data.chatId }, { totalUser:counter })
