@@ -62,7 +62,7 @@ io.on(process.env.CONNECTION, async (client) => {
         connectedIdUser = user[0].username
         const userwiseList = await Message.find({ sentByUsername: user[0].username }).select({ message: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList) {
-            
+
             const arr = userwiseList.map((data) => {
                 return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId}
             })
@@ -350,11 +350,11 @@ io.on(process.env.CONNECTION, async (client) => {
     //listens when a admin  user is delete the group 
     client.on("group-chat-delete", async (data) => {
         console.log("delete group chat data is :", data);
-        const msg = await Group.find({ _id: data.group_chat_id })
+        const msg = await Group.find({ chatId: data.group_chat_id })
         console.log("delete chat", msg);    
-        await Group.deleteMany({ _id: data.group_chat_id })
+        await Group.deleteMany({ chatId: data.group_chat_id })
         await GroupMsg.deleteMany({ grpid: msg._id })
-        const groupData = await Group.find({ _id: data.group_chat_id })
+        const groupData = await Group.find({ chatId: data.group_chat_id })
         console.log("group data", groupData);
         // groupData[0].userList.map((data) => {
         //     client.to(data.member_id).emit('group-chat-delete-receive', { chatId: data.group_chat_id })
