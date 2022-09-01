@@ -69,7 +69,7 @@ io.on(process.env.CONNECTION, async (client) => {
             })
             data.push(...arr)
         }
-        
+
         const userwiseList1 = await Message.find({ targetUsername: user[0].username }).select({ message: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
@@ -84,7 +84,6 @@ io.on(process.env.CONNECTION, async (client) => {
         else {
             userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
         }
-        
         var datetime = new Map(msgUser.map(({ datetime, chatId }) => ([chatId, datetime])));
         var messagestatus = new Map(msgUser.map(({ messagestatus, chatId }) => ([chatId, messagestatus])));
         const arrayUniqueByKey = [...new Map(data.map(item =>
