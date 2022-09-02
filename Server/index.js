@@ -409,6 +409,14 @@ io.on(process.env.CONNECTION, async (client) => {
         const AfterUpdate = await Group.find({ chatId: data.chatId })
         client.broadcast.emit("group-name-update-receive", AfterUpdate)
     })
+    client.on("admin-promote",  (data) => {
+        console.log("admin promote:", data);
+       client.emit("admin-promote-receive",data)
+    })
+    client.on("admin-dismiss",  (data) => {
+        console.log("admin dismiss:", data);
+       client.emit("admin-dismiss-receive",data)
+    })
 
     //listens when a user is disconnected from the server   
     client.on(process.env.DISCONNECT, async function (username) {
