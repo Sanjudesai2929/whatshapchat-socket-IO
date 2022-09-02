@@ -262,7 +262,9 @@ io.on(process.env.CONNECTION, async (client) => {
         await Group.updateMany({ _id: data.chatId, 'userList.member_id': data.member_id }, { $set: { 'userList.$.adminstatus': true } })
         data1.adminName != data.member_name ? await Group.updateMany({ _id: data.chatId, 'userList.member_id': data.member_id }, { $push: { adminName: data.member_name } }) : console.log("aa");
         const group = await Group.find({ _id: data.chatId })
-        client.broadcast.emit(process.env.ADMINCHANGE, group);
+        client.broadcast.emit("adminChange-receive", data);
+        client.emit("adminChange-receive", data);
+
     })
     client.on(process.env.ADMINREMOVE, async (data) => {
         console.log("ADMIN Remove:", data);
@@ -271,7 +273,7 @@ io.on(process.env.CONNECTION, async (client) => {
         await Group.updateMany({ _id: chatId, 'userList.member_id': member_id }, { $set: { 'userList.$.adminstatus': false } })
         await Group.updateMany({ _id: chatId, 'userList.member_id': member_id }, { $pull: { adminName: member_name } })
         const group = await Group.find({ _id: chatId })
-        client.broadcast.emit(process.env.ADMINREMOVE, group);
+        client.broadcast.emit("adminRemove-receive", data);
     })
     //listens when a user is send the message in group chat   
     client.on(process.env.GRP_MESSAGE, async (user) => {
@@ -408,18 +410,7 @@ io.on(process.env.CONNECTION, async (client) => {
         const AfterUpdate = await Group.find({ chatId: data.chatId })
         client.broadcast.emit("group-name-update-receive", AfterUpdate)
     })
-    client.on("admin-promote", (data) => {
-        console.log("admin promote:", data);
-        client.emit("admin-promote-receive", data)
-        client.broadcast.emit("admin-promote-receive", data)
-
-    })
-    client.on("admin-dismiss", (data) => {
-        console.log("admin dismiss:", data);
-        client.emit("admin-dismiss-receive", data)
-        client.broadcast.emit("admin-dismiss-receive", data)
-    })
-
+  
     //listens when a user is disconnected from the server   
     client.on(process.env.DISCONNECT, async function (username) {
         console.log(connectedId + 'is offline....');
