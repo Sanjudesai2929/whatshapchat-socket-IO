@@ -274,6 +274,8 @@ io.on(process.env.CONNECTION, async (client) => {
         await Group.updateMany({ _id: chatId, 'userList.member_id': member_id }, { $pull: { adminName: member_name } })
         const group = await Group.find({ _id: chatId })
         client.broadcast.emit("adminRemove-receive", data);
+        client.emit("adminRemove-receive", data);
+
     })
     //listens when a user is send the message in group chat   
     client.on(process.env.GRP_MESSAGE, async (user) => {
