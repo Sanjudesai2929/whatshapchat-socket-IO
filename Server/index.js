@@ -378,7 +378,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("remove-from-group", data);
         await Group.updateMany({ chatId: data.chatId }, { $pull: { userList: { member_id: data.member_id } } })
         const AfterDelete = await Group.find({ chatId: data.chatId })
-        if(AfterDelete){
+        if(AfterDelete.length){
             let counter = 0
             for (let i = 0; i < AfterDelete[0].userList.length; i++) {
                 counter++;
@@ -418,4 +418,5 @@ io.on(process.env.CONNECTION, async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
+ 
 })
