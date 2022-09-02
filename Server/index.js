@@ -114,7 +114,7 @@ io.on(process.env.CONNECTION, async (client) => {
         var sentById = new Map(arrayUniqueByKey1.map(({ sentById, grpid }) => ([grpid, sentById])));
         var datetime = new Map(arrayUniqueByKey1.map(({ datetime, grpid }) => ([grpid, datetime])));
         var aa = new Map(GroupwiseList.map(({ datetime, _id }) => ([(_id).toString(), datetime])));
-        var messagestatus = new Map(arrayUniqueByKey1.map(({ messagestatus, grpid }) => (   [grpid, messagestatus])));
+        var messagestatus = new Map(arrayUniqueByKey1.map(({ messagestatus, grpid }) => ([grpid, messagestatus])));
         // vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(user[0].username) && true, sortingdatetime: sortingdatetime.get(obj._id) ? sortingdatetime.get(obj._id) : sorting.get(obj._id), messagestatus: messagestatus.get(obj._id), message: msg.get(obj._id), sentById: sentById.get(obj._id), sentByUsername: username.get(obj._id), time: time.get(obj._id), datetime: datetime.get(obj._id) ? datetime.get(obj._id) : aa.get(obj._id) }));
         vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(user[0].username) && true, datetime: datetime.get(obj._id) ? datetime.get(obj._id) : aa.get(obj._id), messagestatus: messagestatus.get(obj._id), message: msg.get(obj._id), sentById: sentById.get(obj._id), sentByUsername: username.get(obj._id) }));
         const list1 = [...arrayData, ...vale_data];
@@ -171,7 +171,7 @@ io.on(process.env.CONNECTION, async (client) => {
             })
             data1.push(...arr)
         }
-        const userwiseList1 = await Message.find({targetUsername: data.targetUsername })
+        const userwiseList1 = await Message.find({ targetUsername: data.targetUsername })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
                 return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus }
@@ -246,10 +246,9 @@ io.on(process.env.CONNECTION, async (client) => {
         // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
 
     })
-    
     client.on(process.env.GRP_DATA, async (data) => {
         console.log("grp_data", data);
-        const groupData = await Group.find({ _id: data.id})
+        const groupData = await Group.find({ _id: data.id })
         // console.log(groupData[0].userList);
         const register = await Register.find()
         var datetime = new Map(register.map(({ bio, _id }) => ([(_id).toString(), bio])));
@@ -409,16 +408,16 @@ io.on(process.env.CONNECTION, async (client) => {
         const AfterUpdate = await Group.find({ chatId: data.chatId })
         client.broadcast.emit("group-name-update-receive", AfterUpdate)
     })
-    client.on("admin-promote",  (data) => {
+    client.on("admin-promote", (data) => {
         console.log("admin promote:", data);
-       client.emit("admin-promote-receive",data)
-       client.broadcast.emit("admin-promote-receive",data)
+        client.emit("admin-promote-receive", data)
+        client.broadcast.emit("admin-promote-receive", data)
 
     })
-    client.on("admin-dismiss",  (data) => {
+    client.on("admin-dismiss", (data) => {
         console.log("admin dismiss:", data);
-       client.broadcast.emit("admin-dismiss-receive",data)
-       client.emit("admin-dismiss-receive",data)
+        client.emit("admin-dismiss-receive", data)
+        client.broadcast.emit("admin-dismiss-receive", data)
     })
 
     //listens when a user is disconnected from the server   
@@ -429,6 +428,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.emit("user-online-status-update", { status: "offline" })
         await Register.update({ _id: connectedId }, { $set: { status: "offline" } })
     })
+    
 })
 server.listen(port, async () => {
     console.log("server started");
