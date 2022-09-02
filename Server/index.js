@@ -77,7 +77,7 @@ io.on(process.env.CONNECTION, async (client) => {
         const msgUser = await Message.find().sort({ datetime: 1 })
         if (msgUser.length && msgUser[0].type == "location") {
             var userData = new Map(msgUser.map(({ chatId }) => ([chatId, "location"])));
-        }
+        } 
         else {
             userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
         }
@@ -131,7 +131,6 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("connectMsg", connectMsg);
         client.emit(process.env.CONNECTED_USER, connectMsg);
     });
-
     client.on(process.env.CONNECTED_GROUP_USER, async (data) => {
         console.log("connected group user is ", data);
         const connectMsg = await GroupMsg.find({ grpid: data.grpid }).sort({ datetime: 1 })
@@ -166,6 +165,7 @@ io.on(process.env.CONNECTION, async (client) => {
         }
         var data1 = []
         var data2 = []
+
         const userwiseList = await Message.find({ sentByUsername: data.sentByUsername })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
@@ -180,7 +180,6 @@ io.on(process.env.CONNECTION, async (client) => {
             })
             data2.push(...arr1)
         }
-
         const val2 = data1[data1.length - 1]
         console.log("val2", val2);
         const val3 = data2[data2.length - 1]
@@ -337,16 +336,16 @@ io.on(process.env.CONNECTION, async (client) => {
         client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, val3)
     })
     //listens when a user is delete the entire chat
-    client.on("chat-delete", async (data) => {
+    client.on(process.env.CHAT_DELETE, async (data) => {
         console.log("delete chat data is :", data);
         const msg1 = await Message.find({ chatId: data.chat_delete_id })
         const msg2 = await Message.find({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
         console.log("delete chat:", { chatId: data.chat_delete_id });
         await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
-        client.broadcast.emit('chat-delete-receive', { chatId: data.chat_delete_id });
+        client.broadcast.emit(process.env.CHAT_DELETE_RECEIVE, { chatId: data.chat_delete_id });
     })
     //listens when a user is delete the group message in group chat 
-    client.on("groupmsg-delete", async (data) => {
+    client.on(process.env.GROUPMSG_DELETE, async (data) => {
         console.log("delete group msg is :", data);
         const msg1 = await GroupMsg.find({ msgid: { $in: data.groupmsg_delete_listid } })
         await GroupMsg.deleteMany({ msgid: { $in: data.groupmsg_delete_listid } })
