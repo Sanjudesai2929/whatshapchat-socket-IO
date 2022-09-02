@@ -412,10 +412,12 @@ io.on(process.env.CONNECTION, async (client) => {
     client.on("admin-promote",  (data) => {
         console.log("admin promote:", data);
        client.emit("admin-promote-receive",data)
+       client.broadcast.emit("admin-promote-receive",data)
+
     })
     client.on("admin-dismiss",  (data) => {
         console.log("admin dismiss:", data);
-       client.emit("admin-dismiss-receive",data)
+       client.broadcast.emit("admin-dismiss-receive",data)
     })
 
     //listens when a user is disconnected from the server   
