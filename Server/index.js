@@ -77,7 +77,7 @@ io.on(process.env.CONNECTION, async (client) => {
         const msgUser = await Message.find().sort({ datetime: 1 })
         if (msgUser.length && msgUser[0].type == "location") {
             var userData = new Map(msgUser.map(({ chatId }) => ([chatId, "location"])));
-        } 
+        }
         else {
             userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
         }
@@ -378,7 +378,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("remove-from-group", data);
         await Group.updateMany({ chatId: data.chatId }, { $pull: { userList: { member_id: data.member_id } } })
         const AfterDelete = await Group.find({ chatId: data.chatId })
-        if(AfterDelete.length){
+        if (AfterDelete.length) {
             let counter = 0
             for (let i = 0; i < AfterDelete[0].userList.length; i++) {
                 counter++;
@@ -392,11 +392,13 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("add-from-group", data);
         await Group.updateMany({ _id: data.chatId }, { $push: { userList: { member_id: data.member_id, member_name: data.member_name, adminstatus: false } } })
         const AfterAdd = await Group.find({ _id: data.chatId })
-        let counter = 0
-        for (let i = 0; i < AfterAdd[0].userList.length; i++) {
-            counter++;
+        if (AfterAdd.length) {
+            let counter = 0
+            for (let i = 0; i < AfterAdd[0].userList.length; i++) {
+                counter++;
+            }
+            await Group.updateMany({ _id: data.chatId }, { totalUser: counter })
         }
-        await Group.updateMany({ _id: data.chatId }, { totalUser: counter })
         client.emit("add-from-group-receive", data)
         client.broadcast.emit("add-from-group-receive", data)
     })
@@ -418,5 +420,5 @@ io.on(process.env.CONNECTION, async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
- 
+
 })
