@@ -107,6 +107,7 @@ io.on(process.env.CONNECTION, async (client) => {
         if (arrayUniqueByKey1.length && arrayUniqueByKey1[0].type == "location") {
             var msg = new Map(arrayUniqueByKey1.map(({ grpid }) => ([grpid, "location"])));
         }
+        
         else {
             msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
         }
@@ -245,7 +246,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
         client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
         // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
-        
+
     })
     
     client.on(process.env.GRP_DATA, async (data) => {
