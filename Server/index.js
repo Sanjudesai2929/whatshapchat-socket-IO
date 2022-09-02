@@ -107,7 +107,6 @@ io.on(process.env.CONNECTION, async (client) => {
         if (arrayUniqueByKey1.length && arrayUniqueByKey1[0].type == "location") {
             var msg = new Map(arrayUniqueByKey1.map(({ grpid }) => ([grpid, "location"])));
         }
-        
         else {
             msg = new Map(arrayUniqueByKey1.map(({ message, grpid }) => ([grpid, message])));
         }
@@ -138,7 +137,6 @@ io.on(process.env.CONNECTION, async (client) => {
         // console.log(connectMsg);
         client.emit(process.env.CONNECTED_GROUP_USER, connectMsg);
     });
-
     client.on(process.env.USER_LIST_REQUEST, async (data) => {
         console.log("user-list-request", data);
         //Get the all user list data
@@ -243,8 +241,8 @@ io.on(process.env.CONNECTION, async (client) => {
         //     client.broadcast.to(data.member_id).emit(process.env.CREATE_ROOM, groupData[0])
         //     console.log(data);
         // })
-        client.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
-        client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
+        client.emit("user-data-list-update", vale_data[0])
+        client.broadcast.emit("user-data-list-update", vale_data[0])
         // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
 
     })
