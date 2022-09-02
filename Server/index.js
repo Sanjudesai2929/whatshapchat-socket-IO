@@ -247,6 +247,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
         // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
     })
+    
     client.on(process.env.GRP_DATA, async (data) => {
         console.log("grp_data", data);
         const groupData = await Group.find({ _id: data.id })
