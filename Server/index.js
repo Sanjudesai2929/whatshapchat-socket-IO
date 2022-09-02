@@ -264,7 +264,6 @@ io.on(process.env.CONNECTION, async (client) => {
         const group = await Group.find({ _id: data.chatId })
         client.broadcast.emit(process.env.ADMINCHANGE, group);
     })
-
     client.on(process.env.ADMINREMOVE, async (data) => {
         console.log("ADMIN Remove:", data);
         const { chatId, member_id, member_name } = data
@@ -379,11 +378,13 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("remove-from-group", data);
         await Group.updateMany({ chatId: data.chatId }, { $pull: { userList: { member_id: data.member_id } } })
         const AfterDelete = await Group.find({ chatId: data.chatId })
-        let counter = 0
-        for (let i = 0; i < AfterDelete[0].userList.length; i++) {
-            counter++;
+        if(AfterDelete){
+            let counter = 0
+            for (let i = 0; i < AfterDelete[0].userList.length; i++) {
+                counter++;
+            }
+            await Group.updateMany({ chatId: data.chatId }, { totalUser: counter })
         }
-        await Group.updateMany({ chatId: data.chatId }, { totalUser: counter })
         client.emit("remove-from-group-receive", data)
         client.broadcast.emit("remove-from-group-receive", data)
     })
