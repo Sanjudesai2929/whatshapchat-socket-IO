@@ -418,6 +418,8 @@ io.on(process.env.CONNECTION, async (client) => {
     client.on("admin-dismiss",  (data) => {
         console.log("admin dismiss:", data);
        client.broadcast.emit("admin-dismiss-receive",data)
+       client.emit("admin-dismiss-receive",data)
+
     })
 
     //listens when a user is disconnected from the server   
