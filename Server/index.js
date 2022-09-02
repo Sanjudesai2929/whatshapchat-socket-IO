@@ -240,12 +240,10 @@ io.on(process.env.CONNECTION, async (client) => {
         // console.log("user", user);
         client.emit(process.env.CREATE_ROOM, groupData[0])
         client.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
-        // vale_data[0].userList.map((data) => {
-            client.to("62e21603490f4ca9ce052a1b").emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
-            client.to("62fa3cb991300e449e9f0b42").emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
-
-            // console.log(data.member_id);
-        // })
+        vale_data[0].userList.map((data) => {
+            client.in(data.member_id).emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
+            console.log(data.member_id);
+        })
         // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
     })
     client.on(process.env.GRP_DATA, async (data) => {
