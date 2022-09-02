@@ -245,6 +245,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
         client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
         // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
+        
     })
     
     client.on(process.env.GRP_DATA, async (data) => {
@@ -419,7 +420,6 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("admin dismiss:", data);
        client.broadcast.emit("admin-dismiss-receive",data)
        client.emit("admin-dismiss-receive",data)
-
     })
 
     //listens when a user is disconnected from the server   
@@ -433,5 +433,4 @@ io.on(process.env.CONNECTION, async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-
 })
