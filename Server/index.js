@@ -75,12 +75,12 @@ io.on(process.env.CONNECTION, async (client) => {
             data.push(...arr1)
         }
         const msgUser = await Message.find().sort({ datetime: 1 })
-        if (msgUser.length && msgUser[0].type == "location") {
-            var userData = new Map(msgUser.map(({ chatId }) => ([chatId, "location"])));
-        }
-        else {
-            userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
-        }
+        // if (msgUser.length && msgUser[0].type == "location") {
+        //     var userData = new Map(msgUser.map(({ chatId }) => ([chatId, "location"])));
+        // }
+        // else {
+            var userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
+        // }
         var sentById = new Map(msgUser.map(({ sentById, chatId }) => ([chatId, sentById])));
 
         var datetime = new Map(msgUser.map(({ datetime, chatId }) => ([chatId, datetime])));
