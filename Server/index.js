@@ -264,7 +264,6 @@ io.on(process.env.CONNECTION, async (client) => {
         const group = await Group.find({ _id: data.chatId })
         client.broadcast.emit("adminChange-receive", data);
         client.emit("adminChange-receive", data);
-
     })
     client.on(process.env.ADMINREMOVE, async (data) => {
         console.log("ADMIN Remove:", data);
@@ -275,7 +274,6 @@ io.on(process.env.CONNECTION, async (client) => {
         const group = await Group.find({ _id: chatId })
         client.broadcast.emit("adminRemove-receive", data);
         client.emit("adminRemove-receive", data);
-
     })
     //listens when a user is send the message in group chat   
     client.on(process.env.GRP_MESSAGE, async (user) => {
@@ -412,7 +410,7 @@ io.on(process.env.CONNECTION, async (client) => {
         const AfterUpdate = await Group.find({ chatId: data.chatId })
         client.broadcast.emit("group-name-update-receive", AfterUpdate)
     })
-  
+
     //listens when a user is disconnected from the server   
     client.on(process.env.DISCONNECT, async function (username) {
         console.log(connectedId + 'is offline....');
