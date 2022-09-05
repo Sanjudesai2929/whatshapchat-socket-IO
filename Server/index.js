@@ -81,11 +81,13 @@ io.on(process.env.CONNECTION, async (client) => {
         else {
             userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
         }
+        var sentById = new Map(msgUser.map(({ sentById, chatId }) => ([chatId, sentById])));
+
         var datetime = new Map(msgUser.map(({ datetime, chatId }) => ([chatId, datetime])));
         var messagestatus = new Map(msgUser.map(({ messagestatus, chatId }) => ([chatId, messagestatus])));
         const arrayUniqueByKey = [...new Map(data.map(item =>
             [item["user"], item])).values()];
-        var arrayData = arrayUniqueByKey.map(obj => ({ ...obj, message: userData.get(obj.chatId), datetime: datetime.get(obj.chatId), messagestatus: messagestatus.get(obj.chatId) }));
+        var arrayData = arrayUniqueByKey.map(obj => ({ ...obj,sentById: sentById.get(obj.chatId), message: userData.get(obj.chatId), datetime: datetime.get(obj.chatId), messagestatus: messagestatus.get(obj.chatId) }));
         const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
         const Groupa = GroupwiseList.map((data) => {
             return {
