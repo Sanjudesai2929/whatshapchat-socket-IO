@@ -239,6 +239,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("vale_data", vale_data[0]); 
         // const user = [...groupData, chat]
         // console.log("user", user);
+        console.log("group name is ",data.group_name);
         client.emit(process.env.CREATE_ROOM, groupData[0])
         // groupData[0].userList.map((data) => {
         //     client.broadcast.to(data.member_id).emit(process.env.CREATE_ROOM, groupData[0])
