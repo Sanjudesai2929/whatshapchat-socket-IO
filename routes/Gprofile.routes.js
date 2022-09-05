@@ -20,5 +20,6 @@ router.get("/profile/:id", async (req, res) => {
                 message: "something went wrong"
             })  
     }
+    
 })
 module.exports = router
