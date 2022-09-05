@@ -46,8 +46,8 @@ io.on(process.env.CONNECTION, async (client) => {
     client.on(process.env.LOGINID, async (data) => {
         console.log("loginid is ", data);
         connectedId = data.loginuserid
-        client.broadcast.emit(process.env.STATUS_UPDATE, { status: "online" })
-        client.emit(process.env.STATUS_UPDATE, { status: "online" })
+        // client.broadcast.emit(process.env.STATUS_UPDATE, { status: "online" })
+        // client.emit(process.env.STATUS_UPDATE, { status: "online" })
         await Register.update({ _id: connectedId }, { $set: { status: "online" } })
         const user = await Register.find({ _id: connectedId })
         console.log("verification id is :", { _id: connectedId, user: user[0].username });
