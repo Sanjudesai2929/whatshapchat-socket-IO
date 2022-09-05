@@ -242,7 +242,9 @@ io.on(process.env.CONNECTION, async (client) => {
         //     console.log(data);
         // })
         client.emit("user-data-list-update", vale_data[0])
-        client.broadcast.emit("user-data-list-update", vale_data[0])
+        // client.broadcast.emit("user-data-list-update", vale_data[0])
+        client.broadcast.to(data.group_name).emit("user-data-list-update", vale_data[0])
+        
         // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
 
     })
@@ -304,6 +306,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.emit(process.env.USER_DATA_LIST_UPDATE, msg_data)
         client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, msg_data)
     });
+    
     //listens when a user is delete the message in  chat   
     client.on(process.env.USERMSG_DELETE, async (data) => {
         console.log("delete msg data is :", data);
@@ -352,7 +355,6 @@ io.on(process.env.CONNECTION, async (client) => {
         await GroupMsg.deleteMany({ msgid: { $in: data.groupmsg_delete_listid } })
         client.broadcast.emit('groupmsg-delete-receive', msg1);
     })
-
     //listens when a admin  user is delete the group 
     client.on("group-chat-delete", async (data) => {
         console.log("delete group chat data is :", data);

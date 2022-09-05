@@ -25,15 +25,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
-  bio:{
+  bio: {
     type: String,
- default:""
+    default: ""
   },
-  status:{
+  status: {
     type: String,
   },
-  deviceid:{
-    type:String
+  deviceid: {
+    type: String
   }
 });
 
