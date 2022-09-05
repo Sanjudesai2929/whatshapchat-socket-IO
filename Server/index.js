@@ -243,8 +243,7 @@ io.on(process.env.CONNECTION, async (client) => {
         // })
         client.emit("user-data-list-update", vale_data[0])
         // client.broadcast.emit("user-data-list-update", vale_data[0])
-        client.broadcast.to(data.group_name).emit("user-data-list-update", vale_data[0])
-        
+        client.to(data.group_name).emit("user-data-list-update", vale_data[0])
         // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
 
     })
