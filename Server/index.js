@@ -82,7 +82,6 @@ io.on(process.env.CONNECTION, async (client) => {
             var userData = new Map(msgUser.map(({ message, chatId }) => ([chatId, message])));
         // }
         var sentById = new Map(msgUser.map(({ sentById, chatId }) => ([chatId, sentById])));
-
         var datetime = new Map(msgUser.map(({ datetime, chatId }) => ([chatId, datetime])));
         var messagestatus = new Map(msgUser.map(({ messagestatus, chatId }) => ([chatId, messagestatus])));
         const arrayUniqueByKey = [...new Map(data.map(item =>
@@ -245,7 +244,7 @@ io.on(process.env.CONNECTION, async (client) => {
         // })
         client.emit("user-data-list-update", vale_data[0])
         // client.broadcast.emit("user-data-list-update", vale_data[0])
-        io.in(vale_data[0].groupName).emit("user-data-list-update", vale_data[0])
+        client.in(vale_data[0].groupName).emit("user-data-list-update", vale_data[0])
         // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
     })
     client.on(process.env.GRP_DATA, async (data) => {
