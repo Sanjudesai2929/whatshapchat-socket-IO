@@ -212,7 +212,6 @@ io.on(process.env.CONNECTION, async (client) => {
         const groupData = await Group.insertMany({
             groupName: data.group_name, userList: data.member_list, adminName: data.group_owner, group_ownerid: data.group_ownerid, chatId: data.chatId, totalUser: counter, datetime: Date.parse(new Date()),
         })
-        client.join(data.group_name)
         console.log(groupData[0]);
         // const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
         const Groupa = groupData.map((data) => {
@@ -245,11 +244,11 @@ io.on(process.env.CONNECTION, async (client) => {
         //     client.broadcast.to(data.member_id).emit(process.env.CREATE_ROOM, groupData[0])
         //     console.log(data);
         // })
+        client.join(data.group_name)
         client.emit("user-data-list-update", vale_data[0])
         // client.broadcast.emit("user-data-list-update", vale_data[0])
-        client.broadcast.to(data.group_name).emit("user-data-list-update", vale_data[0])
-        // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])
-        
+        client.to(data.group_name).emit("user-data-list-update", vale_data[0])
+        // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])  
     })
     client.on(process.env.GRP_DATA, async (data) => {
         console.log("grp_data", data);
