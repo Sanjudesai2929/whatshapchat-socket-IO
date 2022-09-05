@@ -137,13 +137,13 @@ io.on(process.env.CONNECTION, async (client) => {
         // console.log(connectMsg);
         client.emit(process.env.CONNECTED_GROUP_USER, connectMsg);
     });
-    client.on(process.env.USER_LIST_REQUEST, async (data) => {
-        console.log("user-list-request", data);
-        //Get the all user list data
-        const userList = await Register.find().select({ "username": 1, "_id": 1 })
-        const list = [...userList];
-        client.emit(process.env.USER_LIST, list)
-    })
+    // client.on(process.env.USER_LIST_REQUEST, async (data) => {
+    //     console.log("user-list-request", data);
+    //     //Get the all user list data
+    //     const userList = await Register.find().select({ "username": 1, "_id": 1 })
+    //     const list = [...userList];
+    //     client.emit(process.env.USER_LIST, list)
+    // })
     //listen when user is send the message
     client.on(process.env.MESSAGE, async (data) => {
         console.log("message data ", data);
@@ -233,7 +233,7 @@ io.on(process.env.CONNECTION, async (client) => {
         var datetime = new Map(user1.map(({ datetime, grpid }) => ([grpid, datetime])));
         var username = new Map(user1.map(({ sentByUsername, grpid }) => ([grpid, sentByUsername])));
         vale_data = Groupa.map(obj => ({ ...obj, cuadminstatus: obj.adminName.includes(connectedIdUser), datetime: datetime.get(obj._id), message: msg.get(obj._id), sentByUsername: username.get(obj._id) }));
-        console.log("vale_data", vale_data[0]);
+        console.log("vale_data", vale_data[0]); 
         // const user = [...groupData, chat]
         // console.log("user", user);
         client.emit(process.env.CREATE_ROOM, groupData[0])
@@ -415,8 +415,8 @@ io.on(process.env.CONNECTION, async (client) => {
     client.on(process.env.DISCONNECT, async function (username) {
         console.log(connectedId + 'is offline....');
         client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
-        client.broadcast.emit("user-online-status-update", { status: "offline" })
-        client.emit("user-online-status-update", { status: "offline" })
+        // client.broadcast.emit("user-online-status-update", { status: "offline" })
+        // client.emit("user-online-status-update", { status: "offline" })
         await Register.update({ _id: connectedId }, { $set: { status: "offline" } })
     })
     
