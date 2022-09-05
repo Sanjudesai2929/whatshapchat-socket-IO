@@ -142,7 +142,7 @@ io.on(process.env.CONNECTION, async (client) => {
     // client.on(process.env.USER_LIST_REQUEST, async (data) => {
     //     console.log("user-list-request", data);
     //     //Get the all user list data
-    //     const userList = await Register.find().select({ "username": 1, "_id": 1 })
+    //     const userList = await Register.fin d().select({ "username": 1, "_id": 1 })
     //     const list = [...userList];
     //     client.emit(process.env.USER_LIST, list)
     // })
@@ -169,14 +169,14 @@ io.on(process.env.CONNECTION, async (client) => {
         const userwiseList = await Message.find({ sentByUsername: data.sentByUsername })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
-                return { user: data.targetUsername, _id: data.targetId, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus }
+                return { user: data.targetUsername, _id: data.targetId,sentById:data.sentById, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus }
             })
             data1.push(...arr)
         }
         const userwiseList1 = await Message.find({ targetUsername: data.targetUsername })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
-                return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus }
+                return { user: data.sentByUsername, _id: data.sentById,sentById:data.sentById, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus }
             })
             data2.push(...arr1)
         }
@@ -318,14 +318,14 @@ io.on(process.env.CONNECTION, async (client) => {
         const userwiseList = await Message.find({ sentByUsername: msg1[0].sentByUsername })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
-                return { user: data.targetUsername, _id: data.targetId, datetime: data.datetime, chatId: data.chatId, message: data.message, messagestatus: data.messagestatus }
+                return { user: data.targetUsername, _id: data.targetId,sentById:data.sentById, datetime: data.datetime, chatId: data.chatId, message: data.message, messagestatus: data.messagestatus }
             })
             data1.push(...arr)
         }
         const userwiseList1 = await Message.find({ targetUsername: msg1[0].targetUsername })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
-                return { user: data.sentByUsername, _id: data.sentById, datetime: data.datetime, chatId: data.chatId, message: data.message, messagestatus: data.messagestatus }
+                return { user: data.sentByUsername, _id: data.sentById,sentById:data.sentById, datetime: data.datetime, chatId: data.chatId, message: data.message, messagestatus: data.messagestatus }
             })
             data2.push(...arr1)
         }
