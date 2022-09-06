@@ -186,10 +186,9 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("val2", val2);
         const val3 = data2[data2.length - 1]
         console.log("val3", val3);
-        client.emit(process.env.USER_DATA_LIST_UPDATE, val2)
-        // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, val3)
-        socketId[data.targetId].emit(process.env.USER_DATA_LIST_UPDATE, val3)
-        
+        client.emit("user-data-list-update", val2)
+        client.broadcast.emit("user-data-list-update", val3)
+        // socketId[data.targetId].emit(process.env.USER_DATA_LIST_UPDATE, val3)      
     });
     //listens when a user seen the msg   
     client.on(process.env.DELIVER_DBL_CLICK, async (data) => {
@@ -206,7 +205,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log('Error detected', client.id);
         console.log(err);
     })
-    
+
     //listens when a user is create the room   
     client.on(process.env.CREATE_ROOM, async (data) => {
         console.log("create room data is", data);
