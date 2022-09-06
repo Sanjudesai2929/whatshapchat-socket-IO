@@ -34,6 +34,9 @@ const userSchema = new mongoose.Schema({
   },
   deviceid: {
     type: String
+  },
+  socketId:{
+    type:String
   }
 });
 

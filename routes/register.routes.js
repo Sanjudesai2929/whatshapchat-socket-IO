@@ -25,7 +25,7 @@ router.post("/register", async (req, res) => {
                 })
             }
         }
-        else {
+        else { 
             res.json({
                 status: false,
                 message: "Something went wrong"
