@@ -49,7 +49,6 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("loginid is ", data);
         connectedId = data.loginuserid
         socketClient[connectedId]=client
-        console.log("socketclient is: ", socketClient);
         await Register.updateMany({ _id: connectedId }, { socketId: client.id })
         // client.broadcast.emit(process.env.STATUS_UPDATE, { status: "online" })
         // client.emit(process.env.STATUS_UPDATE, { status: "online" })
@@ -184,17 +183,15 @@ io.on(process.env.CONNECTION, async (client) => {
             })
             data2.push(...arr1)
         }
-        const targetSocketId=await Register.find({_id:msgData[0].targetId})
-        console.log("targetSocketId: " + targetSocketId[0].socketId);
+    
         const val2 = data1[data1.length - 1]
         console.log("val2", val2);
         const val3 = data2[data2.length - 1]
         console.log("val3", val3);
         client.emit(process.env.USER_DATA_LIST_UPDATE, val2)
         client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, val3)
-
+        
         // client.broadcast.to(targetSocketId[0].socketId).emit(process.env.USER_DATA_LIST_UPDATE, val3)
-
         // socketClient[msgData[0].targetId].emit(process.env.USER_DATA_LIST_UPDATE, val3)
     });
     //listens when a user seen the msg   
