@@ -41,14 +41,16 @@ app.use("/upload", express.static(path.join(__dirname, "../upload")))
 // LOCAL VARIABLE
 let connectedId
 let connectedIdUser
-var socketId={}
+var socketIds={}
 //CONNECTION ESTABLISHED
 io.on(process.env.CONNECTION, async (client) => {
     console.log("connected", client.id);
     client.on(process.env.LOGINID, async (data) => {
         console.log("loginid is ", data);
         connectedId = data.loginuserid
-        socketId[data.loginuserid]=client
+        socketIds[data.loginuserid]=client
+        await Register.updateMany({ _id: connectedId }, { socketId: client.id })
+
         // client.broadcast.emit(process.env.STATUS_UPDATE, { status: "online" })
         // client.emit(process.env.STATUS_UPDATE, { status: "online" })
         await Register.update({ _id: connectedId }, { $set: { status: "online" } })
@@ -182,13 +184,16 @@ io.on(process.env.CONNECTION, async (client) => {
             })
             data2.push(...arr1)
         }
+        const targetSocketId=await Register.find({_id: data.targetId})
         const val2 = data1[data1.length - 1]
         console.log("val2", val2);
         const val3 = data2[data2.length - 1]
         console.log("val3", val3);
         client.emit("user-data-list-update", val2)
-        client.broadcast.emit("user-data-list-update", val3)
-        // socketId[data.targetId].emit(process.env.USER_DATA_LIST_UPDATE, val3)      
+        // client.broadcast.emit("user-data-list-update", val3)
+        client.broadcast.to(targetSocketId[0].socketId).emit(process.env.USER_DATA_LIST_UPDATE, val3)
+
+        // socketIds[data.targetId].emit(process.env.USER_DATA_LIST_UPDATE, val3)      
     });
     //listens when a user seen the msg   
     client.on(process.env.DELIVER_DBL_CLICK, async (data) => {
