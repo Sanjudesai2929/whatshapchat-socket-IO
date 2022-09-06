@@ -248,9 +248,11 @@ io.on(process.env.CONNECTION, async (client) => {
         //     console.log(data);
         // })
         client.join(data.group_name)
+        const sockets = await io.in(data.group_name).fetchSockets();
+        console.log("sockets",sockets);
         client.emit("user-data-list-update", vale_data[0])
         // client.broadcast.emit("user-data-list-update", vale_data[0])
-        client.to(data.group_name).emit("user-data-list-update", vale_data[0])
+        client.broadcast.to(data.group_name).emit("user-data-list-update", vale_data[0])
         // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])  
     })
     client.on(process.env.GRP_DATA, async (data) => {
@@ -353,6 +355,7 @@ io.on(process.env.CONNECTION, async (client) => {
         await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
         client.broadcast.emit(process.env.CHAT_DELETE_RECEIVE, { chatId: data.chat_delete_id });
     })
+
     //listens when a user is delete the group message in group chat 
     client.on(process.env.GROUPMSG_DELETE, async (data) => {
         console.log("delete group msg is :", data);
