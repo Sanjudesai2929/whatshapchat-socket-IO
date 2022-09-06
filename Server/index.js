@@ -201,6 +201,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log(data);
         await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "seen" } })
     })
+    
     //listens when a user is open   keyboard   
     client.on(process.env.KEYBOARD, function name(data) {
         console.log(data);
