@@ -248,7 +248,7 @@ io.on(process.env.CONNECTION, async (client) => {
         //     console.log(data);
         // })
         client.join(data.group_name)
-        const sockets = await io.in(data.group_name).fetchSockets();
+        const sockets = await io.in(data.group_name);
         console.log("sockets",sockets);
         client.emit("user-data-list-update", vale_data[0])
         // client.broadcast.emit("user-data-list-update", vale_data[0])
