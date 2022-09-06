@@ -201,7 +201,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log(data);
         await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "seen" } })
     })
-    
+
     //listens when a user is open   keyboard   
     client.on(process.env.KEYBOARD, function name(data) {
         console.log(data);
@@ -359,6 +359,7 @@ io.on(process.env.CONNECTION, async (client) => {
         await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
         client.broadcast.emit(process.env.CHAT_DELETE_RECEIVE, { chatId: data.chat_delete_id });
     })
+
     //listens when a user is delete the group message in group chat 
     client.on(process.env.GROUPMSG_DELETE, async (data) => {
         console.log("delete group msg is :", data);
@@ -439,4 +440,6 @@ io.on(process.env.CONNECTION, async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
+    //  const data=await Group.find({_id:"6316eb1f50600da52fddb0ca"})
+    // console.log(data[0].userList);
 })
