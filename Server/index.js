@@ -348,7 +348,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("delete chat data is :", data);
         const msg1 = await Message.find({ chatId: data.chat_delete_id })
         console.log(msg1);
-        const msg2 = await Message.find({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
+        // const msg2 = await Message.find({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
         console.log("delete chat:", { chatId: data.chat_delete_id });
         await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
         client.broadcast.emit(process.env.CHAT_DELETE_RECEIVE, { chatId: data.chat_delete_id });
