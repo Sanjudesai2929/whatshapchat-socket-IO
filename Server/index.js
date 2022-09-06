@@ -49,6 +49,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("loginid is ", data);
         connectedId = data.loginuserid
         socketClient[connectedId]=client
+        console.log("socketclient is: ", socketClient);
         await Register.updateMany({ _id: connectedId }, { socketId: client.id })
         // client.broadcast.emit(process.env.STATUS_UPDATE, { status: "online" })
         // client.emit(process.env.STATUS_UPDATE, { status: "online" })
@@ -175,7 +176,7 @@ io.on(process.env.CONNECTION, async (client) => {
                 return { user: data.targetUsername, _id: data.targetId, sentById: data.sentById, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus }
             })
             data1.push(...arr)
-        }
+        } 
         const userwiseList1 = await Message.find({ targetUsername: data.targetUsername })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
@@ -197,12 +198,12 @@ io.on(process.env.CONNECTION, async (client) => {
     client.on(process.env.DELIVER_DBL_CLICK, async (data) => {
         console.log(data);
         await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "seen" } })
-    })
+    })  
     //listens when a user is open keyboard   
     client.on(process.env.KEYBOARD, function name(data) {
         console.log(data);
         client.broadcast.emit(process.env.KEYBOARD_STATUS, data);
-    })
+    })      
     //listens when there's an error detected and logs the err  or on the console
     client.on(process.env.ERROR, function (err) {
         console.log('Error detected', client.id);
