@@ -48,7 +48,7 @@ io.on(process.env.CONNECTION, async (client) => {
     client.on(process.env.LOGINID, async (data) => {
         console.log("loginid is ", data);
         connectedId = data.loginuserid
-        socketClient[connectedId]=socket
+        socketClient[connectedId]=client
         await Register.updateMany({ _id: connectedId }, { socketId: client.id })
         // client.broadcast.emit(process.env.STATUS_UPDATE, { status: "online" })
         // client.emit(process.env.STATUS_UPDATE, { status: "online" })
