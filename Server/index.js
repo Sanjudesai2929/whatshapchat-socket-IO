@@ -206,6 +206,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log('Error detected', client.id);
         console.log(err);
     })
+    
     //listens when a user is create the room   
     client.on(process.env.CREATE_ROOM, async (data) => {
         console.log("create room data is", data);
