@@ -400,14 +400,14 @@ io.on(process.env.CONNECTION, async (client) => {
     //listens when  new user add to group
     client.on("add-from-group", async (data) => {
         console.log("add-from-group", data);
-        await Group.updateMany({ _id: data.chatId }, { $push: { userList: { member_id: data.member_id, member_name: data.member_name, adminstatus: false } } })
-        const AfterAdd = await Group.find({ _id: data.chatId })
+        await Group.updateMany({ chatId: data.chatId }, { $push: { userList: { member_id: data.member_id, member_name: data.member_name, adminstatus: false } } })
+        const AfterAdd = await Group.find({ chatId: data.chatId })
         if (AfterAdd.length) {
             let counter = 0
             for (let i = 0; i < AfterAdd[0].userList.length; i++) {
                 counter++;
             }
-            await Group.updateMany({ _id: data.chatId }, { totalUser: counter })
+            await Group.updateMany({ chatId: data.chatId }, { totalUser: counter })
         }
         client.emit("add-from-group-receive", data)
         client.broadcast.emit("add-from-group-receive", data)
