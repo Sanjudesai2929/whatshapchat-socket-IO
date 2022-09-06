@@ -190,8 +190,8 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("val2", val2);
         const val3 = data2[data2.length - 1]
         console.log("val3", val3);
-        client.emit(process.env.USER_DATA_LIST_UPDATE, val2)
-        socket.broadcast.to(targetSocketId[0].socketId).emit(process.env.USER_DATA_LIST_UPDATE, val3)
+        client.emit("user-data-list-update", val2)
+        client.broadcast.to(targetSocketId[0].socketId).emit("user-data-list-update", val3)
         // socketClient[msgData[0].targetId].emit(process.env.USER_DATA_LIST_UPDATE, val3)
     });
     //listens when a user seen the msg   
