@@ -41,12 +41,14 @@ app.use("/upload", express.static(path.join(__dirname, "../upload")))
 // LOCAL VARIABLE
 let connectedId
 let connectedIdUser
+var socketId={}
 //CONNECTION ESTABLISHED
 io.on(process.env.CONNECTION, async (client) => {
     console.log("connected", client.id);
     client.on(process.env.LOGINID, async (data) => {
         console.log("loginid is ", data);
         connectedId = data.loginuserid
+        socketId[data.loginuserid]=client
         // client.broadcast.emit(process.env.STATUS_UPDATE, { status: "online" })
         // client.emit(process.env.STATUS_UPDATE, { status: "online" })
         await Register.update({ _id: connectedId }, { $set: { status: "online" } })
@@ -185,7 +187,9 @@ io.on(process.env.CONNECTION, async (client) => {
         const val3 = data2[data2.length - 1]
         console.log("val3", val3);
         client.emit(process.env.USER_DATA_LIST_UPDATE, val2)
-        client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, val3)
+        // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, val3)
+        socketId[data.targetId].emit(process.env.USER_DATA_LIST_UPDATE, val3)
+        
     });
     //listens when a user seen the msg   
     client.on(process.env.DELIVER_DBL_CLICK, async (data) => {
