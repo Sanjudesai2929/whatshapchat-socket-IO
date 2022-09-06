@@ -50,7 +50,6 @@ io.on(process.env.CONNECTION, async (client) => {
         connectedId = data.loginuserid
         socketIds[data.loginuserid]=client
         await Register.updateMany({ _id: connectedId }, { socketId: client.id })
-
         // client.broadcast.emit(process.env.STATUS_UPDATE, { status: "online" })
         // client.emit(process.env.STATUS_UPDATE, { status: "online" })
         await Register.update({ _id: connectedId }, { $set: { status: "online" } })
@@ -184,7 +183,6 @@ io.on(process.env.CONNECTION, async (client) => {
             })
             data2.push(...arr1)
         }
-
         const targetSocketId=await Register.find({_id: data.targetId})
         const val2 = data1[data1.length - 1]
         console.log("val2", val2);
@@ -194,7 +192,6 @@ io.on(process.env.CONNECTION, async (client) => {
         // client.broadcast.emit("user-data-list-update", val3)
         // client.broadcast.to(targetSocketId[0].socketId).emit("user-data-list-update", val3)
         socketIds[msgData[0].targetId].emit("user-data-list-update", val3)
-
     });
     //listens when a user seen the msg   
     client.on(process.env.DELIVER_DBL_CLICK, async (data) => {
@@ -212,6 +209,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log('Error detected', client.id);
         console.log(err);
     })
+
     //listens when a user is create the room   
     client.on(process.env.CREATE_ROOM, async (data) => {
         console.log("create room data is", data);
