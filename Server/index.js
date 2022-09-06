@@ -184,15 +184,15 @@ io.on(process.env.CONNECTION, async (client) => {
             })
             data2.push(...arr1)
         }
+
         const targetSocketId=await Register.find({_id: data.targetId})
         const val2 = data1[data1.length - 1]
         console.log("val2", val2);
         const val3 = data2[data2.length - 1]
         console.log("val3", val3);
         client.emit("user-data-list-update", val2)
-        // client.broadcast.emit("user-data-list-update", val3)
-        client.broadcast.to(targetSocketId[0].socketId).emit(process.env.USER_DATA_LIST_UPDATE, val3)
-
+        client.broadcast.emit("user-data-list-update", val3)
+        // client.broadcast.to(targetSocketId[0].socketId).emit("user-data-list-update", val3)
         // socketIds[data.targetId].emit(process.env.USER_DATA_LIST_UPDATE, val3)      
     });
     //listens when a user seen the msg   
@@ -200,7 +200,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log(data);
         await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "seen" } })
     })
-    //listens when a user is open keyboard   
+    //listens when a user is open   keyboard   
     client.on(process.env.KEYBOARD, function name(data) {
         console.log(data);
         client.broadcast.emit(process.env.KEYBOARD_STATUS, data);
@@ -210,7 +210,6 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log('Error detected', client.id);
         console.log(err);
     })
-
     //listens when a user is create the room   
     client.on(process.env.CREATE_ROOM, async (data) => {
         console.log("create room data is", data);
