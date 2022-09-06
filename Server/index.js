@@ -40,7 +40,7 @@ app.use("/", notification)
 app.use("/upload", express.static(path.join(__dirname, "../upload")))
 // LOCAL VARIABLE
 let connectedId
-let socketClient
+let socketClient={}
 let connectedIdUser
 //CONNECTION ESTABLISHED
 io.on(process.env.CONNECTION, async (client) => {
@@ -48,7 +48,7 @@ io.on(process.env.CONNECTION, async (client) => {
     client.on(process.env.LOGINID, async (data) => {
         console.log("loginid is ", data);
         connectedId = data.loginuserid
-        socketClient[connectedId]=client
+        socketClient[data.loginuserid]=client
         await Register.updateMany({ _id: connectedId }, { socketId: client.id })
         // client.broadcast.emit(process.env.STATUS_UPDATE, { status: "online" })
         // client.emit(process.env.STATUS_UPDATE, { status: "online" })
