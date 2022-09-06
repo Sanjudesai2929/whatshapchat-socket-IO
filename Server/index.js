@@ -193,8 +193,8 @@ io.on(process.env.CONNECTION, async (client) => {
         client.emit("user-data-list-update", val2)
         // client.broadcast.emit("user-data-list-update", val3)
         // client.broadcast.to(targetSocketId[0].socketId).emit("user-data-list-update", val3)
-        socketIds[data.targetId].emit(process.env.USER_DATA_LIST_UPDATE, val3)
-              
+        socketIds[msgData[0].targetId].emit("user-data-list-update", val3)
+
     });
     //listens when a user seen the msg   
     client.on(process.env.DELIVER_DBL_CLICK, async (data) => {
