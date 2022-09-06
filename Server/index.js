@@ -251,10 +251,10 @@ io.on(process.env.CONNECTION, async (client) => {
    
         client.emit("user-data-list-update", vale_data[0])
         // client.broadcast.emit("user-data-list-update", vale_data[0])
-        io.broadcast.to(data.group_name).emit("user-data-list-update", vale_data[0])
+        client.broadcast.to(data.group_name).emit("user-data-list-update", vale_data[0])
         // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])  
     })
-    
+
     client.on(process.env.GRP_DATA, async (data) => {
         console.log("grp_data", data);
         const groupData = await Group.find({ _id: data.id })
@@ -434,6 +434,8 @@ io.on(process.env.CONNECTION, async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
+    // const data=await Group.find({_id:"6316eb1f50600da52fddb0ca"})
+    // console.log(data[0].userList);
 })
 
 
