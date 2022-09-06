@@ -7,6 +7,7 @@ router.post("/profileUpdate/:id", async (req, res) => {
     try {
         const user= await register.updateOne({_id:_id},{$set:{username, country_code, email, phone ,bio,password}} )
         if(user){
+            console.log("successfully updated");
             res.json({
                 status:true,
                 message:"update Successfully",
