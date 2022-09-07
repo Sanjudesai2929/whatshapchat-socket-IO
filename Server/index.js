@@ -321,6 +321,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.emit(process.env.USER_DATA_LIST_UPDATE, msg_data)
         client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, msg_data)
     });
+    
     //listens when a user is delete the message in  chat   
     client.on(process.env.USERMSG_DELETE, async (data) => {
         console.log("delete msg data is :", data);
