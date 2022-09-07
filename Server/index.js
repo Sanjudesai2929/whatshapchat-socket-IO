@@ -163,11 +163,7 @@ io.on(process.env.CONNECTION, async (client) => {
         if (msgData) {
             client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: true })
             await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
-        }
-        else {
-            client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: false })
-        }
-        var data1 = []
+            var data1 = []
         var data2 = []
         const userwiseList = await Message.find({ sentByUsername: data.sentByUsername })
         if (userwiseList) {
@@ -192,13 +188,17 @@ io.on(process.env.CONNECTION, async (client) => {
         // client.broadcast.emit("user-data-list-update", val3)
         // client.broadcast.to(targetSocketId[0].socketId).emit("user-data-list-update", val3)
         socketIds[msgData[0].targetId].emit("user-data-list-update", val3)
+        }
+        else {
+            client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: false })
+        }
+        
     });
     //listens when a user seen the msg   
     client.on(process.env.DELIVER_DBL_CLICK, async (data) => {
         console.log(data);
         await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "seen" } })
     })
-
     //listens when a user is open   keyboard   
     client.on(process.env.KEYBOARD, function name(data) {
         console.log(data);
