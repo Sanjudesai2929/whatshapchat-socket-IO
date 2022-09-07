@@ -160,40 +160,38 @@ io.on(process.env.CONNECTION, async (client) => {
         })
         console.log("msgData", msgData)
         client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
-        if (msgData) {
-            client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: true })
-            await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
-            var data1 = []
-            var data2 = []
-            const userwiseList = await Message.find({ sentByUsername: data.sentByUsername })
-            if (userwiseList) {
-                const arr = userwiseList.map((data) => {
-                    return { user: data.targetUsername, _id: data.targetId, sentById: data.sentById, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus }
-                })
-                data1.push(...arr)
-            }
-            const userwiseList1 = await Message.find({ targetUsername: data.targetUsername })
-            if (userwiseList1) {
-                const arr1 = userwiseList1.map((data) => {
-                    return { user: data.sentByUsername, _id: data.sentById, sentById: data.sentById, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus }
-                })
-                data2.push(...arr1)
-            }
-            const targetSocketId = await Register.find({ _id: data.targetId })
-            const val2 = data1[data1.length - 1]
-            console.log("val2", val2);
-            const val3 = data2[data2.length - 1]
-            console.log("val3", val3);
-            client.emit("user-data-list-update", val2)
-            // client.broadcast.emit("user-data-list-update", val3)
-            // client.broadcast.to(targetSocketId[0].socketId).emit("user-data-list-update", val3)
-            socketIds[msgData[0].targetId].emit("user-data-list-update", val3)
-            
+        // if (msgData) {
+        client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: true })
+        await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
+        // }
+        // else {
+        //     client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: false })
+        // }
+        var data1 = []
+        var data2 = []
+        const userwiseList = await Message.find({ sentByUsername: data.sentByUsername })
+        if (userwiseList) {
+            const arr = userwiseList.map((data) => {
+                return { user: data.targetUsername, _id: data.targetId, sentById: data.sentById, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus }
+            })
+            data1.push(...arr)
         }
-        else {
-            client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: false })
+        const userwiseList1 = await Message.find({ targetUsername: data.targetUsername })
+        if (userwiseList1) {
+            const arr1 = userwiseList1.map((data) => {
+                return { user: data.sentByUsername, _id: data.sentById, sentById: data.sentById, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus }
+            })
+            data2.push(...arr1)
         }
-
+        const targetSocketId = await Register.find({ _id: data.targetId })
+        const val2 = data1[data1.length - 1]
+        console.log("val2", val2);
+        const val3 = data2[data2.length - 1]
+        console.log("val3", val3);
+        client.emit("user-data-list-update", val2)
+        // client.broadcast.emit("user-data-list-update", val3)
+        // client.broadcast.to(targetSocketId[0].socketId).emit("user-data-list-update", val3)
+        socketIds[msgData[0].targetId].emit("user-data-list-update", val3)
     });
     //listens when a user seen the msg   
     client.on(process.env.DELIVER_DBL_CLICK, async (data) => {
