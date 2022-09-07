@@ -159,7 +159,9 @@ io.on(process.env.CONNECTION, async (client) => {
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus, longitude: data.longitude, latitude: data.latitude
         })
         console.log("msgData", msgData)
-        client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
+        // client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
+        client.in(data.targetId).emit(process.env.MESSAGE_RECEIVE, msgData)
+
         // if (msgData) {
         client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: true })
         await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
