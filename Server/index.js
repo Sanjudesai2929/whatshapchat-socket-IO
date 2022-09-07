@@ -175,6 +175,7 @@ io.on(process.env.CONNECTION, async (client) => {
                 })
                 data1.push(...arr)
             }
+            
             const userwiseList1 = await Message.find({ targetUsername: data.targetUsername })
             if (userwiseList1) {
                 const arr1 = userwiseList1.map((data) => {
