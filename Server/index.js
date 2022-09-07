@@ -171,6 +171,7 @@ io.on(process.env.CONNECTION, async (client) => {
         // }
         var data1 = []
         var data2 = []
+        
         const userwiseList = await Message.find({ sentByUsername: data.sentByUsername })
         if (userwiseList) {
             const arr = userwiseList.map((data) => {
@@ -178,6 +179,7 @@ io.on(process.env.CONNECTION, async (client) => {
             })
             data1.push(...arr)
         }
+
         const userwiseList1 = await Message.find({ targetUsername: data.targetUsername })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
