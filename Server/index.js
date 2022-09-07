@@ -162,7 +162,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("msgData", msgData)
         const targetSocketId = await Register.find({ _id: data.targetId })
 
-        client.broadcast.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
+        client.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
         if (msgData) {
             client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: true })
             await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
@@ -175,7 +175,7 @@ io.on(process.env.CONNECTION, async (client) => {
                 })
                 data1.push(...arr)
             }
-            
+
             const userwiseList1 = await Message.find({ targetUsername: data.targetUsername })
             if (userwiseList1) {
                 const arr1 = userwiseList1.map((data) => {
@@ -183,7 +183,6 @@ io.on(process.env.CONNECTION, async (client) => {
                 })
                 data2.push(...arr1)
             }
-           
             console.log(targetSocketId);
             const val2 = data1[data1.length - 1]
             console.log("val2", val2);
