@@ -188,7 +188,7 @@ io.on(process.env.CONNECTION, async (client) => {
             console.log("val3", val3);
             io.sockets.emit("user-data-list-update", val2)
             // client.broadcast.emit("user-data-list-update", val3)
-            io.broadcast.to(targetSocketId[0].socketId).emit("user-data-list-update", val3)
+            client.broadcast.to(targetSocketId[0].socketId).emit("user-data-list-update", val3)
             // socketIds[msgData[0].targetId].emit("user-data-list-update", val3)
         }
         else {
