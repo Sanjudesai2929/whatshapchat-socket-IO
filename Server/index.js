@@ -160,7 +160,9 @@ io.on(process.env.CONNECTION, async (client) => {
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus, longitude: data.longitude, latitude: data.latitude
         })
         console.log("msgData", msgData)
-        client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
+        const targetSocketId = await Register.find({ _id: data.targetId })
+
+        client.broadcast.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
         if (msgData) {
             client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: true })
             await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
@@ -181,7 +183,6 @@ io.on(process.env.CONNECTION, async (client) => {
                 data2.push(...arr1)
             }
            
-            const targetSocketId = await Register.find({ _id: data.targetId })
             console.log(targetSocketId);
             const val2 = data1[data1.length - 1]
             console.log("val2", val2);
