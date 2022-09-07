@@ -182,6 +182,7 @@ io.on(process.env.CONNECTION, async (client) => {
             }
            
             const targetSocketId = await Register.find({ _id: data.targetId })
+            console.log(targetSocketId);
             const val2 = data1[data1.length - 1]
             console.log("val2", val2);
             const val3 = data2[data2.length - 1]
