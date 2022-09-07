@@ -191,6 +191,7 @@ io.on(process.env.CONNECTION, async (client) => {
             client.broadcast.to(targetSocketId[0].socketId).emit("user-data-list-update", val3)
             // socketIds[msgData[0].targetId].emit("user-data-list-update", val3)
         }
+        
         else {
             client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: false })
         }
