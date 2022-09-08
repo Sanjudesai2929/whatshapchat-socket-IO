@@ -161,7 +161,7 @@ io.on(process.env.CONNECTION, async (client) => {
         })
         console.log("msgData", msgData)
         const targetSocketId = await Register.find({ _id: data.targetId })
-        io.of("/").to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
+        client.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
         // client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
         // console.log(socketIds[data.targetId]);
         console.log(socketIds);
@@ -309,7 +309,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("grp message receive", msg);
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
 
-        client.to(groupmsga[0].groupName).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+        client.broadcast.to(groupmsga[0].groupName).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
 
         client.emit(process.env.DELIEVER_STATUS, { msgid: user.msgid, msgstatus: true })
