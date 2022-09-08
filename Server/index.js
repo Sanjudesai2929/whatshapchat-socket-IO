@@ -164,6 +164,7 @@ io.on(process.env.CONNECTION, async (client) => {
         // io.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
         // client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
         // console.log(socketIds[data.targetId]);
+        console.log(socketIds);
         socketIds[data.targetId].emit(process.env.MESSAGE_RECEIVE, msgData)
         // io.sockets.emit(process.env.MESSAGE_RECEIVE, msgData)
         if (msgData) {
@@ -192,7 +193,7 @@ io.on(process.env.CONNECTION, async (client) => {
             console.log("val3", val3);
             client.emit("user-data-list-update", val2)
             // client.broadcast.emit("user-data-list-update", val3)
-            client.broadcast.to(targetSocketId[0].socketId).emit("user-data-list-update", val3)
+            client.to(targetSocketId[0].socketId).emit("user-data-list-update", val3)
             // socketIds[msgData[0].targetId].emit("user-data-list-update", val3)
         }
         else {
