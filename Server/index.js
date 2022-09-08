@@ -306,7 +306,9 @@ io.on(process.env.CONNECTION, async (client) => {
         })
         client.join(groupmsga[0].groupName)
         console.log("grp message receive", msg);
-        io.to(groupmsga[0].groupName).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+        // io.to(groupmsga[0].groupName).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+        client.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+
         client.emit(process.env.DELIEVER_STATUS, { msgid: user.msgid, msgstatus: true })
         await GroupMsg.updateOne({ msgid: user.msgid }, { $set: { messagestatus: "send" } })
         const msg1 = await GroupMsg.find({ msgid: user.msgid })
