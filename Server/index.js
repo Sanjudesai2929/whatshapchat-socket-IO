@@ -163,7 +163,7 @@ io.on(process.env.CONNECTION, async (client) => {
         const targetSocketId = await Register.find({ _id: data.targetId })
         // io.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
         // client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
-        console.log(socketIds[data.targetId]);
+        // console.log(socketIds[data.targetId]);
         socketIds[data.targetId].emit(process.env.MESSAGE_RECEIVE, msgData)
         // io.sockets.emit(process.env.MESSAGE_RECEIVE, msgData)
         if (msgData) {
