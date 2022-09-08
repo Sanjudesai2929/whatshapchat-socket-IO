@@ -162,7 +162,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("msgData", msgData)
         const targetSocketId = await Register.find({ _id: data.targetId })
 
-        client.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
+        // client.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
         client.emit(process.env.MESSAGE_RECEIVE, msgData)
 
         // socketIds[data.targetId].emit(process.env.MESSAGE_RECEIVE, msgData)
@@ -435,7 +435,7 @@ io.on(process.env.CONNECTION, async (client) => {
         const AfterUpdate = await Group.find({ chatId: data.chatId })
         client.broadcast.emit("group-name-update-receive", AfterUpdate)
     })
-    
+
     //listens when a user is disconnected from the server   
     client.on(process.env.DISCONNECT, async function (username) {
         console.log(connectedId + 'is offline....');
