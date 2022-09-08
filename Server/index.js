@@ -151,7 +151,7 @@ io.on(process.env.CONNECTION, async (client) => {
     //     client.emit(process.env.USER_LIST, list)
     // })
     //listen when user is send the message
-    client.on(process.env.MESSAGE, async (data) => {
+    client.on(process.env.MESSAGE, async (data,callback) => {
         console.log("message data ", data);
         const msgData = await Message.insertMany({
             message: data.message, sentByUsername: data.sentByUsername, sentById: data.sentById, targetId: data.targetId, targetUsername: data.targetUsername, msgid: data.msgid, chatId: data.chatId,
@@ -198,6 +198,7 @@ io.on(process.env.CONNECTION, async (client) => {
         else {
             client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: false })
         }
+        callback()
     });
     //listens when a user seen the msg   
     client.on(process.env.DELIVER_DBL_CLICK, async (data) => {
