@@ -164,7 +164,7 @@ io.on(process.env.CONNECTION, async (client) => {
         // io.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
         // client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
         // console.log(socketIds[data.targetId]);
-        socketIds[data.targetId].emit(process.env.MESSAGE_RECEIVE, msgData)
+        socketIds[data.targetId].emit(process.env.MESSAGE, msgData)
         // io.sockets.emit(process.env.MESSAGE_RECEIVE, msgData)
         if (msgData) {
             client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: true })
