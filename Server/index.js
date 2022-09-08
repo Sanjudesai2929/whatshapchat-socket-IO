@@ -163,8 +163,8 @@ io.on(process.env.CONNECTION, async (client) => {
         const targetSocketId = await Register.find({ _id: data.targetId })
 
         // client.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
-        socketIds[data.targetId].emit(process.env.MESSAGE_RECEIVE, msgData)
-
+        // socketIds[data.targetId].emit(process.env.MESSAGE_RECEIVE, msgData)
+        io.sockets.emit(process.env.MESSAGE_RECEIVE, msgData)
         if (msgData) {
             client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: true })
             await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
@@ -176,7 +176,7 @@ io.on(process.env.CONNECTION, async (client) => {
                     return { user: data.targetUsername, _id: data.targetId, sentById: data.sentById, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus }
                 })
                 data1.push(...arr)
-            }      
+            }
             const userwiseList1 = await Message.find({ targetUsername: data.targetUsername })
             if (userwiseList1) {
                 const arr1 = userwiseList1.map((data) => {
@@ -196,7 +196,7 @@ io.on(process.env.CONNECTION, async (client) => {
         }
         else {
             client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: false })
-        }                                                                                       
+        }
     });
     //listens when a user seen the msg   
     client.on(process.env.DELIVER_DBL_CLICK, async (data) => {
@@ -301,7 +301,7 @@ io.on(process.env.CONNECTION, async (client) => {
         })
         const groupmsga = await Group.find({
             _id: msg[0].grpid
-        })      
+        })
         client.join(groupmsga[0].groupName)
         console.log("grp message receive", msg);
         io.to(groupmsga[0].groupName).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
