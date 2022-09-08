@@ -175,7 +175,6 @@ io.on(process.env.CONNECTION, async (client) => {
                 })
                 data1.push(...arr)
             }
-
             const userwiseList1 = await Message.find({ targetUsername: data.targetUsername })
             if (userwiseList1) {
                 const arr1 = userwiseList1.map((data) => {
@@ -195,8 +194,7 @@ io.on(process.env.CONNECTION, async (client) => {
         }
         else {
             client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: false })
-        }
-
+        }                                                                                       
     });
     //listens when a user seen the msg   
     client.on(process.env.DELIVER_DBL_CLICK, async (data) => {
@@ -213,7 +211,6 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log('Error detected', client.id);
         console.log(err);
     })
-
     //listens when a user is create the room   
     client.on(process.env.CREATE_ROOM, async (data) => {
         console.log("create room data is", data);
@@ -302,7 +299,7 @@ io.on(process.env.CONNECTION, async (client) => {
         })
         const groupmsga = await Group.find({
             _id: msg[0].grpid
-        })
+        })      
         client.join(groupmsga[0].groupName)
         console.log("grp message receive", msg);
         io.to(groupmsga[0].groupName).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
@@ -321,7 +318,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.emit(process.env.USER_DATA_LIST_UPDATE, msg_data)
         client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, msg_data)
     });
-    
+
     //listens when a user is delete the message in  chat   
     client.on(process.env.USERMSG_DELETE, async (data) => {
         console.log("delete msg data is :", data);
@@ -363,7 +360,6 @@ io.on(process.env.CONNECTION, async (client) => {
         await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
         client.broadcast.emit(process.env.CHAT_DELETE_RECEIVE, { chatId: data.chat_delete_id });
     })
-
     //listens when a user is delete the group message in group chat 
     client.on(process.env.GROUPMSG_DELETE, async (data) => {
         console.log("delete group msg is :", data);
@@ -371,7 +367,6 @@ io.on(process.env.CONNECTION, async (client) => {
         await GroupMsg.deleteMany({ msgid: { $in: data.groupmsg_delete_listid } })
         client.broadcast.emit('groupmsg-delete-receive', msg1);
     })
-
     //listens when a admin  user is delete the group 
     client.on("group-chat-delete", async (data) => {
         console.log("delete group chat data is :", data);
@@ -440,7 +435,6 @@ io.on(process.env.CONNECTION, async (client) => {
         // client.emit("user-online-status-update", { status: "offline" })
         await Register.update({ _id: connectedId }, { $set: { status: "offline" } })
     })
-
 })
 server.listen(port, async () => {
     console.log("server started");
