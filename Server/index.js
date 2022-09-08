@@ -162,7 +162,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("msgData", msgData)
         const targetSocketId = await Register.find({ _id: data.targetId })
 
-        client.brodcast.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
+        client.broadcast.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
         if (msgData) {
             client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: true })
             await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
