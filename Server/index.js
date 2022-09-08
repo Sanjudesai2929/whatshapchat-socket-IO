@@ -308,7 +308,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("grp message receive", msg);
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
 
-        io.to(groupmsga[0].groupName).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+        io.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
 
         client.emit(process.env.DELIEVER_STATUS, { msgid: user.msgid, msgstatus: true })
@@ -435,7 +435,7 @@ io.on(process.env.CONNECTION, async (client) => {
         const AfterUpdate = await Group.find({ chatId: data.chatId })
         client.broadcast.emit("group-name-update-receive", AfterUpdate)
     })
-    
+
     //listens when a user is disconnected from the server   
     client.on(process.env.DISCONNECT, async function (username) {
         console.log(connectedId + 'is offline....');
