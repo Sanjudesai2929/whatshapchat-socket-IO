@@ -184,6 +184,7 @@ io.on(process.env.CONNECTION, async (client) => {
                 })
                 data2.push(...arr1)
             }
+            
             console.log(targetSocketId);
             const val2 = data1[data1.length - 1]
             console.log("val2", val2);
