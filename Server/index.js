@@ -163,8 +163,8 @@ io.on(process.env.CONNECTION, async (client) => {
         const targetSocketId = await Register.find({ _id: data.targetId })
 
         // client.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
-        // socketIds[data.targetId].emit(process.env.MESSAGE_RECEIVE, msgData)
-        io.sockets.emit(process.env.MESSAGE_RECEIVE, msgData)
+        socketIds[data.targetId].emit(process.env.MESSAGE_RECEIVE, msgData)
+        // io.sockets.emit(process.env.MESSAGE_RECEIVE, msgData)
         if (msgData) {
             client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: true })
             await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
@@ -184,7 +184,6 @@ io.on(process.env.CONNECTION, async (client) => {
                 })
                 data2.push(...arr1)
             }
-            
             console.log(targetSocketId);
             const val2 = data1[data1.length - 1]
             console.log("val2", val2);
