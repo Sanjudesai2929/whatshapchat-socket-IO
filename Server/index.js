@@ -304,7 +304,7 @@ io.on(process.env.CONNECTION, async (client) => {
         const groupmsga = await Group.find({
             _id: msg[0].grpid
         })
-        client.join(groupmsga[0].groupName)
+        // client.join(groupmsga[0].groupName)
         console.log("grp message receive", msg);
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
 
