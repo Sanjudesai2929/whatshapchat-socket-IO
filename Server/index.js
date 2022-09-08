@@ -248,13 +248,13 @@ io.on(process.env.CONNECTION, async (client) => {
         // const user = [...groupData, chat]
         // console.log("user", user);
         console.log("group name is ", data.group_name);
-        client.emit(process.env.CREATE_ROOM, groupData[0])
+        client.join(data.group_name)
+        client.broadcast.to(data.group_name).emit(process.env.CREATE_ROOM, groupData[0])
         // groupData[0].userList.map((data) => {
         //     client.broadcast.to(data.member_id).emit(process.env.CREATE_ROOM, groupData[0])
         //     console.log(data);
         // })
-        client.join(data.group_name)
-        client.emit(process.env.USER_WISE_LIST, vale_data[0])
+        client.emit("user-data-list-update", vale_data[0])
         // client.broadcast.emit("user-data-list-update", vale_data[0])
         io.to(data.group_name).emit("user-data-list-update", vale_data[0])
         // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])  
