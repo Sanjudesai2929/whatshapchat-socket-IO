@@ -306,6 +306,8 @@ io.on(process.env.CONNECTION, async (client) => {
         })
         client.join(groupmsga[0].groupName)
         console.log("grp message receive", msg);
+        client.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+
         io.to(groupmsga[0].groupName).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
 
