@@ -254,7 +254,7 @@ io.on(process.env.CONNECTION, async (client) => {
         //     console.log(data);
         // })
         client.join(data.group_name)
-        client.emit("user-data-list-update", vale_data[0])
+        client.emit(process.env.USER_WISE_LIST, vale_data[0])
         // client.broadcast.emit("user-data-list-update", vale_data[0])
         io.to(data.group_name).emit("user-data-list-update", vale_data[0])
         // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])  
