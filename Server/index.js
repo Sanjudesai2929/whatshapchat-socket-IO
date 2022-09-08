@@ -306,9 +306,9 @@ io.on(process.env.CONNECTION, async (client) => {
         })
         client.join(groupmsga[0].groupName)
         console.log("grp message receive", msg);
-        client.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+        client.io.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
 
-        io.to(user.grpid).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+        // io.to(user.grpid).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
        
         client.emit(process.env.DELIEVER_STATUS, { msgid: user.msgid, msgstatus: true })
