@@ -137,7 +137,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.broadcast.emit(process.env.IS_ONLINE, '🔵 <i>' + data.current_user + ' join the chat..</i>');
         const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).limit(500).sort({ datetime: 1 })
         console.log("connectMsg", connectMsg);
-        client.to(connectMsg[0].chatId).emit(process.env.CONNECTED_USER, connectMsg);
+        client.emit(process.env.CONNECTED_USER, connectMsg);
     });
     client.on(process.env.CONNECTED_GROUP_USER, async (data) => {
         console.log("connected group user is ", data);
