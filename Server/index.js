@@ -318,7 +318,7 @@ io.on(process.env.CONNECTION, async (client) => {
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         const connectMsg = await GroupMsg.find({ grpid: user.grpid }).sort({ datetime: 1 })
         // console.log(connectMsg);
-        client.emit(process.env.CONNECTED_GROUP_USER, connectMsg);
+        client.broadcast.emit(process.env.CONNECTED_GROUP_USER, connectMsg);
         client.emit(process.env.DELIEVER_STATUS, { msgid: user.msgid, msgstatus: true })
         await GroupMsg.updateOne({ msgid: user.msgid }, { $set: { messagestatus: "send" } })
         const msg1 = await GroupMsg.find({ msgid: user.msgid })
