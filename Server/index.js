@@ -73,14 +73,13 @@ io.on(process.env.CONNECTION, async (client) => {
             })
             data.push(...arr)
         }
-        
         const userwiseList1 = await Message.find({ targetUsername: user[0].username }).select({ message: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
                 return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, }
             })
             data.push(...arr1)
-        } 
+        }                      
         const msgUser = await Message.find().sort({ datetime: 1 })
         // if (msgUser.length && msgUser[0].type == "location") {
         //     var userData = new Map(msgUser.map(({ chatId }) => ([chatId, "location"])));
@@ -165,10 +164,10 @@ io.on(process.env.CONNECTION, async (client) => {
         const targetSocketId = await Register.find({ _id: data.targetId })
         // client.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
         // client.in(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
-        client.emit(process.env.MESSAGE_RECEIVE, msgData)
-        const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).limit(500).sort({ datetime: 1 })
-        console.log("connectMsg", connectMsg);
-        client.broadcast.emit(process.env.CONNECTED_USER, connectMsg);
+        client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
+        // const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).limit(500).sort({ datetime: 1 })
+        // console.log("connectMsg", connectMsg);
+        // client.broadcast.emit(process.env.CONNECTED_USER, connectMsg);
         // console.log(socketIds[data.targetId]);
         console.log(socketIds);
         // socketIds[data.targetId].emit(process.env.MESSAGE_RECEIVE, msgData)
@@ -184,14 +183,14 @@ io.on(process.env.CONNECTION, async (client) => {
                     return { user: data.targetUsername, _id: data.targetId, sentById: data.sentById, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus }
                 })
                 data1.push(...arr)
-            }   
+            }
             const userwiseList1 = await Message.find({ targetUsername: data.targetUsername })
             if (userwiseList1) {
                 const arr1 = userwiseList1.map((data) => {
                     return { user: data.sentByUsername, _id: data.sentById, sentById: data.sentById, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus }
                 })
                 data2.push(...arr1)
-            }
+            }        
             console.log(targetSocketId);
             const val2 = data1[data1.length - 1]
             console.log("val2", val2);
@@ -235,6 +234,7 @@ io.on(process.env.CONNECTION, async (client) => {
         // const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
         const Groupa = groupData.map((data) => {
             return {
+                
                 _id: (data._id).toString(),
                 groupName: data.groupName,
                 userList: data.userList,
@@ -312,13 +312,13 @@ io.on(process.env.CONNECTION, async (client) => {
         })
         client.join(groupmsga[0].groupName)
         console.log("grp message receive", groupmsga[0].groupName);
-        client.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+        client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
 
         // client.to(groupmsga[0].groupName).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
-        const connectMsg = await GroupMsg.find({ grpid: user.grpid }).sort({ datetime: 1 })
-        // console.log(connectMsg);
-        client.broadcast.emit(process.env.CONNECTED_GROUP_USER, connectMsg);
+        // const connectMsg = await GroupMsg.find({ grpid: user.grpid }).sort({ datetime: 1 })
+        // // console.log(connectMsg);
+        // client.broadcast.emit(process.env.CONNECTED_GROUP_USER, connectMsg);
         client.emit(process.env.DELIEVER_STATUS, { msgid: user.msgid, msgstatus: true })
         await GroupMsg.updateOne({ msgid: user.msgid }, { $set: { messagestatus: "send" } })
         const msg1 = await GroupMsg.find({ msgid: user.msgid })
