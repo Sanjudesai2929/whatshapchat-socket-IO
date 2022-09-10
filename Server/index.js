@@ -50,7 +50,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("loginid is ", data);
         connectedId = data.loginuserid
         socketIds[data.loginuserid] = client
-        client.join(client.id)
+        // client.join(client.id)
         await Register.updateMany({ _id: connectedId }, { socketId: client.id })
         // client.broadcast.emit(process.env.STATUS_UPDATE, { status: "online" })
         // client.emit(process.env.STATUS_UPDATE, { status: "online" })
@@ -163,8 +163,8 @@ io.on(process.env.CONNECTION, async (client) => {
         })
         console.log("msgData", msgData)
         const targetSocketId = await Register.find({ _id: data.targetId })
-        client.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
-        // client.in(data.targetId).emit(process.env.MESSAGE_RECEIVE, msgData)
+        // client.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
+        client.in(data.targetId).emit(process.env.MESSAGE_RECEIVE, msgData)
         // client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
         // console.log(socketIds[data.targetId]);
         console.log(socketIds);
