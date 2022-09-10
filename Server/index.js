@@ -50,6 +50,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("loginid is ", data);
         connectedId = data.loginuserid
         socketIds[data.loginuserid] = client
+        client.join(client.id)
         await Register.updateMany({ _id: connectedId }, { socketId: client.id })
         // client.broadcast.emit(process.env.STATUS_UPDATE, { status: "online" })
         // client.emit(process.env.STATUS_UPDATE, { status: "online" })
@@ -72,13 +73,14 @@ io.on(process.env.CONNECTION, async (client) => {
             })
             data.push(...arr)
         }
+        
         const userwiseList1 = await Message.find({ targetUsername: user[0].username }).select({ message: 1, sentById: 1, targetId: 1, targetUsername: 1, chatId: 1, sentByUsername: 1 })
         if (userwiseList1) {
             const arr1 = userwiseList1.map((data) => {
                 return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, }
             })
             data.push(...arr1)
-        }
+        } 
         const msgUser = await Message.find().sort({ datetime: 1 })
         // if (msgUser.length && msgUser[0].type == "location") {
         //     var userData = new Map(msgUser.map(({ chatId }) => ([chatId, "location"])));
@@ -162,6 +164,7 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("msgData", msgData)
         const targetSocketId = await Register.find({ _id: data.targetId })
         client.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
+        // client.in(data.targetId).emit(process.env.MESSAGE_RECEIVE, msgData)
         // client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
         // console.log(socketIds[data.targetId]);
         console.log(socketIds);
@@ -178,7 +181,7 @@ io.on(process.env.CONNECTION, async (client) => {
                     return { user: data.targetUsername, _id: data.targetId, sentById: data.sentById, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus }
                 })
                 data1.push(...arr)
-            }
+            }   
             const userwiseList1 = await Message.find({ targetUsername: data.targetUsername })
             if (userwiseList1) {
                 const arr1 = userwiseList1.map((data) => {
@@ -199,14 +202,13 @@ io.on(process.env.CONNECTION, async (client) => {
         else {
             client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: false })
         }
-
     });
     //listens when a user seen the msg   
     client.on(process.env.DELIVER_DBL_CLICK, async (data) => {
         console.log(data);
         await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "seen" } })
     })
-    //listens when a user is open   keyboard   
+    //listens when a user is open keyboard   
     client.on(process.env.KEYBOARD, function name(data) {
         console.log(data);
         client.broadcast.emit(process.env.KEYBOARD_STATUS, data);
@@ -327,7 +329,6 @@ io.on(process.env.CONNECTION, async (client) => {
         client.emit(process.env.USER_DATA_LIST_UPDATE, msg_data)
         client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, msg_data)
     });
-
     //listens when a user is delete the message in  chat   
     client.on(process.env.USERMSG_DELETE, async (data) => {
         console.log("delete msg data is :", data);
@@ -393,7 +394,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.broadcast.emit('group-chat-delete-receive', data);
     })
     //listens when a admin  user is search any user
-    client.on("live-search", async (data) => {
+    client.on("live-search", async (data) => { 
         console.log(data);
         const user = await Register.find({ username: { $regex: data, $options: 'i' } }).limit(10).select({ country_code: 0, phone: 0, password: 0, cpassword: 0 })
         console.log(user);
