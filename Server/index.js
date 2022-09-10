@@ -168,7 +168,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.emit(process.env.MESSAGE_RECEIVE, msgData)
         const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).limit(500).sort({ datetime: 1 })
         console.log("connectMsg", connectMsg);
-        client.emit(process.env.CONNECTED_USER, connectMsg);
+        client.broadcast.emit(process.env.CONNECTED_USER, connectMsg);
         // console.log(socketIds[data.targetId]);
         console.log(socketIds);
         // socketIds[data.targetId].emit(process.env.MESSAGE_RECEIVE, msgData)
