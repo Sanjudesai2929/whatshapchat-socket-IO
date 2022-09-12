@@ -79,7 +79,7 @@ io.on(process.env.CONNECTION, async (client) => {
                 return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, }
             })
             data.push(...arr1)
-        }                      
+        }
         const msgUser = await Message.find().sort({ datetime: 1 })
         // if (msgUser.length && msgUser[0].type == "location") {
         //     var userData = new Map(msgUser.map(({ chatId }) => ([chatId, "location"])));
@@ -154,7 +154,7 @@ io.on(process.env.CONNECTION, async (client) => {
     //listen when user is send the message
     client.on(process.env.MESSAGE, async (data) => {
         console.log("message data ", data);
-        
+
         const msgData = await Message.insertMany({
             message: data.message, sentByUsername: data.sentByUsername, sentById: data.sentById, targetId: data.targetId, targetUsername: data.targetUsername, msgid: data.msgid, chatId: data.chatId,
             datetime: Date.parse(new Date()),
@@ -170,14 +170,12 @@ io.on(process.env.CONNECTION, async (client) => {
         // console.log("connectMsg", connectMsg);
         // client.broadcast.emit(process.env.CONNECTED_USER, connectMsg);
         console.log(io.sockets);
-
-
         // console.log(socketIds);
         // socketIds[data.targetId].emit(process.env.MESSAGE_RECEIVE, msgData)
         // io.sockets.emit(process.env.MESSAGE_RECEIVE, msgData)
-        if (msgData) {  
+        if (msgData) {
             client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: true })
-            await Message.updateOne({ msgid: data.msgid },{ $set: { messagestatus: "send" } })
+            await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
             var data1 = []
             var data2 = []
             const userwiseList = await Message.find({ sentByUsername: data.sentByUsername })
@@ -193,7 +191,7 @@ io.on(process.env.CONNECTION, async (client) => {
                     return { user: data.sentByUsername, _id: data.sentById, sentById: data.sentById, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus }
                 })
                 data2.push(...arr1)
-            }        
+            }
             console.log(targetSocketId);
             const val2 = data1[data1.length - 1]
             console.log("val2", val2);
@@ -237,7 +235,7 @@ io.on(process.env.CONNECTION, async (client) => {
         // const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
         const Groupa = groupData.map((data) => {
             return {
-                
+
                 _id: (data._id).toString(),
                 groupName: data.groupName,
                 userList: data.userList,
@@ -313,147 +311,157 @@ io.on(process.env.CONNECTION, async (client) => {
         const groupmsga = await Group.find({
             _id: msg[0].grpid
         })
-        client.join(user.grpid)
+        // client.join(user.grpid)
         console.log("grp message receive", groupmsga[0].groupName);
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+        client.join(user.grpid, function () { //trying to send messages to the current room 
+            io.to(user.grpid, function () {
+                    io.emit(process.env.GRP_MESSAGE_RECEIVE, msg);
+            });
+        });
 
-        client.broadcast.to(user.grpid).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
-        // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
-        // const connectMsg = await GroupMsg.find({ grpid: user.grpid }).sort({ datetime: 1 })
-        // // console.log(connectMsg);
-        // client.broadcast.emit(process.env.CONNECTED_GROUP_USER, connectMsg);
-        client.emit(process.env.DELIEVER_STATUS, { msgid: user.msgid, msgstatus: true })
-        await GroupMsg.updateOne({ msgid: user.msgid }, { $set: { messagestatus: "send" } })
-        const msg1 = await GroupMsg.find({ msgid: user.msgid })
-        const msg_data = {
-            _id: msg1[0].grpid,
-            message: msg1[0].message,
-            sentByUsername: msg1[0].sentByUsername,
-            datetime: msg1[0].datetime,
-            messagestatus: msg1[0].messagestatus,
-            cuadminstatus: groupmsga[0].adminName.includes(connectedIdUser)
-        }
-        console.log("msg_data", msg_data);
-        client.emit(process.env.USER_DATA_LIST_UPDATE, msg_data)
-        client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, msg_data)
-    });
-    //listens when a user is delete the message in  chat   
-    client.on(process.env.USERMSG_DELETE, async (data) => {
-        console.log("delete msg data is :", data);
-        const msg1 = await Message.find({ msgid: { $in: data.msg_delete_listid } })
-        await Message.deleteMany({ msgid: { $in: data.msg_delete_listid } })
-        console.log("delete", msg1);
-        const data1 = []
-        const data2 = []
-        const userwiseList = await Message.find({ sentByUsername: msg1[0].sentByUsername })
-        if (userwiseList) {
-            const arr = userwiseList.map((data) => {
-                return { user: data.targetUsername, _id: data.targetId, sentById: data.sentById, datetime: data.datetime, chatId: data.chatId, message: data.message, messagestatus: data.messagestatus }
-            })
-            data1.push(...arr)
-        }
-        const userwiseList1 = await Message.find({ targetUsername: msg1[0].targetUsername })
-        if (userwiseList1) {
-            const arr1 = userwiseList1.map((data) => {
-                return { user: data.sentByUsername, _id: data.sentById, sentById: data.sentById, datetime: data.datetime, chatId: data.chatId, message: data.message, messagestatus: data.messagestatus }
-            })
-            data2.push(...arr1)
-        }
-        const val2 = data1[data1.length - 1]
-        console.log("After delete last msg", val2);
-        const val3 = data2[data2.length - 1]
-        console.log("After delete  broadcast last msg", val3);
-        //    const data1 =await Message.find({sentById:msg1[0].sentById}).sort({ datetime: -1 }).limit(1)
-        //    console.log("delete last msg is:",data1);
-        client.broadcast.emit(process.env.USERMSG_DELETE_RECEIVE, msg1);
-        client.emit(process.env.USER_DATA_LIST_UPDATE, val2)
-        client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, val3)
-    })
-    //listens when a user is delete the entire chat
-    client.on(process.env.CHAT_DELETE, async (data) => {
-        console.log("delete chat data is :", data);
-        const msg1 = await Message.find({ chatId: data.chat_delete_id })
-        const msg2 = await Message.find({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
-        console.log("delete chat:", { chatId: data.chat_delete_id });
-        await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
-        client.broadcast.emit(process.env.CHAT_DELETE_RECEIVE, { chatId: data.chat_delete_id });
-    })
-    //listens when a user is delete the group message in group chat 
-    client.on(process.env.GROUPMSG_DELETE, async (data) => {
-        console.log("delete group msg is :", data);
-        const msg1 = await GroupMsg.find({ msgid: { $in: data.groupmsg_delete_listid } })
-        await GroupMsg.deleteMany({ msgid: { $in: data.groupmsg_delete_listid } })
-        client.broadcast.emit('groupmsg-delete-receive', msg1);
-    })
-    //listens when a admin  user is delete the group 
-    client.on("group-chat-delete", async (data) => {
-        console.log("delete group chat data is :", data);
-        const msg = await Group.find({ chatId: data.group_chat_id })
-        console.log("delete chat", msg);
-        await Group.deleteMany({ chatId: data.group_chat_id })
-        await GroupMsg.deleteMany({ grpid: msg._id })
-        const groupData = await Group.find({ chatId: data.group_chat_id })
-        console.log("group data", groupData);
-        // groupData[0].userList.map((data) => {
-        //     client.to(data.member_id).emit('group-chat-delete-receive', { chatId: data.group_chat_id })
-        //     console.log(data.member_id);
-        // })
-        client.emit('group-chat-delete-receive', data);
-        client.broadcast.emit('group-chat-delete-receive', data);
-    })
-    //listens when a admin  user is search any user
-    client.on("live-search", async (data) => { 
-        console.log(data);
-        const user = await Register.find({ username: { $regex: data, $options: 'i' } }).limit(10).select({ country_code: 0, phone: 0, password: 0, cpassword: 0 })
-        console.log(user);
-        client.emit('live-search-response', user);
-    })
-    //listens when user remove from group
-    client.on("remove-from-group", async (data) => {
-        console.log("remove-from-group", data);
-        await Group.updateMany({ chatId: data.chatId }, { $pull: { userList: { member_id: data.member_id } } })
-        const AfterDelete = await Group.find({ chatId: data.chatId })
-        if (AfterDelete.length) {
-            let counter = 0
-            for (let i = 0; i < AfterDelete[0].userList.length; i++) {
-                counter++;
-            }
-            await Group.updateMany({ chatId: data.chatId }, { totalUser: counter })
-        }
-        client.emit("remove-from-group-receive", data)
-        client.broadcast.emit("remove-from-group-receive", data)
-    })
-    //listens when  new user add to group
-    client.on("add-from-group", async (data) => {
-        console.log("add-from-group", data);
-        await Group.updateMany({ chatId: data.chatId }, { $push: { userList: { member_id: data.member_id, member_name: data.member_name, adminstatus: false } } })
-        const AfterAdd = await Group.find({ chatId: data.chatId })
-        if (AfterAdd.length) {
-            let counter = 0
-            for (let i = 0; i < AfterAdd[0].userList.length; i++) {
-                counter++;
-            }
-            await Group.updateMany({ chatId: data.chatId }, { totalUser: counter })
-        }
-        client.emit("add-from-group-receive", data)
-        client.broadcast.emit("add-from-group-receive", data)
-    })
-    // listen when group name update 
-    client.on("group-name-update", async (data) => {
-        console.log("group-name-update :", data);
-        await Group.updateMany({ chatId: data.chatId }, { groupName: data.groupName })
-        const AfterUpdate = await Group.find({ chatId: data.chatId })
-        client.broadcast.emit("group-name-update-receive", AfterUpdate)
-    })
 
-    //listens when a user is disconnected from the server   
-    client.on(process.env.DISCONNECT, async function (username) {
-        console.log(connectedId + 'is offline....');
-        client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
-        // client.broadcast.emit("user-online-status-update", { status: "offline" })
-        // client.emit("user-online-status-update", { status: "offline" })
-        await Register.update({ _id: connectedId }, { $set: { status: "offline" } })
-    })
+
+
+
+
+    // client.broadcast.to(user.grpid).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+    // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+    // const connectMsg = await GroupMsg.find({ grpid: user.grpid }).sort({ datetime: 1 })
+    // // console.log(connectMsg);
+    // client.broadcast.emit(process.env.CONNECTED_GROUP_USER, connectMsg);
+    client.emit(process.env.DELIEVER_STATUS, { msgid: user.msgid, msgstatus: true })
+    await GroupMsg.updateOne({ msgid: user.msgid }, { $set: { messagestatus: "send" } })
+    const msg1 = await GroupMsg.find({ msgid: user.msgid })
+    const msg_data = {
+        _id: msg1[0].grpid,
+        message: msg1[0].message,
+        sentByUsername: msg1[0].sentByUsername,
+        datetime: msg1[0].datetime,
+        messagestatus: msg1[0].messagestatus,
+        cuadminstatus: groupmsga[0].adminName.includes(connectedIdUser)
+    }
+    console.log("msg_data", msg_data);
+    client.emit(process.env.USER_DATA_LIST_UPDATE, msg_data)
+    client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, msg_data)
+});
+//listens when a user is delete the message in  chat   
+client.on(process.env.USERMSG_DELETE, async (data) => {
+    console.log("delete msg data is :", data);
+    const msg1 = await Message.find({ msgid: { $in: data.msg_delete_listid } })
+    await Message.deleteMany({ msgid: { $in: data.msg_delete_listid } })
+    console.log("delete", msg1);
+    const data1 = []
+    const data2 = []
+    const userwiseList = await Message.find({ sentByUsername: msg1[0].sentByUsername })
+    if (userwiseList) {
+        const arr = userwiseList.map((data) => {
+            return { user: data.targetUsername, _id: data.targetId, sentById: data.sentById, datetime: data.datetime, chatId: data.chatId, message: data.message, messagestatus: data.messagestatus }
+        })
+        data1.push(...arr)
+    }
+    const userwiseList1 = await Message.find({ targetUsername: msg1[0].targetUsername })
+    if (userwiseList1) {
+        const arr1 = userwiseList1.map((data) => {
+            return { user: data.sentByUsername, _id: data.sentById, sentById: data.sentById, datetime: data.datetime, chatId: data.chatId, message: data.message, messagestatus: data.messagestatus }
+        })
+        data2.push(...arr1)
+    }
+    const val2 = data1[data1.length - 1]
+    console.log("After delete last msg", val2);
+    const val3 = data2[data2.length - 1]
+    console.log("After delete  broadcast last msg", val3);
+    //    const data1 =await Message.find({sentById:msg1[0].sentById}).sort({ datetime: -1 }).limit(1)
+    //    console.log("delete last msg is:",data1);
+    client.broadcast.emit(process.env.USERMSG_DELETE_RECEIVE, msg1);
+    client.emit(process.env.USER_DATA_LIST_UPDATE, val2)
+    client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, val3)
+})
+//listens when a user is delete the entire chat
+client.on(process.env.CHAT_DELETE, async (data) => {
+    console.log("delete chat data is :", data);
+    const msg1 = await Message.find({ chatId: data.chat_delete_id })
+    const msg2 = await Message.find({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
+    console.log("delete chat:", { chatId: data.chat_delete_id });
+    await Message.deleteMany({ $or: [{ targetId: msg1[0].targetId }, { sentById: msg1[0].targetId }] })
+    client.broadcast.emit(process.env.CHAT_DELETE_RECEIVE, { chatId: data.chat_delete_id });
+})
+//listens when a user is delete the group message in group chat 
+client.on(process.env.GROUPMSG_DELETE, async (data) => {
+    console.log("delete group msg is :", data);
+    const msg1 = await GroupMsg.find({ msgid: { $in: data.groupmsg_delete_listid } })
+    await GroupMsg.deleteMany({ msgid: { $in: data.groupmsg_delete_listid } })
+    client.broadcast.emit('groupmsg-delete-receive', msg1);
+})
+//listens when a admin  user is delete the group 
+client.on("group-chat-delete", async (data) => {
+    console.log("delete group chat data is :", data);
+    const msg = await Group.find({ chatId: data.group_chat_id })
+    console.log("delete chat", msg);
+    await Group.deleteMany({ chatId: data.group_chat_id })
+    await GroupMsg.deleteMany({ grpid: msg._id })
+    const groupData = await Group.find({ chatId: data.group_chat_id })
+    console.log("group data", groupData);
+    // groupData[0].userList.map((data) => {
+    //     client.to(data.member_id).emit('group-chat-delete-receive', { chatId: data.group_chat_id })
+    //     console.log(data.member_id);
+    // })
+    client.emit('group-chat-delete-receive', data);
+    client.broadcast.emit('group-chat-delete-receive', data);
+})
+//listens when a admin  user is search any user
+client.on("live-search", async (data) => {
+    console.log(data);
+    const user = await Register.find({ username: { $regex: data, $options: 'i' } }).limit(10).select({ country_code: 0, phone: 0, password: 0, cpassword: 0 })
+    console.log(user);
+    client.emit('live-search-response', user);
+})
+//listens when user remove from group
+client.on("remove-from-group", async (data) => {
+    console.log("remove-from-group", data);
+    await Group.updateMany({ chatId: data.chatId }, { $pull: { userList: { member_id: data.member_id } } })
+    const AfterDelete = await Group.find({ chatId: data.chatId })
+    if (AfterDelete.length) {
+        let counter = 0
+        for (let i = 0; i < AfterDelete[0].userList.length; i++) {
+            counter++;
+        }
+        await Group.updateMany({ chatId: data.chatId }, { totalUser: counter })
+    }
+    client.emit("remove-from-group-receive", data)
+    client.broadcast.emit("remove-from-group-receive", data)
+})
+//listens when  new user add to group
+client.on("add-from-group", async (data) => {
+    console.log("add-from-group", data);
+    await Group.updateMany({ chatId: data.chatId }, { $push: { userList: { member_id: data.member_id, member_name: data.member_name, adminstatus: false } } })
+    const AfterAdd = await Group.find({ chatId: data.chatId })
+    if (AfterAdd.length) {
+        let counter = 0
+        for (let i = 0; i < AfterAdd[0].userList.length; i++) {
+            counter++;
+        }
+        await Group.updateMany({ chatId: data.chatId }, { totalUser: counter })
+    }
+    client.emit("add-from-group-receive", data)
+    client.broadcast.emit("add-from-group-receive", data)
+})
+// listen when group name update 
+client.on("group-name-update", async (data) => {
+    console.log("group-name-update :", data);
+    await Group.updateMany({ chatId: data.chatId }, { groupName: data.groupName })
+    const AfterUpdate = await Group.find({ chatId: data.chatId })
+    client.broadcast.emit("group-name-update-receive", AfterUpdate)
+})
+
+//listens when a user is disconnected from the server   
+client.on(process.env.DISCONNECT, async function (username) {
+    console.log(connectedId + 'is offline....');
+    client.broadcast.emit('is_online', '🔴 <i>' + username + ' left the chat..</i>');
+    // client.broadcast.emit("user-online-status-update", { status: "offline" })
+    // client.emit("user-online-status-update", { status: "offline" })
+    await Register.update({ _id: connectedId }, { $set: { status: "offline" } })
+})
 })
 server.listen(port, async () => {
     console.log("server started");
