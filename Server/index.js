@@ -314,10 +314,8 @@ io.on(process.env.CONNECTION, async (client) => {
         // client.join(user.grpid)
         console.log("grp message receive", groupmsga[0].groupName);
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
-
-console.log(io.sockets.connected);
+        console.log(io.sockets.connected);
         client.broadcast.to(user.grpid).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
-
         // client.broadcast.to(user.grpid).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         // const connectMsg = await GroupMsg.find({ grpid: user.grpid }).sort({ datetime: 1 })
