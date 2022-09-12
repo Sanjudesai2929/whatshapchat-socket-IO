@@ -224,7 +224,6 @@ io.on(process.env.CONNECTION, async (client) => {
     //listens when a user is create the room   
     client.on(process.env.CREATE_ROOM, async (data) => {
         console.log("create room data is", data);
-        
         let counter = 0
         for (let i = 0; i < data.member_list.length; i++) {
             counter++;
@@ -260,7 +259,7 @@ io.on(process.env.CONNECTION, async (client) => {
         // const user = [...groupData, chat]
         // console.log("user", user);
         console.log("group name is ", data.group_name);
-        client.join(data.group_name)
+        client.join(data.grpid)
         io.to(data.group_name).emit(process.env.CREATE_ROOM, groupData[0])
         // groupData[0].userList.map((data) => {
         //     client.broadcast.to(data.member_id).emit(process.env.CREATE_ROOM, groupData[0])
@@ -268,7 +267,7 @@ io.on(process.env.CONNECTION, async (client) => {
         // })
         client.emit("user-data-list-update", vale_data[0])
         // client.broadcast.emit("user-data-list-update", vale_data[0])
-        io.to(data.group_name).emit("user-data-list-update", vale_data[0])
+        io.to(data.grpid).emit("user-data-list-update", vale_data[0])
         // client.broadcast.emit(process.env.USER_DATA_LIST_UPDATE, vale_data[0])  
     })
     client.on(process.env.GRP_DATA, async (data) => {
@@ -316,8 +315,8 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log("grp message receive", groupmsga[0].groupName);
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
 
-
-        io.to("test").emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+console.log(io.sockets.connected);
+        client.broadcast.to(user.grpid).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
 
         // client.broadcast.to(user.grpid).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
