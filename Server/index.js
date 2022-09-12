@@ -166,12 +166,12 @@ io.on(process.env.CONNECTION, async (client) => {
 
             for (s in io.sockets.connected) {
                 console.log("io.sockets.connected[s]", io.sockets.connected[s]);
-                if (target == io.sockets.connected[s].targetId) {
+                // if (target == io.sockets.connected[s].targetId) {
 
                     io.sockets.connected[s].emit(process.env.MESSAGE_RECEIVE, msgData);
                     break;
 
-                };
+                // };
             }
         }
 
