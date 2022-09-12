@@ -162,9 +162,9 @@ io.on(process.env.CONNECTION, async (client) => {
         })
         console.log("msgData", msgData)
         const targetSocketId = await Register.find({ _id: data.targetId })
-        // client.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
+        client.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
         // client.in(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
-        client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
+        // client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
         // const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).limit(500).sort({ datetime: 1 })
         // console.log("connectMsg", connectMsg);
         // client.broadcast.emit(process.env.CONNECTED_USER, connectMsg);
@@ -312,9 +312,9 @@ io.on(process.env.CONNECTION, async (client) => {
         })
         client.join(groupmsga[0].groupName)
         console.log("grp message receive", groupmsga[0].groupName);
-        client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+        // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
 
-        // client.to(groupmsga[0].groupName).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+        client.to(groupmsga[0].groupName).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         // const connectMsg = await GroupMsg.find({ grpid: user.grpid }).sort({ datetime: 1 })
         // // console.log(connectMsg);
