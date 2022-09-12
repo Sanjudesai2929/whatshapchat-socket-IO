@@ -170,7 +170,7 @@ io.on(process.env.CONNECTION, async (client) => {
         // console.log("connectMsg", connectMsg);
         // client.broadcast.emit(process.env.CONNECTED_USER, connectMsg);
         console.log(io.sockets);
-        console.log(req.query);
+
 
         // console.log(socketIds);
         // socketIds[data.targetId].emit(process.env.MESSAGE_RECEIVE, msgData)
