@@ -163,20 +163,16 @@ io.on(process.env.CONNECTION, async (client) => {
         })
         console.log("msgData", msgData)
         const targetSocketId = await Register.find({ _id: data.targetId })
-
-
-
-
-
-
         // client.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
         io.sockets.connected[targetSocketId[0].socketId].emit(process.env.MESSAGE_RECEIVE, msgData)
         // client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
         // const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).limit(500).sort({ datetime: 1 })
         // console.log("connectMsg", connectMsg);
         // client.broadcast.emit(process.env.CONNECTED_USER, connectMsg);
-        // console.log(socketIds[data.targetId]);
-        console.log(socketIds);
+        console.log(io.sockets);
+        console.log(req.query);
+
+        // console.log(socketIds);
         // socketIds[data.targetId].emit(process.env.MESSAGE_RECEIVE, msgData)
         // io.sockets.emit(process.env.MESSAGE_RECEIVE, msgData)
         if (msgData) {  
