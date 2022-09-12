@@ -322,10 +322,10 @@ io.on(process.env.CONNECTION, async (client) => {
 
         arrayData.map((data) => {
             console.log(data.socketId);
-            io.sockets.connected[data.socketId].emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+            // io.sockets.connected[data.socketId].emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+            io.to(data.socketId).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+
         })
-
-
         // io.sockets.to(user.grpid).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         // client.broadcast.to(user.grpid).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
