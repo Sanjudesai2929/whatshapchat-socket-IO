@@ -170,7 +170,6 @@ io.on(process.env.CONNECTION, async (client) => {
         // client.broadcast.emit(process.env.CONNECTED_USER, connectMsg);
         // console.log(socketIds[data.targetId]);
         console.log(socketIds);
-        
         // socketIds[data.targetId].emit(process.env.MESSAGE_RECEIVE, msgData)
         // io.sockets.emit(process.env.MESSAGE_RECEIVE, msgData)
         if (msgData) {  
@@ -311,11 +310,11 @@ io.on(process.env.CONNECTION, async (client) => {
         const groupmsga = await Group.find({
             _id: msg[0].grpid
         })
-        client.join(groupmsga[0].groupName)
+        client.join(user.grpid)
         console.log("grp message receive", groupmsga[0].groupName);
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
 
-        client.to(groupmsga[0].groupName).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+        client.broadcast.to(user.grpid).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         // const connectMsg = await GroupMsg.find({ grpid: user.grpid }).sort({ datetime: 1 })
         // // console.log(connectMsg);
