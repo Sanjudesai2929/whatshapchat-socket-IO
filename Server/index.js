@@ -79,7 +79,7 @@ io.on(process.env.CONNECTION, async (client) => {
                 return { user: data.sentByUsername, _id: data.sentById, chatId: data.chatId, }
             })
             data.push(...arr1)
-        }
+        }                      
         const msgUser = await Message.find().sort({ datetime: 1 })
         // if (msgUser.length && msgUser[0].type == "location") {
         //     var userData = new Map(msgUser.map(({ chatId }) => ([chatId, "location"])));
@@ -154,28 +154,13 @@ io.on(process.env.CONNECTION, async (client) => {
     //listen when user is send the message
     client.on(process.env.MESSAGE, async (data) => {
         console.log("message data ", data);
-        const target = data.targetId
+        
         const msgData = await Message.insertMany({
             message: data.message, sentByUsername: data.sentByUsername, sentById: data.sentById, targetId: data.targetId, targetUsername: data.targetUsername, msgid: data.msgid, chatId: data.chatId,
             datetime: Date.parse(new Date()),
             localpath: data.localpath,
             path: data.path, type: data.type, filename: data.filename, filesize: data.filesize, extension: data.extension, messagestatus: data.messagestatus, longitude: data.longitude, latitude: data.latitude
-        }, function (err, count) {
-            if (err) return next(err);
-            console.log("Successful");
-
-            for (s in io.sockets.connected) {
-                console.log("io.sockets.connected[s]", io.sockets.connected[s]);
-                // if (target == io.sockets.connected[s].targetId) {
-
-                    io.sockets.connected[s].emit(process.env.MESSAGE_RECEIVE, msgData);
-                    break;
-
-                // };
-            }
-        }
-
-        )
+        })
         console.log("msgData", msgData)
         const targetSocketId = await Register.find({ _id: data.targetId })
 
@@ -185,7 +170,7 @@ io.on(process.env.CONNECTION, async (client) => {
 
 
         // client.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
-        // client.in(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
+        io.sockets.connected[targetSocketId[0].socketId].emit(process.env.MESSAGE_RECEIVE, msgData)
         // client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
         // const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).limit(500).sort({ datetime: 1 })
         // console.log("connectMsg", connectMsg);
@@ -194,9 +179,9 @@ io.on(process.env.CONNECTION, async (client) => {
         console.log(socketIds);
         // socketIds[data.targetId].emit(process.env.MESSAGE_RECEIVE, msgData)
         // io.sockets.emit(process.env.MESSAGE_RECEIVE, msgData)
-        if (msgData) {
+        if (msgData) {  
             client.emit(process.env.DELIEVER_STATUS, { msgid: data.msgid, msgstatus: true })
-            await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "send" } })
+            await Message.updateOne({ msgid: data.msgid },{ $set: { messagestatus: "send" } })
             var data1 = []
             var data2 = []
             const userwiseList = await Message.find({ sentByUsername: data.sentByUsername })
@@ -212,7 +197,7 @@ io.on(process.env.CONNECTION, async (client) => {
                     return { user: data.sentByUsername, _id: data.sentById, sentById: data.sentById, chatId: data.chatId, message: data.message, datetime: data.datetime, messagestatus: data.messagestatus }
                 })
                 data2.push(...arr1)
-            }
+            }        
             console.log(targetSocketId);
             const val2 = data1[data1.length - 1]
             console.log("val2", val2);
@@ -256,7 +241,7 @@ io.on(process.env.CONNECTION, async (client) => {
         // const GroupwiseList = await Group.find({ userList: { $elemMatch: { member_id: connectedId } } })
         const Groupa = groupData.map((data) => {
             return {
-
+                
                 _id: (data._id).toString(),
                 groupName: data.groupName,
                 userList: data.userList,
@@ -421,7 +406,7 @@ io.on(process.env.CONNECTION, async (client) => {
         client.broadcast.emit('group-chat-delete-receive', data);
     })
     //listens when a admin  user is search any user
-    client.on("live-search", async (data) => {
+    client.on("live-search", async (data) => { 
         console.log(data);
         const user = await Register.find({ username: { $regex: data, $options: 'i' } }).limit(10).select({ country_code: 0, phone: 0, password: 0, cpassword: 0 })
         console.log(user);
