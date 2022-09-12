@@ -314,12 +314,22 @@ io.on(process.env.CONNECTION, async (client) => {
         // client.join(user.grpid)
         console.log("grp message receive", groupmsga[0].groupName);
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
-        console.log(io.sockets.connected);
-        io.sockets.to(user.grpid).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+        const data = await Group.find({ _id: user.grpid })
+        const register = await Register.find()
+        var datetime = new Map(register.map(({ socketId, _id }) => ([(_id).toString(), socketId])));
+
+        var arrayData = data[0].userList.map(obj => Object.assign({ socketId: datetime.get(obj.member_id) ? datetime.get(obj.member_id) : " " }));
+
+        arrayData.map((data) => {
+            console.log(data.socketId);
+            io.sockets.connected[data.socketId].emit(process.env.GRP_MESSAGE_RECEIVE, msg)
+        })
+
+
+        // io.sockets.to(user.grpid).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         // client.broadcast.to(user.grpid).emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         // client.broadcast.emit(process.env.GRP_MESSAGE_RECEIVE, msg)
         // const connectMsg = await GroupMsg.find({ grpid: user.grpid }).sort({ datetime: 1 })
-        // // console.log(connectMsg);
         // client.broadcast.emit(process.env.CONNECTED_GROUP_USER, connectMsg);
         client.emit(process.env.DELIEVER_STATUS, { msgid: user.msgid, msgstatus: true })
         await GroupMsg.updateOne({ msgid: user.msgid }, { $set: { messagestatus: "send" } })
@@ -456,6 +466,11 @@ io.on(process.env.CONNECTION, async (client) => {
 })
 server.listen(port, async () => {
     console.log("server started");
-    //  const data=await Group.find({_id:"6316eb1f50600da52fddb0ca"})
-    // console.log(data[0].userList);
+    // const data = await Group.find({ _id: "631f05be43094d55c11fdc38" })
+    // // console.log(data[0].userList);
+    // const register = await Register.find()
+    // var datetime = new Map(register.map(({ socketId, _id }) => ([(_id).toString(), socketId])));
+    // // console.log(datetime);
+    // var arrayData = data[0].userList.map(obj => Object.assign({ socketId: datetime.get(obj.member_id)  }));
+    // console.log("arrayData", arrayData);
 })
