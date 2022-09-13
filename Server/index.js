@@ -163,8 +163,8 @@ io.on(process.env.CONNECTION, async (client) => {
         })
         console.log("msgData", msgData)
         const targetSocketId = await Register.find({ _id: data.targetId })
-        // client.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
-        io.sockets.connected[targetSocketId[0].socketId].emit(process.env.MESSAGE_RECEIVE, msgData)
+        client.broadcast.to(targetSocketId[0].socketId).emit(process.env.MESSAGE_RECEIVE, msgData)
+        // io.sockets.connected[targetSocketId[0].socketId].emit(process.env.MESSAGE_RECEIVE, msgData)
         // client.broadcast.emit(process.env.MESSAGE_RECEIVE, msgData)
         // const connectMsg = await Message.find({ $or: [{ $and: [{ targetId: data.targetId, sentById: data.sentById }] }, { $and: [{ targetId: data.sentById, sentById: data.targetId }] }] }).limit(500).sort({ datetime: 1 })
         // console.log("connectMsg", connectMsg);
@@ -317,9 +317,7 @@ io.on(process.env.CONNECTION, async (client) => {
         const data = await Group.find({ _id: user.grpid })
         const register = await Register.find()
         var datetime = new Map(register.map(({ socketId, _id }) => ([(_id).toString(), socketId])));
-
         var arrayData = data[0].userList.map(obj => Object.assign({ socketId: datetime.get(obj.member_id) ? datetime.get(obj.member_id) : " " }));
-
         arrayData.map((data) => {
             console.log(data.socketId);
             // io.sockets.connected[data.socketId].emit(process.env.GRP_MESSAGE_RECEIVE, msg)
