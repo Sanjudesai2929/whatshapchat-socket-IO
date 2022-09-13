@@ -213,7 +213,7 @@ io.on(process.env.CONNECTION, async (client) => {
     })
     //listens when a user is open keyboard   
     client.on(process.env.KEYBOARD, function name(data) {
-        console.log(data);
+        // console.log(data);
         client.broadcast.emit(process.env.KEYBOARD_STATUS, data);
     })
     //listens when there's an error detected and logs the err  or on the console
