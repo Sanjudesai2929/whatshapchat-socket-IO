@@ -208,7 +208,7 @@ io.on(process.env.CONNECTION, async (client) => {
     });
     //listens when a user seen the msg   
     client.on(process.env.DELIVER_DBL_CLICK, async (data) => {
-        console.log(data);
+        // console.log(data);
         await Message.updateOne({ msgid: data.msgid }, { $set: { messagestatus: "seen" } })
     })
     //listens when a user is open keyboard   
